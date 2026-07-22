@@ -874,10 +874,19 @@ function copyLink() {
     <!-- Footer: ad row (native size, unmodified vendor code) + links row, fixed at bottom -->
     <div style="position:fixed; left:0; bottom:0; width:100%; z-index:9999; background:transparent;">
 
-        <!-- Ad row: Monetag tag (replaces the flagged effectivegatecpm.com script) -->
+        <!-- Ad row: Adsterra (effectivegatecpm.com) 320x50 banner -->
         <div id="adRow" style="display:flex; align-items:center; justify-content:center; overflow-x:auto; padding:2px 4px; -webkit-overflow-scrolling:touch;">
             <div id="adLeft" style="flex-shrink:0; width:320px; height:50px;">
-                <script src="https://5gvci.com/act/files/tag.min.js?z=11370613" data-cfasync="false" async></script>
+                <script>
+                atOptions = {
+                    'key': 'e8b49ebf50ddaef3d7a2232ef99226a2',
+                    'format': 'iframe',
+                    'height': 50,
+                    'width': 320,
+                    'params': {}
+                };
+                </script>
+                <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
             </div>
         </div>
 
@@ -900,6 +909,9 @@ function copyLink() {
         }
     </script>
     <div style="height:64px;"></div><!-- spacer so content isn't hidden behind the fixed footer -->
+
+    <!-- Monetag vignette/interstitial ad (zone 11370676) -->
+    <script>(function(s){s.dataset.zone='11370676',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
 </body>
 </html>
