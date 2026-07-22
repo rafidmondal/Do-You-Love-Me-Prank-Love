@@ -872,30 +872,34 @@ function copyLink() {
 }
 </script>
     <!-- Footer bar: ad (left) + links + ad (right), fixed at bottom -->
-    <div style="position:fixed; left:0; bottom:0; width:100%; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:6px; padding:6px 6px; box-sizing:border-box;">
+    <div style="position:fixed; left:0; bottom:0; width:100%; z-index:9999; display:flex; align-items:center; justify-content:space-between; gap:4px; padding:6px 6px; box-sizing:border-box; background:rgba(255,255,255,0.001);">
 
         <!-- Left small ad -->
-        <div id="adLeft" style="width:90px; min-width:90px; height:34px; overflow:hidden; display:flex; align-items:center; justify-content:flex-start; transform:scale(0.75); transform-origin:left center;">
-            <script>
-              atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-            </script>
-            <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
+        <div id="adLeft" style="position:relative; width:92px; height:36px; overflow:hidden; flex-shrink:0;">
+            <div style="zoom:0.29; width:320px; height:50px;">
+                <script>
+                  atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
+            </div>
         </div>
 
         <!-- Center links -->
-        <div style="text-align:center; font-size:10px; display:flex; justify-content:center; align-items:center; gap:10px; flex-wrap:wrap; flex:1;">
-            <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75;">Privacy policy🔏</a>
-            <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75;">Contact Us</a>
-            <a href="#" onclick="document.getElementById('aboutModal').style.display='flex'; return false;" style="color:#c2185b; text-decoration:none; opacity:0.75;">About</a>
-            <a href="#" id="adToggleBtn" onclick="toggleAds(); return false;" style="color:#c2185b; text-decoration:none; opacity:0.75;">Hide Ads</a>
+        <div style="text-align:center; font-size:10px; display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap; flex:1; min-width:0;">
+            <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Privacy policy🔏</a>
+            <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Contact Us</a>
+            <a href="#" onclick="document.getElementById('aboutModal').style.display='flex'; return false;" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">About</a>
+            <a href="#" id="adToggleBtn" onclick="toggleAds(); return false;" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Hide Ads</a>
         </div>
 
         <!-- Right small ad -->
-        <div id="adRight" style="width:90px; min-width:90px; height:34px; overflow:hidden; display:flex; align-items:center; justify-content:flex-end; transform:scale(0.75); transform-origin:right center;">
-            <script>
-              atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-            </script>
-            <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
+        <div id="adRight" style="position:relative; width:92px; height:36px; overflow:hidden; flex-shrink:0;">
+            <div style="zoom:0.29; width:320px; height:50px;">
+                <script>
+                  atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
+            </div>
         </div>
     </div>
 
@@ -905,8 +909,8 @@ function copyLink() {
             const right = document.getElementById('adRight');
             const btn = document.getElementById('adToggleBtn');
             const hidden = left.style.display === 'none';
-            left.style.display = hidden ? 'flex' : 'none';
-            right.style.display = hidden ? 'flex' : 'none';
+            left.style.display = hidden ? 'block' : 'none';
+            right.style.display = hidden ? 'block' : 'none';
             btn.textContent = hidden ? 'Hide Ads' : 'Show Ads';
         }
     </script>
