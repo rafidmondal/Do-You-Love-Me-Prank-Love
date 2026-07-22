@@ -871,12 +871,18 @@ function copyLink() {
     });
 }
 </script>
-    <!-- Footer bar: ad (left) + links + ad (right), fixed at bottom -->
-    <div style="position:fixed; left:0; bottom:0; width:100%; z-index:9999; display:flex; align-items:center; justify-content:space-between; gap:4px; padding:6px 6px; box-sizing:border-box;">
+    <!-- Footer: ad row (native size, unmodified vendor code) + links row, fixed at bottom -->
+    <div style="position:fixed; left:0; bottom:0; width:100%; z-index:9999; background:transparent;">
 
-        <!-- Left small ad -->
-        <div id="adLeft" class="ad-slot" style="width:92px; height:36px; flex-shrink:0; overflow:hidden; position:relative;">
-            <div class="ad-inner">
+        <!-- Ad row: two native 320x50 ads, scrollable if the screen is narrow -->
+        <div id="adRow" style="display:flex; align-items:center; justify-content:center; gap:6px; overflow-x:auto; padding:2px 4px; -webkit-overflow-scrolling:touch;">
+            <div id="adLeft" style="flex-shrink:0; width:320px; height:50px;">
+                <script>
+                  atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
+            </div>
+            <div id="adRight" style="flex-shrink:0; width:320px; height:50px;">
                 <script>
                   atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
                 </script>
@@ -884,54 +890,25 @@ function copyLink() {
             </div>
         </div>
 
-        <!-- Center links -->
-        <div style="text-align:center; font-size:10px; display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap; flex:1; min-width:0;">
+        <!-- Links row -->
+        <div style="text-align:center; font-size:10px; display:flex; justify-content:center; align-items:center; gap:10px; flex-wrap:wrap; padding:4px 6px 6px; background:rgba(255,255,255,0.001);">
             <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Privacy policy🔏</a>
             <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Contact Us</a>
             <a href="#" onclick="document.getElementById('aboutModal').style.display='flex'; return false;" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">About</a>
             <a href="#" id="adToggleBtn" onclick="toggleAds(); return false;" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Hide Ads</a>
         </div>
-
-        <!-- Right small ad -->
-        <div id="adRight" class="ad-slot" style="width:92px; height:36px; flex-shrink:0; overflow:hidden; position:relative;">
-            <div class="ad-inner">
-                <script>
-                  atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
-                </script>
-                <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
-            </div>
-        </div>
     </div>
-
-    <style>
-        /* Ad network writes its own <iframe> into .ad-inner — scale that
-           injected iframe as a single atomic unit so its content is fully
-           visible (ad loads normally, top-window access intact) but the
-           whole box renders small and stays put, never escaping to the
-           page background. */
-        .ad-slot .ad-inner {
-            width: 320px;
-            height: 50px;
-            transform: scale(0.2875); /* 92 / 320 */
-            transform-origin: top left;
-        }
-        .ad-slot .ad-inner iframe {
-            display: block;
-            border: 0;
-        }
-    </style>
 
     <script>
         function toggleAds() {
-            const left = document.getElementById('adLeft');
-            const right = document.getElementById('adRight');
+            const row = document.getElementById('adRow');
             const btn = document.getElementById('adToggleBtn');
-            const hidden = left.style.display === 'none';
-            left.style.display = hidden ? 'block' : 'none';
-            right.style.display = hidden ? 'block' : 'none';
+            const hidden = row.style.display === 'none';
+            row.style.display = hidden ? 'flex' : 'none';
             btn.textContent = hidden ? 'Hide Ads' : 'Show Ads';
         }
     </script>
+    <div style="height:64px;"></div><!-- spacer so content isn't hidden behind the fixed footer -->
 
 </body>
 </html>
