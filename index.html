@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💝</text></svg>">
     <meta name="google-site-verification" content="04Iccv3ZqlAfU3TeqdRVtJubMmkhUMxA2sDJNxoRLD8" />
+    <meta name="monetag" content="67eeece156b8f77ec3b035a7bda10830">
     <title>Do You Love Me? 💝</title>
     <meta name="description" content="A fun and interactive 'Do You Love Me' prank game. Send to your crush and see their reaction! The No button runs away 😂 Created by Rafid Mondal.">
     <meta name="keywords" content="do you love me prank, love prank game, send to crush, funny love game, prank link, Rafid Mondal, interactive love prank, No button runs away">
@@ -870,12 +871,45 @@ function copyLink() {
     });
 }
 </script>
-    <!-- Footer links (fixed at very bottom of screen) -->
-    <div style="position:fixed; left:0; bottom:0; width:100%; text-align:center; padding:10px 0; font-size:11px; display:flex; justify-content:center; gap:14px; flex-wrap:wrap; z-index:50; background:rgba(255,255,255,0.0);">
-        <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75;">Privacy policy🔏</a>
-        <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75;">Contact Us</a>
-        <a href="#" onclick="document.getElementById('aboutModal').style.display='flex'; return false;" style="color:#c2185b; text-decoration:none; opacity:0.75;">About</a>
+    <!-- Footer bar: ad (left) + links + ad (right), fixed at bottom -->
+    <div style="position:fixed; left:0; bottom:0; width:100%; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:6px; padding:6px 6px; box-sizing:border-box;">
+
+        <!-- Left small ad -->
+        <div id="adLeft" style="width:90px; min-width:90px; height:34px; overflow:hidden; display:flex; align-items:center; justify-content:flex-start; transform:scale(0.75); transform-origin:left center;">
+            <script>
+              atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+            </script>
+            <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
+        </div>
+
+        <!-- Center links -->
+        <div style="text-align:center; font-size:10px; display:flex; justify-content:center; align-items:center; gap:10px; flex-wrap:wrap; flex:1;">
+            <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75;">Privacy policy🔏</a>
+            <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75;">Contact Us</a>
+            <a href="#" onclick="document.getElementById('aboutModal').style.display='flex'; return false;" style="color:#c2185b; text-decoration:none; opacity:0.75;">About</a>
+            <a href="#" id="adToggleBtn" onclick="toggleAds(); return false;" style="color:#c2185b; text-decoration:none; opacity:0.75;">Hide Ads</a>
+        </div>
+
+        <!-- Right small ad -->
+        <div id="adRight" style="width:90px; min-width:90px; height:34px; overflow:hidden; display:flex; align-items:center; justify-content:flex-end; transform:scale(0.75); transform-origin:right center;">
+            <script>
+              atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+            </script>
+            <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
+        </div>
     </div>
+
+    <script>
+        function toggleAds() {
+            const left = document.getElementById('adLeft');
+            const right = document.getElementById('adRight');
+            const btn = document.getElementById('adToggleBtn');
+            const hidden = left.style.display === 'none';
+            left.style.display = hidden ? 'flex' : 'none';
+            right.style.display = hidden ? 'flex' : 'none';
+            btn.textContent = hidden ? 'Hide Ads' : 'Show Ads';
+        }
+    </script>
 
 </body>
 </html>
