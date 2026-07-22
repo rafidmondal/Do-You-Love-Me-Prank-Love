@@ -874,8 +874,15 @@ function copyLink() {
     <!-- Footer bar: ad (left) + links + ad (right), fixed at bottom -->
     <div style="position:fixed; left:0; bottom:0; width:100%; z-index:9999; display:flex; align-items:center; justify-content:space-between; gap:4px; padding:6px 6px; box-sizing:border-box;">
 
-        <!-- Left small ad (sandboxed iframe — fully contained) -->
-        <div id="adLeftSlot" style="width:92px; height:36px; flex-shrink:0; overflow:hidden;"></div>
+        <!-- Left small ad -->
+        <div id="adLeft" class="ad-slot" style="width:92px; height:36px; flex-shrink:0; overflow:hidden; position:relative;">
+            <div class="ad-inner">
+                <script>
+                  atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
+            </div>
+        </div>
 
         <!-- Center links -->
         <div style="text-align:center; font-size:10px; display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap; flex:1; min-width:0;">
@@ -885,49 +892,43 @@ function copyLink() {
             <a href="#" id="adToggleBtn" onclick="toggleAds(); return false;" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Hide Ads</a>
         </div>
 
-        <!-- Right small ad (sandboxed iframe — fully contained) -->
-        <div id="adRightSlot" style="width:92px; height:36px; flex-shrink:0; overflow:hidden;"></div>
+        <!-- Right small ad -->
+        <div id="adRight" class="ad-slot" style="width:92px; height:36px; flex-shrink:0; overflow:hidden; position:relative;">
+            <div class="ad-inner">
+                <script>
+                  atOptions = { 'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
+                </script>
+                <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
+            </div>
+        </div>
     </div>
 
+    <style>
+        /* Ad network writes its own <iframe> into .ad-inner — scale that
+           injected iframe as a single atomic unit so its content is fully
+           visible (ad loads normally, top-window access intact) but the
+           whole box renders small and stays put, never escaping to the
+           page background. */
+        .ad-slot .ad-inner {
+            width: 320px;
+            height: 50px;
+            transform: scale(0.2875); /* 92 / 320 */
+            transform-origin: top left;
+        }
+        .ad-slot .ad-inner iframe {
+            display: block;
+            border: 0;
+        }
+    </style>
+
     <script>
-        // Build the ad snippet once, run it inside an isolated iframe (srcdoc) so
-        // anything the ad network injects (fixed/absolute elements, its own
-        // iframe, etc.) is confined to that iframe's own small viewport and can
-        // never escape onto the real page background.
-        function buildAdSrcDoc() {
-            return `<!DOCTYPE html><html><head><style>
-                html,body{margin:0;padding:0;overflow:hidden;background:transparent;}
-            </style></head><body>
-            <script>
-              atOptions = { key:'e8b49ebf50ddaef3d7a2232ef99226a2', format:'iframe', height:50, width:320, params:{} };
-            <\/script>
-            <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"><\/script>
-            </body></html>`;
-        }
-
-        function makeAdIframe() {
-            const f = document.createElement('iframe');
-            f.style.width = '320px';
-            f.style.height = '50px';
-            f.style.border = '0';
-            f.style.transform = 'scale(0.2875)'; // 92/320 — safe here: it only scales the OUTER iframe box, ad content stays isolated inside it
-            f.style.transformOrigin = 'top left';
-            f.scrolling = 'no';
-            f.setAttribute('sandbox', 'allow-scripts allow-popups allow-same-origin');
-            f.srcdoc = buildAdSrcDoc();
-            return f;
-        }
-
-        const leftSlot = document.getElementById('adLeftSlot');
-        const rightSlot = document.getElementById('adRightSlot');
-        leftSlot.appendChild(makeAdIframe());
-        rightSlot.appendChild(makeAdIframe());
-
         function toggleAds() {
+            const left = document.getElementById('adLeft');
+            const right = document.getElementById('adRight');
             const btn = document.getElementById('adToggleBtn');
-            const hidden = leftSlot.style.display === 'none';
-            leftSlot.style.display = hidden ? 'block' : 'none';
-            rightSlot.style.display = hidden ? 'block' : 'none';
+            const hidden = left.style.display === 'none';
+            left.style.display = hidden ? 'block' : 'none';
+            right.style.display = hidden ? 'block' : 'none';
             btn.textContent = hidden ? 'Hide Ads' : 'Show Ads';
         }
     </script>
