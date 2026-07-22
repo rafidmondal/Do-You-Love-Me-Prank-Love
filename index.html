@@ -536,20 +536,6 @@
             z-index: 99;
         }
 
-        /* AD BAR — normal flow, below the card */
-        .ad-bar {
-            width: 100%;
-            min-height: 70px;
-            background: rgba(255,238,247,0.97);
-            border-top: 1px solid rgba(255,170,215,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 0;
-            margin-top: 24px;
-            overflow: hidden;
-        }
-
         .hidden { display: none !important; }
     </style>
 </head>
@@ -640,18 +626,15 @@
     <!-- Full screen burst overlay -->
     <div id="burstOverlay"></div>
 
-    <!-- AD BAR — normal flow, below card, visible on scroll -->
-    <div class="ad-bar" id="adBar" tabindex="-1" aria-hidden="true">
-        <script>
-          atOptions = {
-            'key' : 'e8b49ebf50ddaef3d7a2232ef99226a2',
-            'format' : 'iframe',
-            'height' : 50,
-            'width' : 320,
-            'params' : {}
-          };
-        </script>
-        <script src="https://pl28635954.effectivegatecpm.com/d1/36/1c/d1361cbb96ad96a535597d835d6d24cc.js"></script>
+    <!-- About modal -->
+    <div id="aboutModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+        <div style="position:relative; background:#ffe6f2; border-radius:18px; max-width:360px; width:100%; padding:26px 22px; box-shadow:0 10px 40px rgba(0,0,0,0.25); font-family:'Nunito', sans-serif; color:#7a2048;">
+            <button onclick="document.getElementById('aboutModal').style.display='none';" style="position:absolute; top:10px; right:12px; background:none; border:none; font-size:18px; cursor:pointer; color:#7a2048;">❌</button>
+            <h3 style="margin:0 0 12px; font-size:18px;">💖 About Love Prank</h3>
+            <p style="margin:0 0 10px; font-size:14px; line-height:1.5;">Love Prank is a fun and interactive prank game designed to make your friends or crush smile prank! 😄💕</p>
+            <p style="margin:0 0 10px; font-size:14px; line-height:1.5;">Simply share the link, let them choose Yes or No, and enjoy the funny surprise. It's made purely for entertainment and laughter—no real love test, just good vibes! 🌸✨</p>
+            <p style="margin:0; font-size:14px; line-height:1.5;">💝 Share • Laugh • Enjoy • Repeat</p>
+        </div>
     </div>
 
 <script>
@@ -887,5 +870,12 @@ function copyLink() {
     });
 }
 </script>
+    <!-- Footer links (fixed at very bottom of screen) -->
+    <div style="position:fixed; left:0; bottom:0; width:100%; text-align:center; padding:10px 0; font-size:11px; display:flex; justify-content:center; gap:14px; flex-wrap:wrap; z-index:50; background:rgba(255,255,255,0.0);">
+        <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75;">Privacy policy🔏</a>
+        <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75;">Contact Us</a>
+        <a href="#" onclick="document.getElementById('aboutModal').style.display='flex'; return false;" style="color:#c2185b; text-decoration:none; opacity:0.75;">About</a>
+    </div>
+
 </body>
 </html>
