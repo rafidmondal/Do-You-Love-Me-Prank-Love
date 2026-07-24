@@ -46,7 +46,7 @@
             width: 100%; height: 100%;
             top: 0; left: 0;
             pointer-events: none;
-            z-index: 0;
+            z-index: 150;
         }
         .heart {
             position: absolute;
@@ -552,37 +552,61 @@
     <!-- Floating Hearts Background -->
     <div class="hearts-bg" id="heartsBg"></div>
 
-    <!-- ── MAIN PAGE ── -->
-    <div class="container" id="mainPage">
-        <div class="bears-container">
-            <span class="mini-heart">🩷</span>
-            <span class="mini-heart">💗</span>
-            <span class="mini-heart">❤️</span>
-            <span class="mini-heart">💕</span>
+    <!-- ── SUCCESS PAGE ── -->
+    <div class="success-page" id="successPage">
+        <canvas class="fireworks" id="fireworks"></canvas>
 
-            <svg class="heart-path" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M100 120 C60 90,10 70,10 40 C10 18,28 5,50 5 C70 5,85 18,100 35 C115 18,130 5,150 5 C172 5,190 18,190 40 C190 70,140 90,100 120Z"
-                    stroke="#ff6eb5" stroke-width="2.5" stroke-dasharray="8 5" fill="none"/>
-            </svg>
+        <div class="success-content">
+            <!-- Confetti dots -->
+            <div class="confetti-wrap" aria-hidden="true" id="confettiWrap"></div>
 
-            <div class="bear bear-brown">🐻</div>
-            <div class="bear bear-white">🐼</div>
+            <span class="big-heart">💖</span>
+
+            <h2 class="yay-text">Yay! I knew it! 😍</h2>
+            <p class="best-text">You are the best thing<br>that ever happened to me! 💕</p>
+            <p class="forever-text">
+                You are my first love,<br>
+                My last love, and my forever love! 🌹
+            </p>
         </div>
 
-        <div class="do-you">Do you</div>
-        <div class="love-me">love me?</div>
+        <!-- Share section — outside white box, sits on pink background -->
+        <div class="share-section">
+                <div class="share-row">
+                    <!-- WhatsApp -->
+                    <button class="soc-btn btn-wa" onclick="shareWhatsApp()" title="WhatsApp">
+                        <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.112 1.519 5.852L.057 23.8c-.11.436.261.818.693.708l6.094-1.459A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.695-.523-5.224-1.431l-.374-.221-3.87.927.943-3.785-.242-.389A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                    </button>
+                    <!-- Facebook -->
+                    <button class="soc-btn btn-fb" onclick="shareFacebook()" title="Facebook">
+                        <svg viewBox="0 0 24 24" fill="white"><path d="M24 12.073C24 5.406 18.627 0 12 0S0 5.406 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+                    </button>
+                    <!-- Instagram -->
+                    <button class="soc-btn btn-ig" onclick="shareInstagram()" title="Instagram">
+                        <svg viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </button>
+                    <!-- Copy Link -->
+                    <button class="soc-btn btn-copy" onclick="copyLink()" title="Copy Link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    </button>
+                </div>
+                <p class="share-title" style="color:#fff; text-shadow: 0 1px 6px rgba(200,50,100,0.3);">Share Your Answer! 📱</p>
+        </div>
 
-        <div class="divider">🩷</div>
-
-        <div class="buttons" id="buttonContainer">
-            <button class="yes-btn" id="yesBtn" tabindex="-1">
-                Yes
-                <span class="btn-icon">❤️</span>
-            </button>
-            <button class="no-btn" id="noBtn" tabindex="-1">
-                No
-                <span class="btn-icon">💔</span>
-            </button>
+        <!-- Ad row: Adsterra (highperformanceformat.com) 300x250 banner — ~10% visible by default, scroll down to reveal the rest -->
+        <div id="adRow" style="position:absolute; top:calc(100vh - 25px); left:0; width:100%; display:flex; align-items:center; justify-content:center; overflow-x:auto; padding:2px 4px; -webkit-overflow-scrolling:touch; z-index:500;">
+            <div id="adLeft" style="flex-shrink:0; width:300px; height:250px;">
+                <script>
+                atOptions = {
+                    'key': 'd525342ecffc192b91fadc32f1a90429',
+                    'format': 'iframe',
+                    'height': 250,
+                    'width': 300,
+                    'params': {}
+                };
+                </script>
+                <script src="https://www.highperformanceformat.com/d525342ecffc192b91fadc32f1a90429/invoke.js"></script>
+            </div>
         </div>
     </div>
 
@@ -604,20 +628,8 @@
     </div>
 
 <script>
-// ── Yes button — instant, fires on first touch/click only ──
-const yesBtn = document.getElementById('yesBtn');
-let yesFired = false;
-let yesTouchFired = false;
-
 // Immediately blur any element that gets focused — no focus state ever
 document.addEventListener('focusin', e => { e.target.blur(); });
-
-yesBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (yesFired) return;
-    yesFired = true;
-    sayYes();
-});
 
 // ── Floating hearts ──
 (function createHearts() {
@@ -647,110 +659,116 @@ for (let i = 0; i < 10; i++) {
     document.body.appendChild(s);
 }
 
-// ── No Button Logic ──
-const noBtn = document.getElementById('noBtn');
-let noBtnMoved = false;
-let moveCount = 0;
+// ── Show success page directly (this page has no prank/No-button step) ──
+function showSuccessDirect() {
+    const sp = document.getElementById('successPage');
+    sp.style.display = 'flex';
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => { sp.classList.add('visible'); });
+    });
 
-function moveNoButton(e) {
-    if (e) {
-        e.preventDefault();
+    buildConfetti();
+    startFireworks();
+}
+showSuccessDirect();
+
+// Confetti coloured dots
+function buildConfetti() {
+    const wrap = document.getElementById('confettiWrap');
+    const colours = ['#ff3a8c','#ff7ab5','#feca57','#a29bfe','#74b9ff','#fd79a8','#55efc4'];
+    for (let i = 0; i < 18; i++) {
+        const d = document.createElement('div');
+        d.className = 'dot';
+        d.style.background = colours[i % colours.length];
+        d.style.left = (Math.random() * 260 - 10) + 'px';
+        d.style.top  = (Math.random() * 30 - 40) + 'px';
+        d.style.animationDelay = (Math.random() * 2) + 's';
+        d.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+        d.style.width = d.style.height = (Math.random() * 7 + 5) + 'px';
+        wrap.appendChild(d);
     }
-
-    if (!noBtnMoved) {
-        const rect = noBtn.getBoundingClientRect();
-        
-        // Lock dimensions to prevent shrinking when position switches to fixed
-        noBtn.style.width = rect.width + 'px';
-        noBtn.style.height = rect.height + 'px';
-        
-        // Apply current screen coordinates
-        noBtn.style.left = rect.left + 'px';
-        noBtn.style.top = rect.top + 'px';
-        
-        // Move button to body to escape the transform container boundary context
-        document.body.appendChild(noBtn);
-        
-        // Force reflow
-        noBtn.offsetHeight;
-        
-        // Transition to fixed roaming mode
-        noBtn.classList.add('roaming');
-        noBtnMoved = true;
-    }
-
-    moveCount++;
-
-    const margin = 16;
-    const maxX = window.innerWidth  - noBtn.offsetWidth  - margin;
-    const maxY = window.innerHeight - noBtn.offsetHeight - margin;
-
-    const p = {
-        x: Math.max(margin, Math.floor(Math.random() * maxX)),
-        y: Math.max(margin, Math.floor(Math.random() * maxY))
-    };
-
-    noBtn.style.left = p.x + 'px';
-    noBtn.style.top  = p.y + 'px';
-    noBtn.style.transform = `rotate(${Math.random() * 18 - 9}deg)`;
-
-    const speed = moveCount > 9 ? '0.08s' : moveCount > 5 ? '0.17s' : '0.36s';
-    noBtn.style.transition =
-        `left ${speed} cubic-bezier(0.68,-0.55,0.265,1.55),` +
-        `top  ${speed} cubic-bezier(0.68,-0.55,0.265,1.55),` +
-        `transform 0.28s, background 0.3s, box-shadow 0.3s`;
-
-    const texts = [
-        ['Nice try! 😜','💔'],['Catch me! 🏃','💔'],['Too slow! 🐌','💔'],
-        ['Nope! ❌','💔'],['Yes is better! 💝','💝'],['Missed! 😏','💔'],
-        ['Almost! 😅','💔'],['Try again! 🤭','💔'],['Gotcha! 😈','💔']
-    ];
-    const t = texts[Math.floor(Math.random() * texts.length)];
-    noBtn.innerHTML = t[0] + '<span class="btn-icon">' + t[1] + '</span>';
 }
 
-noBtn.addEventListener('mouseover',  moveNoButton);
-noBtn.addEventListener('mouseenter', moveNoButton);
-noBtn.addEventListener('mousedown',  moveNoButton);
-noBtn.addEventListener('click',      moveNoButton);
-noBtn.addEventListener('touchstart', moveNoButton, {passive:false});
-noBtn.addEventListener('touchmove',  moveNoButton, {passive:false});
+// ── Fireworks ──
+function startFireworks() {
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const particles = [];
+    const colours = ['#f02580','#ff7ab5','#feca57','#ff9ff3','#54a0ff','#5f27cd','#ff6eb5'];
 
-// ── Yes Button Callback ──
-function sayYes() {
-    const mainPage = document.getElementById('mainPage');
-    mainPage.classList.add('peel-tear');
+    class Particle {
+        constructor(x, y, c) {
+            this.x = x; this.y = y; this.c = c;
+            this.vx = (Math.random() - 0.5) * 9;
+            this.vy = (Math.random() - 0.5) * 9;
+            this.alpha = 1;
+        }
+        update() { this.vx *= 0.978; this.vy *= 0.978; this.x += this.vx; this.y += this.vy; this.alpha -= 0.011; }
+        draw() {
+            ctx.save(); ctx.globalAlpha = this.alpha;
+            ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, Math.PI*2);
+            ctx.fillStyle = this.c; ctx.fill(); ctx.restore();
+        }
+    }
 
-    noBtn.style.pointerEvents = 'none';
-    noBtn.style.opacity = '0';
-    noBtn.style.transition = 'opacity 0.4s ease';
+    function boom() {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height * 0.55;
+        const c = colours[Math.floor(Math.random() * colours.length)];
+        for (let i = 0; i < 55; i++) particles.push(new Particle(x, y, c));
+    }
 
-    setTimeout(() => {
-        noBtn.classList.add('hidden');
-    }, 400);
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = particles.length - 1; i >= 0; i--) {
+            if (particles[i].alpha <= 0) particles.splice(i, 1);
+            else { particles[i].update(); particles[i].draw(); }
+        }
+    }
+    setInterval(boom, 720);
+    animate();
+}
 
-    // Redirect to the success page (index2.html) instead of showing it inline
-    setTimeout(() => {
-        window.location.href = window.location.pathname.replace(/[^/]*$/, '') + 'index2.html';
-    }, 450);
+// ── Toast helper ──
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Share functions ──
+function getShareUrl() {
+    return window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'index2.html';
+}
+
+function shareWhatsApp() {
+    const text = "💕 I just said YES to 'Do you love me?'! 💕\n👉 " + getShareUrl();
+    window.open("https://wa.me/?text=" + encodeURIComponent(text), '_blank');
+    showToast('Opening WhatsApp… 💬');
+}
+
+function shareFacebook() {
+    window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(getShareUrl()), '_blank');
+    showToast('Opening Facebook… 📘');
+}
+
+function shareInstagram() {
+    copyLink();
+    showToast('Link copied! Paste it on Instagram 📸');
+}
+
+function copyLink() {
+    navigator.clipboard.writeText(getShareUrl()).then(() => {
+        showToast('Link copied! Share with friends 🔗');
+    }).catch(() => {
+        showToast('Copy the URL from your browser 🔗');
+    });
 }
 </script>
-    <!-- Ad row: Adsterra (highperformanceformat.com) 300x250 banner — ~10% visible by default, scroll down to reveal the rest -->
-    <div id="adRow" style="position:absolute; top:calc(100vh - 25px); left:0; width:100%; display:flex; align-items:center; justify-content:center; overflow-x:auto; padding:2px 4px; -webkit-overflow-scrolling:touch; z-index:500;">
-        <div id="adLeft" style="flex-shrink:0; width:300px; height:250px;">
-            <script>
-            atOptions = {
-                'key': 'd525342ecffc192b91fadc32f1a90429',
-                'format': 'iframe',
-                'height': 250,
-                'width': 300,
-                'params': {}
-            };
-            </script>
-            <script src="https://www.highperformanceformat.com/d525342ecffc192b91fadc32f1a90429/invoke.js"></script>
-        </div>
-    </div>
-
     <!-- Footer: links row, fixed at bottom -->
     <div style="position:fixed; left:0; bottom:0; width:100%; z-index:9999; background:transparent;">
 
@@ -762,10 +780,7 @@ function sayYes() {
         </div>
     </div>
 
-    <div style="height:64px;"></div><!-- spacer so content isn't hidden behind the fixed footer -->
-
-    <!-- Monetag vignette/interstitial ad (zone 11370676) -->
-    <script>(function(s){s.dataset.zone='11370676',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <div style="height:40px;"></div><!-- spacer so content isn't hidden behind the fixed links footer -->
 
 </body>
 </html>
