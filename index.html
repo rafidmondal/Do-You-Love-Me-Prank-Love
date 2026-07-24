@@ -549,6 +549,24 @@
               font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px;
               box-shadow:0 2px 6px rgba(0,0,0,0.12); white-space:nowrap;">Birthday website 👈</a>
 
+    <!-- Share + Copy Link buttons, top-right, liquid-glass style -->
+    <div style="position:fixed; top:8px; right:8px; z-index:10000; display:flex; gap:6px;">
+        <button onclick="sharePageLink()" style="display:inline-flex; align-items:center; gap:4px; cursor:pointer;
+                border:1px solid rgba(255,255,255,0.5); border-radius:20px; padding:4px 11px;
+                font-family:'Nunito', sans-serif; font-size:10px; font-weight:700; color:#fff;
+                background:rgba(255,255,255,0.18); backdrop-filter:blur(10px) saturate(180%);
+                -webkit-backdrop-filter:blur(10px) saturate(180%);
+                box-shadow:0 0 10px rgba(255,105,180,0.45), inset 0 1px 0 rgba(255,255,255,0.4);
+                text-shadow:0 1px 2px rgba(0,0,0,0.15);">📤 Share</button>
+        <button onclick="copyPageLink()" style="display:inline-flex; align-items:center; gap:4px; cursor:pointer;
+                border:1px solid rgba(255,255,255,0.5); border-radius:20px; padding:4px 11px;
+                font-family:'Nunito', sans-serif; font-size:10px; font-weight:700; color:#fff;
+                background:rgba(255,255,255,0.18); backdrop-filter:blur(10px) saturate(180%);
+                -webkit-backdrop-filter:blur(10px) saturate(180%);
+                box-shadow:0 0 10px rgba(255,105,180,0.45), inset 0 1px 0 rgba(255,255,255,0.4);
+                text-shadow:0 1px 2px rgba(0,0,0,0.15);">🔗 Copy Link</button>
+    </div>
+
     <!-- Floating Hearts Background -->
     <div class="hearts-bg" id="heartsBg"></div>
 
@@ -733,6 +751,40 @@ function sayYes() {
     setTimeout(() => {
         window.location.href = window.location.pathname.replace(/[^/]*$/, '') + 'index2.html';
     }, 450);
+}
+
+// ── Toast helper ──
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Share this page's own link ──
+function sharePageLink() {
+    const url = window.location.href;
+    if (navigator.share) {
+        navigator.share({
+            title: document.title,
+            text: "💕 Do you love me? Find out! 💕",
+            url: url
+        }).catch(() => {});
+    } else {
+        // Fallback for browsers without native share sheet
+        const text = "💕 Do you love me? Find out! 💕\n👉 " + url;
+        window.open("https://wa.me/?text=" + encodeURIComponent(text), '_blank');
+        showToast('Opening share options… 📤');
+    }
+}
+
+// ── Copy this page's own link ──
+function copyPageLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        showToast('Link copied! Share with friends 🔗');
+    }).catch(() => {
+        showToast('Copy the URL from your browser 🔗');
+    });
 }
 </script>
     <!-- Ad row: Adsterra (highperformanceformat.com) 300x250 banner — ~10% visible by default, scroll down to reveal the rest -->
