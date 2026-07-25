@@ -6,19 +6,76 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💝</text></svg>">
     <meta name="google-site-verification" content="04Iccv3ZqlAfU3TeqdRVtJubMmkhUMxA2sDJNxoRLD8" />
     <meta name="monetag" content="67eeece156b8f77ec3b035a7bda10830">
-    <title>Do You Love Me? 💝</title>
-    <meta name="description" content="A fun and interactive 'Do You Love Me' prank game. Send to your crush and see their reaction! The No button runs away 😂 Created by Rafid Mondal.">
-    <meta name="keywords" content="do you love me prank, love prank game, send to crush, funny love game, prank link, Rafid Mondal, interactive love prank, No button runs away">
+    <title>Do You Love Me? Yes or No Prank Game – Send to Your Crush 💝</title>
+    <meta name="description" content="Play Do You Love Me, the viral Yes or No love prank. Click Yes or try to catch the No button — it runs away every time 😂 Copy your link and send it to your crush or friends.">
+    <meta name="keywords" content="do you love me prank, do you love me game, love prank game, yes or no love game, send to crush, funny love game, no button runs away, love test link, Rafid Mondal">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://rafidmondal.github.io/do-you-love-me/">
+    <link rel="canonical" href="https://love-prank.raxzen.in/">
     <meta property="og:title" content="Do You Love Me? 💕 — Send This to Your Crush!">
-    <meta property="og:description" content="A hilarious love prank — the No button runs away every time they try to click it! Share with your crush and watch the magic 😍">
+    <meta property="og:description" content="Click Yes or No — but the No button runs away every time! A hilarious love prank to send to your crush or friends 😍">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://rafidmondal.github.io/do-you-love-me/">
+    <meta property="og:url" content="https://love-prank.raxzen.in/">
+    <meta property="og:image" content="https://love-prank.raxzen.in/logo.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Do You Love Me? 💕 — Send This to Your Crush!">
-    <meta name="twitter:description" content="A hilarious love prank — the No button runs away every time they try to click it! Share with your crush 😍">
+    <meta name="twitter:description" content="Click Yes or No — but the No button runs away every time! A hilarious love prank to send to your crush 😍">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Structured data: matches the actual page content/behaviour below (no invented claims) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Do You Love Me?",
+          "url": "https://love-prank.raxzen.in/",
+          "description": "An interactive Yes or No love prank game. Clicking No makes the button run away, leaving Yes as the only option. Share your link with a crush or friend.",
+          "applicationCategory": "GameApplication",
+          "operatingSystem": "Any",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "author": { "@type": "Person", "name": "Rafid Mondal" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the Do You Love Me prank game?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It's a Yes or No love prank: you press Yes or No, but the No button dodges your cursor or finger, making Yes the only button you can actually click."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does the No button work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "As soon as you hover, touch, or click the No button, it jumps to a new random spot on the screen, so it can never actually be pressed."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I send this to my crush?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Tap Share or Copy Link at the top of the page to grab this page's URL, then send it to your crush or friends over WhatsApp, Messenger, or any app."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is this a real love test?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No — it's made purely for fun. There's no real love detection involved, just a lighthearted prank meant to make someone smile."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         *:focus { outline: none !important; box-shadow: none !important; }
@@ -141,7 +198,12 @@
         }
 
         /* Text */
+        h1.headline {
+            font-weight: normal;
+            margin: 0;
+        }
         .do-you {
+            display: block;
             font-family: 'Nunito', sans-serif;
             font-size: clamp(1em, 3.8vw, 1.3em);
             color: #cc4b83;
@@ -150,6 +212,7 @@
             letter-spacing: 0.01em;
         }
         .love-me {
+            display: block;
             font-family: 'Dancing Script', cursive;
             font-size: clamp(1.9em, 9.5vw, 2.8em);
             background: linear-gradient(130deg, #f02580, #ff6eb5);
@@ -587,8 +650,10 @@
             <div class="bear bear-white">🐼</div>
         </div>
 
-        <div class="do-you">Do you</div>
-        <div class="love-me">love me?</div>
+        <h1 class="headline">
+            <span class="do-you">Do you</span>
+            <span class="love-me">love me?</span>
+        </h1>
 
         <div class="divider">🩷</div>
 
@@ -617,7 +682,11 @@
             <h3 style="margin:0 0 12px; font-size:18px;">💖 About Love Prank</h3>
             <p style="margin:0 0 10px; font-size:14px; line-height:1.5;">Love Prank is a fun and interactive prank game designed to make your friends or crush smile prank! 😄💕</p>
             <p style="margin:0 0 10px; font-size:14px; line-height:1.5;">Simply share the link, let them choose Yes or No, and enjoy the funny surprise. It's made purely for entertainment and laughter—no real love test, just good vibes! 🌸✨</p>
-            <p style="margin:0; font-size:14px; line-height:1.5;">💝 Share • Laugh • Enjoy • Repeat</p>
+            <p style="margin:0 0 14px; font-size:14px; line-height:1.5;">💝 Share • Laugh • Enjoy • Repeat</p>
+            <h3 style="margin:0 0 8px; font-size:15px;">How does the No button work?</h3>
+            <p style="margin:0 0 10px; font-size:13px; line-height:1.5;">The moment you hover, touch, or click No, it jumps to a new random spot on the screen — so it can never actually be caught.</p>
+            <h3 style="margin:0 0 8px; font-size:15px;">Is this a real love test?</h3>
+            <p style="margin:0; font-size:13px; line-height:1.5;">No — it's just for fun. There's no real love detection, only a lighthearted prank meant to make someone smile.</p>
         </div>
     </div>
 
@@ -811,6 +880,7 @@ function copyPageLink() {
             <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Privacy policy🔏</a>
             <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Contact Us</a>
             <a href="#" onclick="document.getElementById('aboutModal').style.display='flex'; return false;" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">About</a>
+            <a href="https://love-prank.raxzen.in/" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">More Love Pranks 💕</a>
         </div>
     </div>
 
