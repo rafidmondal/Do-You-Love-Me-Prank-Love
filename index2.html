@@ -548,33 +548,36 @@
 
         .hidden { display: none !important; }
 
-        /* PWA Install button */
+        /* PWA Install button — centered at top, glass pill style matching Birthday website badge */
         #installBtn {
             position: fixed;
-            top: 14px; right: 14px;
-            z-index: 9998;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
             display: none;
             align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #ff5e8e, #c2185b);
-            color: #fff;
+            gap: 4px;
+            background: rgba(255,255,255,0.85);
+            color: #c2185b;
             border: none;
-            padding: 9px 16px;
-            border-radius: 50px;
+            padding: 3px 10px;
+            border-radius: 20px;
             font-family: 'Nunito', sans-serif;
             font-weight: 700;
-            font-size: 0.82em;
+            font-size: 10px;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(194,24,91,0.4);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            white-space: nowrap;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        #installBtn.show { display: flex; }
-        #installBtn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(194,24,91,0.5); }
-        #installBtn:active { transform: translateY(0); }
+        #installBtn.show { display: inline-flex; }
+        #installBtn:hover { transform: translateX(-50%) translateY(-2px); }
+        #installBtn:active { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
-    <button id="installBtn" onclick="installPWA()">⬇️ Install App</button>
+    <button id="installBtn" onclick="installPWA()">⬇️ Install</button>
     <audio id="bgMusic" src="assets/index2_sound.mp3" loop preload="auto"></audio>
 
     <!-- Small birthday gift button, top of page -->
