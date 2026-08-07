@@ -7,6 +7,12 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
     <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#c2185b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Love Prank" />
     <meta name="google-site-verification" content="04Iccv3ZqlAfU3TeqdRVtJubMmkhUMxA2sDJNxoRLD8" />
     <meta name="monetag" content="67eeece156b8f77ec3b035a7bda10830">
     <title>Yes! 💝 Do You Love Me Prank – Result Page</title>
@@ -541,9 +547,35 @@
         }
 
         .hidden { display: none !important; }
+
+        /* PWA Install button */
+        #installBtn {
+            position: fixed;
+            top: 14px; right: 14px;
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #ff5e8e, #c2185b);
+            color: #fff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.82em;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(194,24,91,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        #installBtn.show { display: flex; }
+        #installBtn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(194,24,91,0.5); }
+        #installBtn:active { transform: translateY(0); }
     </style>
 </head>
 <body>
+    <button id="installBtn" onclick="installPWA()">⬇️ Install App</button>
+    <audio id="bgMusic" src="assets/index2_sound.mp3" loop preload="auto"></audio>
 
     <!-- Small birthday gift button, top of page -->
     <a href="https://rafidmondal.github.io/Animated-Birthday-Wish/" target="_blank" rel="noopener"
@@ -795,6 +827,72 @@ function copyLink() {
     </div>
 
     <div style="height:40px;"></div><!-- spacer so content isn't hidden behind the fixed links footer -->
+
+    <!-- Background music: low-volume auto-loop -->
+    <script>
+    (function() {
+        const bgMusic = document.getElementById('bgMusic');
+        if (!bgMusic) return;
+        bgMusic.volume = 0.18; // soft background volume
+        bgMusic.loop = true;
+
+        function tryPlay() {
+            const p = bgMusic.play();
+            if (p !== undefined) {
+                p.catch(() => {
+                    // Autoplay blocked by browser — start on first user interaction instead
+                    const resume = () => {
+                        bgMusic.play().catch(() => {});
+                        document.removeEventListener('click', resume);
+                        document.removeEventListener('touchstart', resume);
+                        document.removeEventListener('keydown', resume);
+                    };
+                    document.addEventListener('click', resume, { once: true });
+                    document.addEventListener('touchstart', resume, { once: true });
+                    document.addEventListener('keydown', resume, { once: true });
+                });
+            }
+        }
+
+        if (document.readyState === 'complete') {
+            tryPlay();
+        } else {
+            window.addEventListener('load', tryPlay);
+        }
+    })();
+    </script>
+
+    <!-- PWA: service worker registration + install prompt -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+        });
+    }
+
+    let deferredInstallPrompt = null;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        if (installBtn) installBtn.classList.add('show');
+    });
+
+    function installPWA() {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.finally(() => {
+            deferredInstallPrompt = null;
+            if (installBtn) installBtn.classList.remove('show');
+        });
+    }
+
+    window.addEventListener('appinstalled', () => {
+        if (installBtn) installBtn.classList.remove('show');
+        deferredInstallPrompt = null;
+    });
+    </script>
 
 </body>
 </html>
