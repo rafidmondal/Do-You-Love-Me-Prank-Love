@@ -631,9 +631,10 @@
         /* PWA Install button — own row below the top buttons, compact icon+label so it never overlaps on narrow screens */
         #installBtn {
             position: fixed;
-            top: 44px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 40px;
+            right: 8px;
+            left: auto;
+            transform: none;
             z-index: 9999;
             display: none;
             align-items: center;
@@ -652,8 +653,8 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
         #installBtn.show { display: inline-flex; }
-        #installBtn:hover { transform: translateX(-50%) translateY(-2px); }
-        #installBtn:active { transform: translateX(-50%) translateY(0); }
+        #installBtn:hover { transform: translateY(-2px); }
+        #installBtn:active { transform: translateY(0); }
     </style>
 </head>
 <body>
