@@ -215,8 +215,8 @@
         card.innerHTML = `
             <div class="title" style="font-size:1.6em;">No Result Found</div>
             <div class="empty-state">
-                Ei link ta valid noy, othoba kono data khuje pawa jayni.<br><br>
-                Notun prank shuru korte "Advance Options" theke try koro.
+                This link isn't valid, or no data was found.<br><br>
+                Create a new prank from "Advance Options".
             </div>
             <button class="secondary-btn" onclick="window.location.href='index3.html'">← Go to Advance Options</button>
         `;
@@ -236,7 +236,7 @@
                     <div class="score-label">YES!</div>
                 </div>
             </div>
-            <div class="subtitle">Tumi jake pathiecho, shey "Yes" tap koreche! 🎉</div>
+            <div class="subtitle">The person you sent this to tapped "Yes"! 🎉</div>
 
             <button class="secondary-btn" id="shareResultBtn">📤 Share This</button>
             <button class="secondary-btn" id="restartBtn">🔄 Create New Prank</button>
@@ -247,7 +247,7 @@
             if (navigator.share) {
                 navigator.share({ title: 'Love Prank Result', text }).catch(() => {});
             } else {
-                navigator.clipboard.writeText(text).then(() => showToast('Result copy hoye geche!'));
+                navigator.clipboard.writeText(text).then(() => showToast('Result copied!'));
             }
         });
         document.getElementById('restartBtn').addEventListener('click', () => {

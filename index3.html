@@ -180,6 +180,13 @@
             margin: 16px 0 6px;
         }
         label.first { margin-top: 0; }
+        label.name-label {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.35em;
+            font-weight: 700;
+            color: #c2185b;
+            margin-bottom: 8px;
+        }
 
         input[type="text"], textarea {
             width: 100%;
@@ -366,10 +373,9 @@
     function renderCreateScreen() {
         card.innerHTML = `
             <div class="title">Customize Your Prank 💌</div>
-            <div class="subtitle">Tomar naam ar (chaile) nijer moto ekta question likho — link ready hobe share korar jonno.</div>
 
-            <label class="first">Tomar naam</label>
-            <input type="text" id="nameInput" placeholder="Tumi ke?" maxlength="24">
+            <label class="first name-label">Name</label>
+            <input type="text" id="nameInput" placeholder="Who are you?" maxlength="24">
 
             <label>Custom question <span style="opacity:0.6; font-weight:400;">(optional)</span></label>
             <textarea id="questionInput" rows="2" maxlength="80" placeholder="Default: Do you love me?"></textarea>
@@ -379,7 +385,7 @@
 
         document.getElementById('genBtn').addEventListener('click', () => {
             const name = document.getElementById('nameInput').value.trim();
-            if (!name) { showToast('Naam likho age 🙂'); return; }
+            if (!name) { showToast('Enter your name first 🙂'); return; }
 
             const question = document.getElementById('questionInput').value.trim();
 
@@ -397,20 +403,20 @@
     function renderLinkScreen(name, link) {
         card.innerHTML = `
             <div class="title">Link Ready! 🎉</div>
-            <div class="subtitle">Ei link ta tomar shei manush ke pathao. Shey Yes tap korle, tumi result dekhte parbe.</div>
+            <div class="subtitle">Send this link to that special someone. Once they tap Yes, you'll see the result.</div>
             <div class="link-box" id="linkBox">${link}</div>
             <button class="primary-btn" id="copyBtn">📋 Copy Link</button>
             <button class="secondary-btn" id="shareBtn">📤 Share</button>
         `;
 
         document.getElementById('copyBtn').addEventListener('click', () => {
-            navigator.clipboard.writeText(link).then(() => showToast('Link copy hoye geche!'));
+            navigator.clipboard.writeText(link).then(() => showToast('Link copied!'));
         });
         document.getElementById('shareBtn').addEventListener('click', () => {
             if (navigator.share) {
-                navigator.share({ title: 'Love Prank', text: name + ' tomar jonno kichu rekhe geche 💌', url: link }).catch(() => {});
+                navigator.share({ title: 'Love Prank', text: name + ' left something for you 💌', url: link }).catch(() => {});
             } else {
-                navigator.clipboard.writeText(link).then(() => showToast('Link copy hoye geche!'));
+                navigator.clipboard.writeText(link).then(() => showToast('Link copied!'));
             }
         });
     }

@@ -128,11 +128,26 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            overflow: hidden;
             transition: background 0.15s;
         }
         #zoneP1 { background: rgba(255,94,142,0.18); border-right: 2px dashed rgba(122,59,0,0.25); }
         #zoneP2 { background: rgba(59,111,214,0.18); }
         .zone.tapped { background-color: rgba(255,255,255,0.55); }
+
+        /* Wave ripple feedback on tap */
+        .wave-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.65);
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            animation: waveExpand 0.6s ease-out forwards;
+        }
+        @keyframes waveExpand {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0.9; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
 
         .zone-label {
             font-size: 1.05em;
@@ -332,7 +347,41 @@
         }, delay + 2500);
     }
 
-    function handleTap(player) {
+    function spawnWave(zone, x, y) {
+        const ripple = document.createElement('div');
+        ripple.className = 'wave-ripple';
+        const size = Math.max(zone.clientWidth, zone.clientHeight) * 1.4;
+        ripple.style.width = size + 'px';
+        ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        zone.appendChild(ripple);
+
+        const wave = document.createElement('div');
+        wave.textContent = '🌊';
+        wave.style.position = 'absolute';
+        wave.style.left = x + 'px';
+        wave.style.top = y + 'px';
+        wave.style.transform = 'translate(-50%, -50%)';
+        wave.style.fontSize = '1.6em';
+        wave.style.pointerEvents = 'none';
+        wave.style.animation = 'waveExpand 0.6s ease-out forwards';
+        zone.appendChild(wave);
+
+        setTimeout(() => {
+            ripple.remove();
+            wave.remove();
+        }, 650);
+    }
+
+    function handleTap(player, evt) {
+        const zone = player === 1 ? zoneP1 : zoneP2;
+        const rect = zone.getBoundingClientRect();
+        const point = (evt && evt.clientX !== undefined) ? evt : (evt && evt.touches && evt.touches[0]) || null;
+        const x = point ? point.clientX - rect.left : rect.width / 2;
+        const y = point ? point.clientY - rect.top : rect.height / 2;
+        spawnWave(zone, x, y);
+
         if (!acceptingTaps || pulseStartTime === null) return;
         const now = Date.now();
         if (player === 1 && p1Time === null) {
@@ -349,8 +398,8 @@
         }
     }
 
-    zoneP1.addEventListener('pointerdown', () => handleTap(1));
-    zoneP2.addEventListener('pointerdown', () => handleTap(2));
+    zoneP1.addEventListener('pointerdown', (e) => handleTap(1, e));
+    zoneP2.addEventListener('pointerdown', (e) => handleTap(2, e));
 
     function finishRound() {
         if (heartEl) heartEl.remove();
