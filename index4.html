@@ -186,44 +186,13 @@
         setTimeout(() => toastEl.classList.remove('show'), 2200);
     }
 
-    function decodeData(str) {
-        try {
-            let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
-            while (b64.length % 4) b64 += '=';
-            const json = decodeURIComponent(escape(atob(b64)));
-            return JSON.parse(json);
-        } catch (e) {
-            return null;
-        }
-    }
-    function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-    function normalize(s) {
-        return s.toLowerCase().trim().replace(/[.,!?;:'"]/g, '');
-    }
-    function similar(a, b) {
-        const na = normalize(a), nb = normalize(b);
-        if (!na || !nb) return false;
-        if (na === nb) return true;
-        const wordsA = new Set(na.split(' ').filter(w => w.length > 2));
-        const wordsB = new Set(nb.split(' ').filter(w => w.length > 2));
-        let overlap = 0;
-        wordsA.forEach(w => { if (wordsB.has(w)) overlap++; });
-        return overlap >= 1;
-    }
-
     const hash = window.location.hash.slice(1);
     const data = hash ? decodeData(hash) : null;
 
-    if (!data || (!data.n && !data.q)) {
+    if (!data || (!data.n && !data.m)) {
         renderEmptyState();
-    } else if (data.a && data.a.trim() && data.a2 && data.a2.trim()) {
-        renderMatchResult(data);
     } else {
-        renderSimpleResult(data);
+        renderResult(data);
     }
 
     function renderEmptyState() {
@@ -237,21 +206,14 @@
         `;
     }
 
-    function verdictFor(pct) {
-        if (pct >= 75) return "Wow, you two match really well! 💞";
-        if (pct >= 40) return "You match on some things, differ on others 💗";
-        return "Different perspectives — but that's interesting too! 💗";
-    }
-
-    // ---------- Simple result: no answer to match against (just Yes) ----------
-    function renderSimpleResult(data) {
+    function renderResult(data) {
         const name = data.n && data.n.trim() ? data.n.trim() : 'Someone';
-        const question = data.q && data.q.trim() ? data.q.trim() : 'Do you love ' + name + '?';
+        const message = data.m && data.m.trim() ? data.m.trim() : '';
 
         card.innerHTML = `
             <div class="title" style="font-size:1.6em;">They said Yes! 💕</div>
-            <div class="name-row">Question from <b>${escapeHtml(name)}</b>:</div>
-            <div class="subtitle" style="font-weight:700; color:#4a1230;">"${escapeHtml(question)}"</div>
+            <div class="name-row">From <b>${escapeHtml(name)}</b>:</div>
+            ${message ? `<div class="subtitle" style="font-weight:700; color:#4a1230;">"${escapeHtml(message)}"</div>` : ''}
 
             <div class="score-circle" style="--pct:100">
                 <div class="score-inner">
@@ -266,57 +228,9 @@
         `;
 
         document.getElementById('shareResultBtn').addEventListener('click', () => {
-            const text = `${name} asked: "${question}" — they said Yes! 💕`;
-            if (navigator.share) {
-                navigator.share({ title: 'Love Prank Result', text }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(text).then(() => showToast('Result copied!'));
-            }
-        });
-        document.getElementById('restartBtn').addEventListener('click', () => {
-            window.location.href = 'index3.html';
-        });
-    }
-
-    // ---------- Match result: both sender's and receiver's answers are present ----------
-    function renderMatchResult(data) {
-        const name = data.n && data.n.trim() ? data.n.trim() : 'Someone';
-        const question = data.q && data.q.trim() ? data.q.trim() : 'Do you love ' + name + '?';
-        const isMatch = similar(data.a, data.a2);
-        const pct = isMatch ? 100 : 50;
-
-        card.innerHTML = `
-            <div class="title" style="font-size:1.6em;">They said Yes! 💕</div>
-            <div class="subtitle" style="font-weight:700; color:#4a1230;">"${escapeHtml(question)}"</div>
-
-            <div class="score-circle" style="--pct:${pct}">
-                <div class="score-inner">
-                    <div class="score-num">${pct}%</div>
-                    <div class="score-label">MATCH</div>
-                </div>
-            </div>
-            <div class="subtitle">${verdictFor(pct)}</div>
-
-            <div class="qa-item">
-                <div class="qa-question">${escapeHtml(question)}</div>
-                <div class="qa-answers">
-                    <div class="qa-answer ${isMatch ? 'match' : ''}">
-                        <span class="qa-answer-label">${escapeHtml(name)}</span>
-                        ${escapeHtml(data.a)}
-                    </div>
-                    <div class="qa-answer ${isMatch ? 'match' : ''}">
-                        <span class="qa-answer-label">Them</span>
-                        ${escapeHtml(data.a2)}
-                    </div>
-                </div>
-            </div>
-
-            <button class="secondary-btn" id="shareResultBtn">📤 Share This</button>
-            <button class="secondary-btn" id="restartBtn">🔄 Create New Prank</button>
-        `;
-
-        document.getElementById('shareResultBtn').addEventListener('click', () => {
-            const text = `${name} & their crush answered "${question}" — ${pct}% match! 💕`;
+            const text = message
+                ? `${name} says: "${message}" — they said Yes! 💕`
+                : `${name} sent a love prank — they said Yes! 💕`;
             if (navigator.share) {
                 navigator.share({ title: 'Love Prank Result', text }).catch(() => {});
             } else {

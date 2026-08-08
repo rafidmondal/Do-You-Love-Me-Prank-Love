@@ -258,12 +258,22 @@
         while (incoming.a.length < QUESTIONS.length) incoming.a.push('(skipped)');
         if (incoming.a.length > QUESTIONS.length) incoming.a = incoming.a.slice(0, QUESTIONS.length);
         renderAnswerScreen(incoming);
+    } else if (!hash) {
+        renderEmptyState(false);
     } else {
-        renderEmptyState();
+        // Hash exists but failed to decode — link was corrupted/cut off in transit
+        renderEmptyState(true);
     }
 
-    function renderEmptyState() {
-        card.innerHTML = `
+    function renderEmptyState(wasCorrupted) {
+        card.innerHTML = wasCorrupted ? `
+            <div class="title" style="font-size:1.6em;">Link Looks Incomplete</div>
+            <div class="empty-state">
+                Part of this link seems to be missing or was cut off when it was copied or sent — this can happen with some messaging apps.<br><br>
+                Ask the sender to use the "Copy Link" or "Share" button (not manually selecting text), and make sure the full link is pasted, including everything after the <b>#</b> symbol.
+            </div>
+            <button class="secondary-btn" onclick="window.location.href='index3.html'">← Go to Advance Options</button>
+        ` : `
             <div class="title" style="font-size:1.6em;">Link Not Valid</div>
             <div class="empty-state">
                 This link isn't valid, or the data is missing.<br><br>

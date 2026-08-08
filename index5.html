@@ -736,16 +736,6 @@
     <!-- Toast notification -->
     <div class="toast" id="toast"></div>
 
-    <!-- Answer-your-question overlay (shown after tapping Yes, only if sender left a question to match) -->
-    <div id="answerOverlay" style="display:none; position:fixed; inset:0; background:rgba(194,24,91,0.25); backdrop-filter: blur(4px); z-index:9998; align-items:center; justify-content:center; padding:20px;">
-        <div style="background:#fff; border-radius:26px; padding:26px 22px; max-width:380px; width:100%; box-shadow:0 12px 32px rgba(194,24,91,0.3); font-family:'Nunito', sans-serif;">
-            <div style="font-family:'Dancing Script', cursive; font-size:1.7em; color:#c2185b; text-align:center; margin-bottom:6px;">They said Yes! 💕</div>
-            <div id="answerOverlayQuestion" style="font-size:0.85em; color:#4a1230; text-align:center; font-weight:700; margin-bottom:16px;"></div>
-            <textarea id="answerOverlayInput" rows="3" maxlength="120" placeholder="Your answer..." style="width:100%; border:2px solid #ffd3e4; border-radius:14px; padding:11px 14px; font-family:'Nunito', sans-serif; font-size:0.9em; color:#4a1230; background:#fff8fb; resize:none;"></textarea>
-            <button id="answerOverlayBtn" style="width:100%; margin-top:16px; background:linear-gradient(135deg,#ff5e8e,#c2185b); color:#fff; border:none; padding:14px; border-radius:50px; font-family:'Nunito', sans-serif; font-weight:800; font-size:1em; cursor:pointer;">See Match Result 💕</button>
-        </div>
-    </div>
-
     <!-- Full screen burst overlay -->
     <div id="burstOverlay"></div>
 
@@ -780,7 +770,7 @@ yesBtn.addEventListener('click', function(e) {
     sayYes();
 });
 
-// ── Load sender's custom naam + question from the link (Time Capsule / Advance flow) ──
+// ── Load sender's custom naam + message from the link (Advance / Time Capsule flow) ──
 (function loadCapsuleData() {
     const hash = window.location.hash.slice(1);
     if (!hash) return;
@@ -797,20 +787,14 @@ yesBtn.addEventListener('click', function(e) {
     }
 
     const data = decodeData(hash);
-    if (!data || (!data.n && !data.q)) return; // not a valid capsule link — show default page
+    if (!data || (!data.n && !data.m && !data.q)) return; // not a valid capsule link — show default page
 
     window.__capsuleHash = hash; // forward this to index4.html when Yes is tapped
     window.__capsuleData = data;
 
     const doYouEl = document.getElementById('doYouText');
     const loveMeEl = document.getElementById('loveMeText');
-    if (data.q && data.q.trim()) {
-        // Custom question replaces the whole headline
-        const parts = data.q.trim().split(' ');
-        const mid = Math.ceil(parts.length / 2);
-        doYouEl.textContent = parts.slice(0, mid).join(' ');
-        loveMeEl.textContent = parts.slice(mid).join(' ');
-    } else if (loveMeEl && data.n) {
+    if (loveMeEl && data.n) {
         loveMeEl.textContent = 'love ' + data.n + '?';
     }
 })();
@@ -925,50 +909,12 @@ function sayYes() {
         noBtn.classList.add('hidden');
     }, 400);
 
+    // Redirect to the result page (index4.html), carrying the sender's name + message forward
     setTimeout(() => {
-        // If the sender left a question + their own answer, ask this person to answer too
-        // so we can show a match result. Otherwise, go straight to the simple Yes result.
-        if (window.__capsuleData && window.__capsuleData.a && window.__capsuleData.a.trim()) {
-            showAnswerOverlay();
-        } else {
-            goToResult();
-        }
+        const base = window.location.pathname.replace(/[^/]*$/, '');
+        const hashPart = window.__capsuleHash ? ('#' + window.__capsuleHash) : '';
+        window.location.href = base + 'index4.html' + hashPart;
     }, 450);
-}
-
-function goToResult(myAnswer) {
-    const base = window.location.pathname.replace(/[^/]*$/, '');
-    let hashPart = '';
-    if (window.__capsuleHash) {
-        if (myAnswer && myAnswer.trim()) {
-            // Re-encode payload including this person's answer so index4 can compute a match
-            const payload = Object.assign({}, window.__capsuleData, { a2: myAnswer.trim() });
-            const json = JSON.stringify(payload);
-            const b64 = btoa(unescape(encodeURIComponent(json))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-            hashPart = '#' + b64;
-        } else {
-            hashPart = '#' + window.__capsuleHash;
-        }
-    }
-    window.location.href = base + 'index4.html' + hashPart;
-}
-
-function showAnswerOverlay() {
-    const overlay = document.getElementById('answerOverlay');
-    const qEl = document.getElementById('answerOverlayQuestion');
-    const question = (window.__capsuleData.q && window.__capsuleData.q.trim())
-        ? window.__capsuleData.q.trim()
-        : 'Do you love ' + (window.__capsuleData.n || 'me') + '?';
-    qEl.textContent = '"' + question + '"';
-    overlay.style.display = 'flex';
-
-    const btn = document.getElementById('answerOverlayBtn');
-    const input = document.getElementById('answerOverlayInput');
-    btn.addEventListener('click', () => {
-        const val = input.value.trim();
-        if (!val) { showToast('Please write an answer first 🙂'); return; }
-        goToResult(val);
-    }, { once: true });
 }
 
 // ── Toast helper ──
