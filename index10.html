@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#ff9838" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Love Prank" />
+    <title>Sync Pulse</title>
+    <meta name="description" content="A two-person mini-game on one phone — tap together and see how in sync you are.">
+    <meta name="robots" content="noindex, follow">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *:focus { outline: none !important; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+            position: fixed;
+            touch-action: none;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(160deg, #fff3d9 0%, #ffd28f 100%);
+        }
+
+        .top-back {
+            position: fixed;
+            top: 8px; left: 8px;
+            z-index: 10000;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.85);
+            color: #7a3b00;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            white-space: nowrap;
+        }
+
+        /* ---------- Intro screen ---------- */
+        #introScreen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 70px 24px 30px;
+            text-align: center;
+        }
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.1em;
+            color: #7a3b00;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 0.85em;
+            color: #7a4a1a;
+            line-height: 1.6;
+            max-width: 300px;
+            margin-bottom: 24px;
+        }
+        .primary-btn {
+            background: linear-gradient(135deg, #ffb238, #ff8c1a);
+            color: #4a2600;
+            border: none;
+            padding: 14px 34px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(255,140,26,0.45);
+        }
+        .secondary-btn {
+            margin-top: 12px;
+            background: rgba(122,59,0,0.08);
+            color: #7a3b00;
+            border: none;
+            padding: 12px 26px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.88em;
+            cursor: pointer;
+        }
+
+        /* ---------- Game screen ---------- */
+        #gameScreen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+        }
+        #gameScreen.active { display: flex; }
+
+        .round-info {
+            text-align: center;
+            padding: 60px 12px 8px;
+            color: #7a3b00;
+            font-weight: 800;
+            font-size: 0.9em;
+        }
+
+        .zones {
+            flex: 1;
+            display: flex;
+        }
+        .zone {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: background 0.15s;
+        }
+        #zoneP1 { background: rgba(255,94,142,0.18); border-right: 2px dashed rgba(122,59,0,0.25); }
+        #zoneP2 { background: rgba(59,111,214,0.18); }
+        .zone.tapped { background-color: rgba(255,255,255,0.55); }
+
+        .zone-label {
+            font-size: 1.05em;
+            font-weight: 800;
+            color: #4a2600;
+            opacity: 0.75;
+            pointer-events: none;
+        }
+
+        .pulse-heart {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.4em;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .pulse-heart.beat { animation: heartbeat 0.9s ease-in-out infinite; }
+        @keyframes heartbeat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.25); }
+        }
+
+        .countdown-big {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4em;
+            font-weight: 800;
+            color: #4a2600;
+            z-index: 6;
+            pointer-events: none;
+        }
+
+        /* ---------- Result screen ---------- */
+        #resultScreen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 70px 24px 30px;
+            text-align: center;
+        }
+        #resultScreen.active { display: flex; }
+
+        .result-score {
+            font-size: 3em;
+            font-weight: 800;
+            color: #7a3b00;
+            margin: 10px 0;
+        }
+        .result-label {
+            font-size: 1em;
+            font-weight: 700;
+            color: #4a2600;
+            margin-bottom: 20px;
+        }
+        .round-breakdown {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+        .round-chip {
+            background: rgba(255,255,255,0.6);
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-size: 0.75em;
+            font-weight: 700;
+            color: #7a3b00;
+        }
+    </style>
+</head>
+<body>
+    <a class="top-back" href="index3.html">← Back</a>
+
+    <!-- ===== Intro ===== -->
+    <div id="introScreen">
+        <div class="title">Sync Pulse 🤝</div>
+        <div class="subtitle">One phone, two players. When the pulse hits its peak, both of you tap your side at the exact same moment. 3 rounds — let's see how in sync you really are.</div>
+        <button class="primary-btn" id="startBtn">Start Game</button>
+    </div>
+
+    <!-- ===== Game ===== -->
+    <div id="gameScreen">
+        <div class="round-info" id="roundInfo">Round 1 / 3</div>
+        <div class="zones">
+            <div class="zone" id="zoneP1"><div class="zone-label">P1<br>TAP</div></div>
+            <div class="zone" id="zoneP2"><div class="zone-label">P2<br>TAP</div></div>
+        </div>
+    </div>
+
+    <!-- ===== Result ===== -->
+    <div id="resultScreen">
+        <div class="title" style="font-size:1.7em;">Sync Result</div>
+        <div class="result-score" id="finalScore">--%</div>
+        <div class="result-label" id="finalLabel"></div>
+        <div class="round-breakdown" id="roundBreakdown"></div>
+        <button class="primary-btn" id="playAgainBtn">Play Again</button>
+        <button class="secondary-btn" onclick="window.location.href='index3.html'">Back to Options</button>
+    </div>
+
+    <script>
+    const introScreen = document.getElementById('introScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const resultScreen = document.getElementById('resultScreen');
+    const roundInfo = document.getElementById('roundInfo');
+    const zoneP1 = document.getElementById('zoneP1');
+    const zoneP2 = document.getElementById('zoneP2');
+
+    const TOTAL_ROUNDS = 3;
+    let currentRound = 0;
+    let roundScores = [];
+    let p1Time = null, p2Time = null;
+    let pulseStartTime = null;
+    let acceptingTaps = false;
+    let heartEl = null;
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+        introScreen.style.display = 'none';
+        gameScreen.classList.add('active');
+        currentRound = 0;
+        roundScores = [];
+        startRound();
+    });
+
+    document.getElementById('playAgainBtn').addEventListener('click', () => {
+        resultScreen.classList.remove('active');
+        gameScreen.classList.add('active');
+        currentRound = 0;
+        roundScores = [];
+        startRound();
+    });
+
+    function startRound() {
+        currentRound++;
+        roundInfo.textContent = `Round ${currentRound} / ${TOTAL_ROUNDS}`;
+        p1Time = null;
+        p2Time = null;
+        acceptingTaps = false;
+        zoneP1.classList.remove('tapped');
+        zoneP2.classList.remove('tapped');
+
+        runCountdown(3, () => {
+            runPulse();
+        });
+    }
+
+    function runCountdown(n, done) {
+        removeOverlay('.countdown-big');
+        const el = document.createElement('div');
+        el.className = 'countdown-big';
+        el.textContent = n;
+        gameScreen.appendChild(el);
+
+        let count = n;
+        const interval = setInterval(() => {
+            count--;
+            if (count <= 0) {
+                clearInterval(interval);
+                el.remove();
+                done();
+            } else {
+                el.textContent = count;
+            }
+        }, 700);
+    }
+
+    function removeOverlay(selector) {
+        const existing = document.querySelector(selector);
+        if (existing) existing.remove();
+    }
+
+    function runPulse() {
+        removeOverlay('.pulse-heart');
+        heartEl = document.createElement('div');
+        heartEl.className = 'pulse-heart beat';
+        heartEl.textContent = '💗';
+        gameScreen.appendChild(heartEl);
+
+        // Random delay before the "peak tap moment" (1.2s - 2.4s) to prevent predictable timing
+        const delay = 1200 + Math.random() * 1200;
+        pulseStartTime = null;
+
+        setTimeout(() => {
+            pulseStartTime = Date.now();
+            acceptingTaps = true;
+            heartEl.style.filter = 'drop-shadow(0 0 14px #fff)';
+        }, delay);
+
+        // Auto-resolve round if one or both players never tap
+        setTimeout(() => {
+            if (acceptingTaps) {
+                acceptingTaps = false;
+                finishRound();
+            }
+        }, delay + 2500);
+    }
+
+    function handleTap(player) {
+        if (!acceptingTaps || pulseStartTime === null) return;
+        const now = Date.now();
+        if (player === 1 && p1Time === null) {
+            p1Time = now;
+            zoneP1.classList.add('tapped');
+        }
+        if (player === 2 && p2Time === null) {
+            p2Time = now;
+            zoneP2.classList.add('tapped');
+        }
+        if (p1Time !== null && p2Time !== null) {
+            acceptingTaps = false;
+            finishRound();
+        }
+    }
+
+    zoneP1.addEventListener('pointerdown', () => handleTap(1));
+    zoneP2.addEventListener('pointerdown', () => handleTap(2));
+
+    function finishRound() {
+        if (heartEl) heartEl.remove();
+
+        let scoreForRound;
+        if (p1Time === null || p2Time === null) {
+            scoreForRound = 0; // someone didn't tap in time
+        } else {
+            const diff = Math.abs(p1Time - p2Time);
+            scoreForRound = Math.max(0, Math.round(100 - (diff / 10)));
+        }
+        roundScores.push(scoreForRound);
+
+        setTimeout(() => {
+            if (currentRound < TOTAL_ROUNDS) {
+                startRound();
+            } else {
+                showFinalResult();
+            }
+        }, 900);
+    }
+
+    function showFinalResult() {
+        gameScreen.classList.remove('active');
+        resultScreen.classList.add('active');
+
+        const avg = Math.round(roundScores.reduce((a, b) => a + b, 0) / roundScores.length);
+        document.getElementById('finalScore').textContent = avg + '%';
+
+        let label;
+        if (avg >= 85) label = "Soulmate Level 💞";
+        else if (avg >= 60) label = "Best Friends Sync 💗";
+        else if (avg >= 30) label = "Getting There 💗";
+        else label = "Needs More Practice 😄";
+        document.getElementById('finalLabel').textContent = label;
+
+        const breakdown = document.getElementById('roundBreakdown');
+        breakdown.innerHTML = '';
+        roundScores.forEach((s, i) => {
+            const chip = document.createElement('div');
+            chip.className = 'round-chip';
+            chip.textContent = `R${i + 1}: ${s}%`;
+            breakdown.appendChild(chip);
+        });
+    }
+    </script>
+</body>
+</html>

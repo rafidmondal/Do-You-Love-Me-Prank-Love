@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#c2185b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Love Prank" />
+    <title>Time Capsule Confession</title>
+    <meta name="description" content="Write a message today that can only be opened on a future date you choose.">
+    <meta name="robots" content="noindex, follow">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: none !important; }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(160deg, #dceeff 0%, #a8cdfb 55%, #7fa9f2 100%);
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 18px 40px;
+            min-height: 100vh;
+        }
+
+        .top-back {
+            position: fixed;
+            top: 8px; left: 8px;
+            z-index: 10000;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.85);
+            color: #2a4d8f;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            white-space: nowrap;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 26px;
+            padding: 26px 22px;
+            box-shadow: 0 12px 32px rgba(42,77,143,0.22);
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2em;
+            color: #2a4d8f;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 0.82em;
+            color: #4a5c7a;
+            text-align: center;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            font-size: 0.82em;
+            font-weight: 700;
+            color: #1c2f4f;
+            margin: 16px 0 6px;
+        }
+        label.first { margin-top: 0; }
+
+        input[type="text"], textarea {
+            width: 100%;
+            border: 2px solid #cfe0ff;
+            border-radius: 14px;
+            padding: 11px 14px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9em;
+            color: #1c2f4f;
+            background: #f7fbff;
+            resize: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, textarea:focus { border-color: #3b6fd6; }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .preset-btn {
+            border: 2px solid #cfe0ff;
+            background: #f7fbff;
+            color: #2a4d8f;
+            padding: 10px 8px;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .preset-btn.active {
+            background: linear-gradient(135deg, #6fa0f0, #3b6fd6);
+            border-color: #3b6fd6;
+            color: #fff;
+        }
+
+        input[type="datetime-local"] {
+            width: 100%;
+            border: 2px solid #cfe0ff;
+            border-radius: 14px;
+            padding: 10px 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85em;
+            color: #1c2f4f;
+            background: #f7fbff;
+            margin-top: 10px;
+        }
+
+        .primary-btn {
+            width: 100%;
+            margin-top: 24px;
+            background: linear-gradient(135deg, #6fa0f0, #3b6fd6);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(59,111,214,0.4);
+            transition: transform 0.15s;
+        }
+        .primary-btn:active { transform: scale(0.97); }
+
+        .secondary-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: rgba(59,111,214,0.08);
+            color: #2a4d8f;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.88em;
+            cursor: pointer;
+        }
+
+        .link-box {
+            margin-top: 22px;
+            background: #eef5ff;
+            border: 2px dashed #a8c8ff;
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 0.75em;
+            color: #4a5c7a;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .lock-icon { text-align: center; font-size: 2.6em; margin-bottom: 6px; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.85em;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+    <a class="top-back" href="index3.html">← Back</a>
+
+    <div class="card" id="card">
+        <div class="lock-icon">🔒</div>
+        <div class="title">Time Capsule</div>
+        <div class="subtitle">Write something today. It stays locked until the date you choose.</div>
+
+        <label class="first">Your name</label>
+        <input type="text" id="nameInput" placeholder="Who is this from?" maxlength="24">
+
+        <label>Your message</label>
+        <textarea id="msgInput" rows="4" maxlength="500" placeholder="Write what you want to say..."></textarea>
+
+        <label>Unlock in</label>
+        <div class="preset-grid" id="presetGrid">
+            <button class="preset-btn" data-days="1">1 Day</button>
+            <button class="preset-btn" data-days="7">1 Week</button>
+            <button class="preset-btn" data-days="30">1 Month</button>
+            <button class="preset-btn" data-days="custom">Custom Date</button>
+        </div>
+        <input type="datetime-local" id="customDate" style="display:none;">
+
+        <button class="primary-btn" id="genBtn">Seal the Capsule 🔒</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    const toastEl = document.getElementById('toast');
+    function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), 2200);
+    }
+
+    function encodeData(obj) {
+        const json = JSON.stringify(obj);
+        const b64 = btoa(unescape(encodeURIComponent(json)));
+        return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    const presetBtns = document.querySelectorAll('.preset-btn');
+    const customDateInput = document.getElementById('customDate');
+    let selectedDays = null;
+
+    presetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            presetBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedDays = btn.dataset.days;
+            if (selectedDays === 'custom') {
+                customDateInput.style.display = 'block';
+                const min = new Date(Date.now() + 60000);
+                customDateInput.min = min.toISOString().slice(0, 16);
+            } else {
+                customDateInput.style.display = 'none';
+            }
+        });
+    });
+
+    document.getElementById('genBtn').addEventListener('click', () => {
+        const name = document.getElementById('nameInput').value.trim();
+        const msg = document.getElementById('msgInput').value.trim();
+
+        if (!name) { showToast('Enter your name first 🙂'); return; }
+        if (!msg) { showToast('Write your message first'); return; }
+        if (!selectedDays) { showToast('Choose when it unlocks'); return; }
+
+        let unlockDate;
+        if (selectedDays === 'custom') {
+            if (!customDateInput.value) { showToast('Pick a date & time'); return; }
+            unlockDate = new Date(customDateInput.value);
+            if (unlockDate.getTime() <= Date.now()) { showToast('Pick a future date'); return; }
+        } else {
+            unlockDate = new Date(Date.now() + parseInt(selectedDays, 10) * 24 * 60 * 60 * 1000);
+        }
+
+        const payload = { n: name, m: msg, u: unlockDate.toISOString() };
+        const encoded = encodeData(payload);
+        const link = window.location.origin + window.location.pathname.replace(/index8\.html$/, '') + 'index9.html#' + encoded;
+
+        renderLinkScreen(name, link);
+    });
+
+    function renderLinkScreen(name, link) {
+        const card = document.getElementById('card');
+        card.innerHTML = `
+            <div class="lock-icon">✅</div>
+            <div class="title" style="font-size:1.7em;">Capsule Sealed!</div>
+            <div class="subtitle">Send this link. It stays locked until the date you picked.</div>
+            <div class="link-box">${link}</div>
+            <button class="primary-btn" id="copyBtn">📋 Copy Link</button>
+            <button class="secondary-btn" id="shareBtn">📤 Share</button>
+        `;
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(link).then(() => showToast('Link copied!'));
+        });
+        document.getElementById('shareBtn').addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({ title: 'Time Capsule', text: name + ' left you a time-locked message 🔒', url: link }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(link).then(() => showToast('Link copied!'));
+            }
+        });
+    }
+    </script>
+</body>
+</html>

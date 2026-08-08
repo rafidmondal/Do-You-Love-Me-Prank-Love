@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#c2185b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Love Prank" />
+    <title>Someone Left You Something — Love Decoder</title>
+    <meta name="description" content="Answer a few questions and see how well your answers match.">
+    <meta name="robots" content="noindex, follow">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: none !important; }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(160deg, #ffe1ec 0%, #ff9fc4 55%, #ff6fa5 100%);
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 18px 40px;
+            min-height: 100vh;
+        }
+
+        .top-back {
+            position: fixed;
+            top: 8px; left: 8px;
+            z-index: 10000;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.85);
+            color: #c2185b;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            white-space: nowrap;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 26px;
+            padding: 26px 22px;
+            box-shadow: 0 12px 32px rgba(194,24,91,0.22);
+        }
+
+        .mystery-icon { text-align: center; font-size: 3em; margin-bottom: 8px; }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8em;
+            color: #c2185b;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 0.82em;
+            color: #7a4560;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Progress bar */
+        .progress-wrap {
+            width: 100%;
+            height: 6px;
+            background: #ffe1ec;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 22px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff5e8e, #c2185b);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-label {
+            font-size: 0.68em;
+            color: #7a4560;
+            font-weight: 700;
+            text-align: right;
+            margin-top: 6px;
+            margin-bottom: -14px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.82em;
+            font-weight: 700;
+            color: #4a1230;
+            margin: 16px 0 6px;
+        }
+        label.first { margin-top: 0; }
+
+        input[type="text"], textarea {
+            width: 100%;
+            border: 2px solid #ffd3e4;
+            border-radius: 14px;
+            padding: 11px 14px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9em;
+            color: #4a1230;
+            background: #fff8fb;
+            resize: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, textarea:focus { border-color: #c2185b; }
+
+        .primary-btn {
+            width: 100%;
+            margin-top: 24px;
+            background: linear-gradient(135deg, #ff5e8e, #c2185b);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(194,24,91,0.4);
+            transition: transform 0.15s;
+        }
+        .primary-btn:active { transform: scale(0.97); }
+
+        .empty-state {
+            text-align: center;
+            color: #7a4560;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        .secondary-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: rgba(194,24,91,0.08);
+            color: #c2185b;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.88em;
+            cursor: pointer;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.85em;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+    <a class="top-back" href="index3.html">← Back</a>
+
+    <div class="card" id="card"></div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    const QUESTIONS = [
+        "When do you miss me the most?",
+        "Do you remember our first conversation?",
+        "What's your favorite thing about me?",
+        "Where would you want our first date to be?",
+        "What color are my eyes?",
+        "What's my favorite food?"
+    ];
+
+    const card = document.getElementById('card');
+    const toastEl = document.getElementById('toast');
+
+    function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), 2200);
+    }
+
+    function encodeData(obj) {
+        const json = JSON.stringify(obj);
+        const b64 = btoa(unescape(encodeURIComponent(json)));
+        return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+    function decodeData(str) {
+        try {
+            let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+            while (b64.length % 4) b64 += '=';
+            const json = decodeURIComponent(escape(atob(b64)));
+            return JSON.parse(json);
+        } catch (e) {
+            return null;
+        }
+    }
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    const hash = window.location.hash.slice(1);
+    const incoming = hash ? decodeData(hash) : null;
+
+    if (incoming && incoming.n && Array.isArray(incoming.a) && incoming.a.length === QUESTIONS.length) {
+        renderAnswerScreen(incoming);
+    } else {
+        renderEmptyState();
+    }
+
+    function renderEmptyState() {
+        card.innerHTML = `
+            <div class="title" style="font-size:1.6em;">Link Not Valid</div>
+            <div class="empty-state">
+                Ei link ta thik nei, othoba data khuje pawa jayni.<br><br>
+                Notun Love Decoder shuru korte "Advance Options" theke try koro.
+            </div>
+            <button class="secondary-btn" onclick="window.location.href='index3.html'">← Go to Advance Options</button>
+        `;
+    }
+
+    let currentQ = 0;
+    const myAnswers = new Array(QUESTIONS.length).fill('');
+    let senderData = null;
+
+    function renderAnswerScreen(data) {
+        senderData = data;
+        card.innerHTML = `
+            <div class="mystery-icon">💌</div>
+            <div class="title">Someone left you something</div>
+            <div class="subtitle"><b>${escapeHtml(data.n)}</b> answered a few questions for you. Answer them too, and see how well you match!</div>
+
+            <label class="first">Your name</label>
+            <input type="text" id="myNameInput" placeholder="Who are you?" maxlength="24">
+
+            <div id="qStep"></div>
+        `;
+        renderQuestionStep();
+    }
+
+    function renderQuestionStep() {
+        const qStep = document.getElementById('qStep');
+        const pct = Math.round(((currentQ) / QUESTIONS.length) * 100);
+        qStep.innerHTML = `
+            <div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>
+            <div class="progress-label">${currentQ + 1} / ${QUESTIONS.length}</div>
+            <label>${escapeHtml(QUESTIONS[currentQ])}</label>
+            <textarea id="answerInput" rows="2" maxlength="120" placeholder="Your answer...">${escapeHtml(myAnswers[currentQ])}</textarea>
+            <button class="primary-btn" id="nextBtn">${currentQ === QUESTIONS.length - 1 ? 'Reveal Match 💕' : 'Next →'}</button>
+        `;
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            const nameVal = document.getElementById('myNameInput').value.trim();
+            if (!nameVal) { showToast('Enter your name first 🙂'); return; }
+
+            const ansVal = document.getElementById('answerInput').value.trim();
+            if (!ansVal) { showToast('Please answer the question'); return; }
+            myAnswers[currentQ] = ansVal;
+
+            if (currentQ < QUESTIONS.length - 1) {
+                currentQ++;
+                renderQuestionStep();
+            } else {
+                const payload = { n: senderData.n, a: senderData.a, n2: nameVal, a2: myAnswers };
+                const encoded = encodeData(payload);
+                window.location.href = 'index7.html#' + encoded;
+            }
+        });
+    }
+    </script>
+</body>
+</html>
