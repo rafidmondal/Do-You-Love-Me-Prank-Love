@@ -787,7 +787,7 @@ yesBtn.addEventListener('click', function(e) {
     }
 
     const data = decodeData(hash);
-    if (!data || !data.n) return; // not a valid capsule link — show default page
+    if (!data || (!data.n && !data.q)) return; // not a valid capsule link — show default page
 
     window.__capsuleHash = hash; // forward this to index4.html when Yes is tapped
 
@@ -799,7 +799,7 @@ yesBtn.addEventListener('click', function(e) {
         const mid = Math.ceil(parts.length / 2);
         doYouEl.textContent = parts.slice(0, mid).join(' ');
         loveMeEl.textContent = parts.slice(mid).join(' ');
-    } else if (loveMeEl) {
+    } else if (loveMeEl && data.n) {
         loveMeEl.textContent = 'love ' + data.n + '?';
     }
 })();

@@ -146,6 +146,38 @@
         }
         footer.links-row a { color: #7a2149; text-decoration: none; opacity: 0.75; }
 
+        .about-faq {
+            width: 100%;
+            max-width: 380px;
+            margin-top: 16px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 18px;
+            padding: 18px 18px 20px;
+            font-size: 0.78em;
+            color: #4a1230;
+            line-height: 1.6;
+        }
+        .about-faq h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+            color: #c2185b;
+            margin-bottom: 6px;
+        }
+        .about-faq h3 {
+            font-size: 0.92em;
+            color: #c2185b;
+            margin-top: 16px;
+            margin-bottom: 4px;
+        }
+        .about-faq p { margin-bottom: 6px; }
+        .faq-item { margin-top: 12px; }
+        .faq-item h4 {
+            font-size: 0.85em;
+            color: #4a1230;
+            margin-bottom: 3px;
+        }
+        .faq-item p { opacity: 0.85; }
+
         /* ---------- Quiz card (create / answer) ---------- */
         .card {
             width: 100%;
@@ -289,6 +321,62 @@
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Custom Love Prank?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A tool where you can optionally add your name and write your own custom question. It generates a shareable link that opens a Yes/No prank page, where the No button playfully moves away from the tap, and tapping Yes shows a result page confirming the answer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Two-Way Love Decoder?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A compatibility quiz for two people. The first person answers 6 fixed questions and generates a link. The second person answers the same 6 questions without seeing the first person's answers first. Once both have answered, a compatibility match percentage is revealed. Only the two original participants can see the full question-by-question breakdown; anyone else opening a shared result link sees only a limited preview."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Time Capsule Confession?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A tool for writing a message today that stays locked until a future date and time you choose. Anyone who opens the link before the unlock time sees a live countdown timer, and the message is revealed automatically once the unlock time passes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Sync Pulse?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A two-person, same-device mini-game where both players tap their own half of the screen at the same moment within a 5-second window after a 3-2-Start countdown. The time difference between taps is converted into a synchronization percentage over 2 rounds."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is any data sent to a server or stored in a database?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. There is no backend server, database, or analytics collection of entered content. All data is encoded into the shareable link's URL hash, which is not sent to any server during normal page loads. The link itself is the only place the data exists."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to create an account?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No account, login, or signup is required for any feature on this site."
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
     <a class="top-back" href="index.html">← Back</a>
@@ -341,7 +429,53 @@
         <footer class="links-row">
             <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener">Privacy policy 🔏</a>
             <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener">Contact Us</a>
+            <a href="#" id="aboutToggle" onclick="document.getElementById('aboutDetails').classList.toggle('hidden'); return false;">About & FAQ</a>
         </footer>
+
+        <div class="about-faq hidden" id="aboutDetails">
+            <h2>About Advance Options</h2>
+            <p>Advance Options is a set of free, no-signup mini-tools built on top of the "Do You Love Me?" prank site. Everything runs entirely in the browser — there is no backend server, no account system, and no database. All data (names, questions, answers, and unlock dates) is encoded directly into the link's URL using base64, so the link itself is the only place the data exists.</p>
+
+            <h3>100% Data Safe — Guaranteed</h3>
+            <p>We do not collect, store, log, or transmit any personal data to any server. Nothing you type is saved anywhere except inside the shareable link you generate. If you lose the link, the data is gone — because there is nothing stored elsewhere to recover it from. This is a privacy-by-design architecture: no server-side storage means no data breach risk from this app.</p>
+
+            <h3>Frequently Asked Questions</h3>
+
+            <div class="faq-item">
+                <h4>What is Custom Love Prank?</h4>
+                <p>A simple tool where you can optionally add your name and write your own custom question. It generates a shareable link that opens a Yes/No prank page, where the "No" button playfully moves away from the tap, and tapping "Yes" shows a result page confirming the answer.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>What is Two-Way Love Decoder?</h4>
+                <p>A compatibility quiz for two people. The first person answers 6 fixed questions. A link is generated and sent to a second person. The second person answers the same 6 questions without ever seeing the first person's answers. Only after both people have answered does a compatibility match percentage get calculated and revealed. The full question-by-question breakdown is visible only to the two original participants; anyone else who opens a shared result link sees a limited preview (2 questions plus the overall match percentage) instead of the full breakdown.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>What is Time Capsule Confession?</h4>
+                <p>A tool for writing a message today that stays locked until a future date and time you choose (presets: 1 day, 1 week, 1 month, or a custom date). Anyone who opens the link before the unlock time sees a live countdown timer. After the unlock time passes, the message is revealed automatically with a confetti animation.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>What is Sync Pulse?</h4>
+                <p>A two-person, same-device mini-game. Two players share one phone, each tapping their own half of the screen. After a 3-2-Start countdown, both players must tap at the same moment within a 5-second window. The app measures the time difference between the two taps in milliseconds and converts it into a synchronization percentage. The game runs for 2 rounds and averages the results into a final sync score.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>Is any data sent to a server or stored in a database?</h4>
+                <p>No. There is no backend, no database, and no analytics collection of the content you enter. Every feature works by encoding the data into the URL hash (the part after the # symbol), which browsers do not send to servers during normal page loads. The link itself is the only "storage" — copying, saving, or sharing the link is the only way the data persists.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>Do I need to create an account?</h4>
+                <p>No account, login, or signup is required for any feature on this site.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>Is this site installable as an app?</h4>
+                <p>Yes. This site is a Progressive Web App (PWA) and can be installed to a phone's home screen or a desktop for an app-like experience, including offline access to previously visited pages.</p>
+            </div>
+        </div>
     </div>
 
     <!-- ===== Quiz screen (create / answer) — injected here ===== -->
@@ -418,7 +552,7 @@
             <div class="title">Two-Way Decoder 🔗</div>
             <div class="subtitle">Answer honestly, then send the link. They'll answer the same questions without seeing yours first.</div>
 
-            <label class="first name-label">Name</label>
+            <label class="first name-label">Name <span style="opacity:0.6; font-weight:400; font-family:'Nunito',sans-serif; font-size:0.6em;">(optional)</span></label>
             <input type="text" id="decoderNameInput" placeholder="Who are you?" maxlength="24" value="${escapeHtml(decoderName)}">
 
             <div id="decoderQStep"></div>
@@ -444,7 +578,6 @@
 
         document.getElementById('decoderNextBtn').addEventListener('click', () => {
             const name = document.getElementById('decoderNameInput').value.trim();
-            if (!name) { showToast('Enter your name first 🙂'); return; }
 
             const ansVal = document.getElementById('decoderAnswerInput').value.trim();
             if (!ansVal) { showToast('Please answer the question'); return; }
@@ -455,10 +588,11 @@
                 decoderCurrentQ++;
                 renderDecoderQuestionStep();
             } else {
-                const payload = { n: name, a: decoderAnswers.slice() };
+                const finalName = name || 'Someone';
+                const payload = { n: finalName, a: decoderAnswers.slice() };
                 const encoded = encodeData(payload);
                 const link = window.location.origin + window.location.pathname.replace(/index3\.html$/, '') + 'index6.html#' + encoded;
-                renderDecoderLinkScreen(name, link);
+                renderDecoderLinkScreen(finalName, link);
             }
         });
     }
@@ -488,7 +622,7 @@
         card.innerHTML = `
             <div class="title">Customize Your Prank 💌</div>
 
-            <label class="first name-label">Name</label>
+            <label class="first name-label">Name <span style="opacity:0.6; font-weight:400; font-family:'Nunito',sans-serif; font-size:0.6em;">(optional)</span></label>
             <input type="text" id="nameInput" placeholder="Who are you?" maxlength="24">
 
             <label>Custom question <span style="opacity:0.6; font-weight:400;">(optional)</span></label>
@@ -499,17 +633,17 @@
 
         document.getElementById('genBtn').addEventListener('click', () => {
             const name = document.getElementById('nameInput').value.trim();
-            if (!name) { showToast('Enter your name first 🙂'); return; }
 
             const question = document.getElementById('questionInput').value.trim();
 
-            const payload = { n: name };
+            const payload = {};
+            if (name) payload.n = name;
             if (question) payload.q = question;
 
             const encoded = encodeData(payload);
             const link = window.location.origin + window.location.pathname.replace(/index3\.html$/, '') + 'index5.html#' + encoded;
 
-            renderLinkScreen(name, link);
+            renderLinkScreen(name || 'Someone', link);
         });
     }
 

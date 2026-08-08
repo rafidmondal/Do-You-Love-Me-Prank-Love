@@ -1,7 +1,7 @@
 // Do You Love Me? — Service Worker
 // Handles offline caching so the app can be installed and opened without internet.
 
-const CACHE_NAME = 'love-prank-cache-v6';
+const CACHE_NAME = 'love-prank-cache-v7';
 const PRECACHE_URLS = [
   '/',
   '/index.html',
@@ -43,7 +43,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: cache-first for same-origin requests, network for everything else (ads, fonts, etc.)
+// Fetch: network-first for HTML pages (so updates always show), cache-first for static assets
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
@@ -52,6 +52,27 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  const isHTMLNavigation = event.request.mode === 'navigate' ||
+    (event.request.headers.get('accept') || '').includes('text/html');
+
+  if (isHTMLNavigation) {
+    // Network-first: always try to get the latest page from the server.
+    // Only fall back to cache if the network is unavailable (offline).
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/index.html')))
+    );
+    return;
+  }
+
+  // Static assets (images, manifest, etc.): cache-first for speed
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
@@ -59,7 +80,6 @@ self.addEventListener('fetch', (event) => {
       }
       return fetch(event.request)
         .then((networkResponse) => {
-          // Cache a copy of successfully fetched same-origin assets
           if (networkResponse && networkResponse.status === 200) {
             const responseClone = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => {
@@ -68,12 +88,7 @@ self.addEventListener('fetch', (event) => {
           }
           return networkResponse;
         })
-        .catch(() => {
-          // Fallback to the main page if offline and page isn't cached
-          if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
-          }
-        });
+        .catch(() => {});
     })
   );
 });

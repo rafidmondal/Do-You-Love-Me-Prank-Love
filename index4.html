@@ -205,7 +205,7 @@
     const hash = window.location.hash.slice(1);
     const data = hash ? decodeData(hash) : null;
 
-    if (!data || !data.n) {
+    if (!data || (!data.n && !data.q)) {
         renderEmptyState();
     } else {
         renderResult(data);
@@ -223,11 +223,12 @@
     }
 
     function renderResult(data) {
-        const question = data.q && data.q.trim() ? data.q.trim() : 'Do you love ' + data.n + '?';
+        const name = data.n && data.n.trim() ? data.n.trim() : 'Someone';
+        const question = data.q && data.q.trim() ? data.q.trim() : 'Do you love ' + name + '?';
 
         card.innerHTML = `
             <div class="title" style="font-size:1.6em;">They said Yes! 💕</div>
-            <div class="name-row">Question from <b>${escapeHtml(data.n)}</b>:</div>
+            <div class="name-row">Question from <b>${escapeHtml(name)}</b>:</div>
             <div class="subtitle" style="font-weight:700; color:#4a1230;">"${escapeHtml(question)}"</div>
 
             <div class="score-circle" style="--pct:100">
@@ -243,7 +244,7 @@
         `;
 
         document.getElementById('shareResultBtn').addEventListener('click', () => {
-            const text = `${data.n} asked: "${question}" — they said Yes! 💕`;
+            const text = `${name} asked: "${question}" — they said Yes! 💕`;
             if (navigator.share) {
                 navigator.share({ title: 'Love Prank Result', text }).catch(() => {});
             } else {
