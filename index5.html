@@ -715,8 +715,8 @@
         </div>
 
         <h1 class="headline">
-            <span class="do-you">Do you</span>
-            <span class="love-me">love me?</span>
+            <span class="do-you" id="doYouText">Do you</span>
+            <span class="love-me" id="loveMeText">love me?</span>
         </h1>
 
         <div class="divider">🩷</div>
@@ -769,6 +769,40 @@ yesBtn.addEventListener('click', function(e) {
     yesFired = true;
     sayYes();
 });
+
+// ── Load sender's custom naam + question from the link (Time Capsule / Advance flow) ──
+(function loadCapsuleData() {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+
+    function decodeData(str) {
+        try {
+            let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+            while (b64.length % 4) b64 += '=';
+            const json = decodeURIComponent(escape(atob(b64)));
+            return JSON.parse(json);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    const data = decodeData(hash);
+    if (!data || !data.n) return; // not a valid capsule link — show default page
+
+    window.__capsuleHash = hash; // forward this to index4.html when Yes is tapped
+
+    const doYouEl = document.getElementById('doYouText');
+    const loveMeEl = document.getElementById('loveMeText');
+    if (data.q && data.q.trim()) {
+        // Custom question replaces the whole headline
+        const parts = data.q.trim().split(' ');
+        const mid = Math.ceil(parts.length / 2);
+        doYouEl.textContent = parts.slice(0, mid).join(' ');
+        loveMeEl.textContent = parts.slice(mid).join(' ');
+    } else if (loveMeEl) {
+        loveMeEl.textContent = 'love ' + data.n + '?';
+    }
+})();
 
 // ── Floating hearts ──
 (function createHearts() {
@@ -880,9 +914,11 @@ function sayYes() {
         noBtn.classList.add('hidden');
     }, 400);
 
-    // Redirect to the success page (index2.html) instead of showing it inline
+    // Redirect to the result page (index4.html), carrying the sender's data forward
     setTimeout(() => {
-        window.location.href = window.location.pathname.replace(/[^/]*$/, '') + 'index2.html';
+        const base = window.location.pathname.replace(/[^/]*$/, '');
+        const hashPart = window.__capsuleHash ? ('#' + window.__capsuleHash) : '';
+        window.location.href = base + 'index4.html' + hashPart;
     }, 450);
 }
 

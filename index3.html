@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#c2185b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Love Prank" />
+    <title>Advance Options — Do You Love Me?</title>
+    <meta name="description" content="Explore advance love features: Custom Love Prank, Time Capsule Confession, and Sync Pulse.">
+    <meta name="robots" content="noindex, follow">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: none !important; box-shadow: none !important; }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(160deg, #ffe1ec 0%, #ff9fc4 55%, #ff6fa5 100%);
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 18px 40px;
+            min-height: 100vh;
+        }
+
+        .top-back {
+            position: fixed;
+            top: 8px; left: 8px;
+            z-index: 10000;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.85);
+            color: #c2185b;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            white-space: nowrap;
+        }
+
+        .hidden { display: none !important; }
+
+        /* ---------- Menu screen ---------- */
+        .page-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.3em;
+            color: #c2185b;
+            text-align: center;
+            margin-bottom: 4px;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .page-subtitle {
+            font-size: 0.85em;
+            color: #7a2149;
+            opacity: 0.85;
+            text-align: center;
+            margin-bottom: 28px;
+            max-width: 320px;
+            line-height: 1.5;
+        }
+
+        .cards-wrap {
+            width: 100%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.92);
+            border-radius: 22px;
+            padding: 18px 18px 18px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 8px 24px rgba(194,24,91,0.18);
+            text-decoration: none;
+            position: relative;
+            transition: transform 0.15s ease;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            text-align: left;
+        }
+        .feature-card:active { transform: scale(0.97); }
+        .feature-card.disabled { opacity: 0.6; pointer-events: none; }
+
+        .feature-icon {
+            flex-shrink: 0;
+            width: 52px; height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7em;
+        }
+        .icon-decoder { background: linear-gradient(135deg,#ff8fc7,#c2185b); }
+        .icon-capsule { background: linear-gradient(135deg,#8ec5ff,#3b6fd6); }
+        .icon-pulse   { background: linear-gradient(135deg,#ffd76e,#ff9838); }
+
+        .feature-text { flex: 1; }
+        .feature-name { font-size: 1.02em; font-weight: 800; color: #4a1230; margin-bottom: 2px; }
+        .feature-desc { font-size: 0.78em; color: #7a4560; line-height: 1.4; }
+
+        .badge-soon {
+            position: absolute; top: 10px; right: 12px;
+            background: #ffe08a; color: #7a3b00;
+            font-size: 0.62em; font-weight: 800;
+            padding: 3px 8px; border-radius: 10px; white-space: nowrap;
+        }
+        .badge-new {
+            position: absolute; top: 10px; right: 12px;
+            background: linear-gradient(135deg,#ff8fc7,#c2185b); color: #fff;
+            font-size: 0.62em; font-weight: 800;
+            padding: 3px 8px; border-radius: 10px; white-space: nowrap;
+        }
+
+        .chevron { flex-shrink: 0; color: #c2185b; font-size: 1.3em; opacity: 0.5; }
+
+        footer.links-row {
+            margin-top: 34px;
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            font-size: 11px;
+        }
+        footer.links-row a { color: #7a2149; text-decoration: none; opacity: 0.75; }
+
+        /* ---------- Quiz card (create / answer) ---------- */
+        .card {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 26px;
+            padding: 26px 22px;
+            box-shadow: 0 12px 32px rgba(194,24,91,0.22);
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2em;
+            color: #c2185b;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 0.82em;
+            color: #7a4560;
+            text-align: center;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            font-size: 0.82em;
+            font-weight: 700;
+            color: #4a1230;
+            margin: 16px 0 6px;
+        }
+        label.first { margin-top: 0; }
+
+        input[type="text"], textarea {
+            width: 100%;
+            border: 2px solid #ffd3e4;
+            border-radius: 14px;
+            padding: 11px 14px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9em;
+            color: #4a1230;
+            background: #fff8fb;
+            resize: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, textarea:focus { border-color: #c2185b; }
+
+        .primary-btn {
+            width: 100%;
+            margin-top: 24px;
+            background: linear-gradient(135deg, #ff5e8e, #c2185b);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(194,24,91,0.4);
+            transition: transform 0.15s;
+        }
+        .primary-btn:active { transform: scale(0.97); }
+
+        .secondary-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: rgba(194,24,91,0.08);
+            color: #c2185b;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.88em;
+            cursor: pointer;
+        }
+
+        .link-box {
+            margin-top: 22px;
+            background: #fff0f5;
+            border: 2px dashed #ffb6cf;
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 0.75em;
+            color: #7a4560;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .mystery-icon { text-align: center; font-size: 3em; margin-bottom: 10px; }
+
+        .toast {
+            position: fixed;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.85em;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+    <a class="top-back" href="index.html">← Back</a>
+
+    <!-- ===== Menu screen ===== -->
+    <div id="menuScreen">
+        <h1 class="page-title">Advance Options ✨</h1>
+        <p class="page-subtitle">A few extra ways to say what words can't — pick one to try.</p>
+
+        <div class="cards-wrap">
+            <button class="feature-card" id="openDecoderBtn">
+                <span class="badge-new">NEW</span>
+                <div class="feature-icon icon-decoder">💌</div>
+                <div class="feature-text">
+                    <div class="feature-name">Custom Love Prank</div>
+                    <div class="feature-desc">Add your name and your own question, generate a link, and send the personalized Yes/No prank to anyone.</div>
+                </div>
+                <div class="chevron">›</div>
+            </button>
+
+            <div class="feature-card disabled">
+                <span class="badge-soon">SOON</span>
+                <div class="feature-icon icon-capsule">⏳</div>
+                <div class="feature-text">
+                    <div class="feature-name">Time Capsule Confession</div>
+                    <div class="feature-desc">Write a message today that can only be opened on a future date you choose.</div>
+                </div>
+                <div class="chevron">›</div>
+            </div>
+
+            <div class="feature-card disabled">
+                <span class="badge-soon">SOON</span>
+                <div class="feature-icon icon-pulse">🤝</div>
+                <div class="feature-text">
+                    <div class="feature-name">Sync Pulse</div>
+                    <div class="feature-desc">A quick two-person mini-game on one phone — tap together, see how in sync you are.</div>
+                </div>
+                <div class="chevron">›</div>
+            </div>
+        </div>
+
+        <footer class="links-row">
+            <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener">Privacy policy 🔏</a>
+            <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener">Contact Us</a>
+        </footer>
+    </div>
+
+    <!-- ===== Quiz screen (create / answer) — injected here ===== -->
+    <div class="card hidden" id="card"></div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    const menuScreen = document.getElementById('menuScreen');
+    const card = document.getElementById('card');
+    const toastEl = document.getElementById('toast');
+
+    function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), 2200);
+    }
+
+    // ---------- Base64 helpers (URL-safe, unicode-safe) ----------
+    function encodeData(obj) {
+        const json = JSON.stringify(obj);
+        const b64 = btoa(unescape(encodeURIComponent(json)));
+        return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+    function decodeData(str) {
+        try {
+            let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+            while (b64.length % 4) b64 += '=';
+            const json = decodeURIComponent(escape(atob(b64)));
+            return JSON.parse(json);
+        } catch (e) {
+            return null;
+        }
+    }
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function showQuizScreen() {
+        menuScreen.classList.add('hidden');
+        card.classList.remove('hidden');
+    }
+
+    // ---------- Router: this page is only the "create" (Advance) screen now ----------
+    // Menu shows by default; tapping the card opens the customize form.
+    document.getElementById('openDecoderBtn').addEventListener('click', () => {
+        showQuizScreen();
+        renderCreateScreen();
+    });
+
+    // ---------- Screen: Customize the prank (Person A) ----------
+    function renderCreateScreen() {
+        card.innerHTML = `
+            <div class="title">Customize Your Prank 💌</div>
+            <div class="subtitle">Tomar naam ar (chaile) nijer moto ekta question likho — link ready hobe share korar jonno.</div>
+
+            <label class="first">Tomar naam</label>
+            <input type="text" id="nameInput" placeholder="Tumi ke?" maxlength="24">
+
+            <label>Custom question <span style="opacity:0.6; font-weight:400;">(optional)</span></label>
+            <textarea id="questionInput" rows="2" maxlength="80" placeholder="Default: Do you love me?"></textarea>
+
+            <button class="primary-btn" id="genBtn">Generate Link 🔗</button>
+        `;
+
+        document.getElementById('genBtn').addEventListener('click', () => {
+            const name = document.getElementById('nameInput').value.trim();
+            if (!name) { showToast('Naam likho age 🙂'); return; }
+
+            const question = document.getElementById('questionInput').value.trim();
+
+            const payload = { n: name };
+            if (question) payload.q = question;
+
+            const encoded = encodeData(payload);
+            const link = window.location.origin + window.location.pathname.replace(/index3\.html$/, '') + 'index5.html#' + encoded;
+
+            renderLinkScreen(name, link);
+        });
+    }
+
+
+    function renderLinkScreen(name, link) {
+        card.innerHTML = `
+            <div class="title">Link Ready! 🎉</div>
+            <div class="subtitle">Ei link ta tomar shei manush ke pathao. Shey Yes tap korle, tumi result dekhte parbe.</div>
+            <div class="link-box" id="linkBox">${link}</div>
+            <button class="primary-btn" id="copyBtn">📋 Copy Link</button>
+            <button class="secondary-btn" id="shareBtn">📤 Share</button>
+        `;
+
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(link).then(() => showToast('Link copy hoye geche!'));
+        });
+        document.getElementById('shareBtn').addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({ title: 'Love Prank', text: name + ' tomar jonno kichu rekhe geche 💌', url: link }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(link).then(() => showToast('Link copy hoye geche!'));
+            }
+        });
+    }
+
+    </script>
+</body>
+</html>

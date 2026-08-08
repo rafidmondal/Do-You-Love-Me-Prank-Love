@@ -1,11 +1,14 @@
 // Do You Love Me? — Service Worker
 // Handles offline caching so the app can be installed and opened without internet.
 
-const CACHE_NAME = 'love-prank-cache-v1';
+const CACHE_NAME = 'love-prank-cache-v4';
 const PRECACHE_URLS = [
   '/',
   '/index.html',
   '/index2.html',
+  '/index3.html',
+  '/index4.html',
+  '/index5.html',
   '/manifest.json',
   '/favicon.ico',
   '/favicon-32.png',
