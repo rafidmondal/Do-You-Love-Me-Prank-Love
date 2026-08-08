@@ -686,12 +686,16 @@
     function renderCreateScreen() {
         card.innerHTML = `
             <div class="title">Customize Your Prank 💌</div>
+            <div class="subtitle">Write your question and your own answer. After they tap Yes, they'll answer the same question — then you'll both see how well your answers match.</div>
 
             <label class="first name-label">Name <span style="opacity:0.6; font-weight:400; font-family:'Nunito',sans-serif; font-size:0.6em;">(optional)</span></label>
             <input type="text" id="nameInput" placeholder="Who are you?" maxlength="24">
 
-            <label>Custom question <span style="opacity:0.6; font-weight:400;">(optional)</span></label>
+            <label>Your question <span style="opacity:0.6; font-weight:400;">(optional)</span></label>
             <textarea id="questionInput" rows="2" maxlength="80" placeholder="Default: Do you love me?"></textarea>
+
+            <label>Your answer <span style="opacity:0.6; font-weight:400;">(optional — needed for a match result)</span></label>
+            <textarea id="myAnswerInput" rows="2" maxlength="120" placeholder="e.g. Yes, more than anything"></textarea>
 
             <button class="primary-btn" id="genBtn">Generate Link 🔗</button>
         `;
@@ -700,10 +704,12 @@
             const name = document.getElementById('nameInput').value.trim();
 
             const question = document.getElementById('questionInput').value.trim();
+            const myAnswer = document.getElementById('myAnswerInput').value.trim();
 
             const payload = {};
             if (name) payload.n = name;
             if (question) payload.q = question;
+            if (myAnswer) payload.a = myAnswer;
 
             const encoded = encodeData(payload);
             const link = window.location.origin + window.location.pathname.replace(/index3\.html$/, '') + 'index5.html#' + encoded;
@@ -716,7 +722,7 @@
     function renderLinkScreen(name, link) {
         card.innerHTML = `
             <div class="title">Link Ready! 🎉</div>
-            <div class="subtitle">Send this link to that special someone. Once they tap Yes, you'll see the result.</div>
+            <div class="subtitle">Send this link to that special someone. Once they tap Yes and answer, you'll both see the match result.</div>
             <div class="link-box" id="linkBox">${link}</div>
             <button class="primary-btn" id="copyBtn">📋 Copy Link</button>
             <button class="secondary-btn" id="shareBtn">📤 Share</button>
