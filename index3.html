@@ -204,6 +204,24 @@
             line-height: 1.5;
         }
 
+        .step-nav-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+        }
+        .link-btn {
+            background: none;
+            border: none;
+            color: #c2185b;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.8em;
+            opacity: 0.75;
+            cursor: pointer;
+            padding: 6px 4px;
+        }
+        .link-btn:disabled { opacity: 0.3; cursor: default; }
+
         label {
             display: block;
             font-size: 0.82em;
@@ -433,47 +451,64 @@
         </footer>
 
         <div class="about-faq hidden" id="aboutDetails">
-            <h2>About Advance Options</h2>
-            <p>Advance Options is a set of free, no-signup mini-tools built on top of the "Do You Love Me?" prank site. Everything runs entirely in the browser — there is no backend server, no account system, and no database. All data (names, questions, answers, and unlock dates) is encoded directly into the link's URL using base64, so the link itself is the only place the data exists.</p>
+            <h2>About "Do You Love Me?" — Advance Options</h2>
+            <p>"Do You Love Me?" is a free, no-signup, no-app love prank and couple-activity website. The "Advance Options" section adds four extra relationship mini-tools on top of the original Yes/No prank: Custom Love Prank, Two-Way Love Decoder, Time Capsule Confession, and Sync Pulse. Everything runs entirely inside the browser — there is no backend server, no account system, no database, and no data collection. All data (names, questions, answers, and unlock dates) is encoded directly into the shareable link's URL, so the link itself is the only place the data ever exists.</p>
 
             <h3>100% Data Safe — Guaranteed</h3>
-            <p>We do not collect, store, log, or transmit any personal data to any server. Nothing you type is saved anywhere except inside the shareable link you generate. If you lose the link, the data is gone — because there is nothing stored elsewhere to recover it from. This is a privacy-by-design architecture: no server-side storage means no data breach risk from this app.</p>
+            <p>Nothing typed into this site is ever sent to, stored on, or logged by any server. Every feature works by encoding the data into the URL hash (the part after the # symbol), which browsers never transmit to a server during a normal page load. The generated link is the only "storage" that exists — copying or sharing that link is the only way the data persists. If the link is lost, the data is gone permanently, because there is nothing stored anywhere else to recover it from.</p>
+
+            <h3>The Four Advance Features</h3>
+
+            <div class="faq-item">
+                <h4>1. Custom Love Prank</h4>
+                <p>Add your name (optional) and write your own custom question (optional, default is "Do you love me?"). This generates a shareable link that opens a playful Yes/No prank page: the "No" button moves away from the tap so it can never be pressed, and tapping "Yes" opens a result page confirming the answer.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>2. Two-Way Love Decoder</h4>
+                <p>A compatibility quiz for two people, built around 6 fixed questions (e.g. "When do you miss me the most?", "What's my favorite food?"). Person A answers all 6 questions first and can skip any question or go back to edit a previous answer before generating the link. A link is generated and sent to Person B. Person B answers the same 6 questions on their own device — the site never shows Person B what Person A wrote — and Person B can also skip questions or revisit earlier answers before submitting. Once both people have answered, a compatibility match percentage is calculated and revealed to both. The full question-by-question comparison is visible only to the two original participants (recognized automatically on the device that generated the result); anyone else who opens a shared result link sees a limited preview only (2 sample questions plus the overall match percentage), not the full breakdown.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>3. Time Capsule Confession</h4>
+                <p>Write a message today that stays locked and hidden until a future date and time you choose (quick presets: 1 day, 1 week, 1 month — or a fully custom date). Anyone who opens the link before the unlock time sees a live countdown timer instead of the message. Once the unlock time passes, the message is revealed automatically with a confetti animation.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>4. Sync Pulse</h4>
+                <p>A two-person, same-device mini-game. Two players share one phone, each tapping their own half of the screen after a 3-2-Start countdown. The app measures the time difference between the two taps in milliseconds and converts it into a synchronization percentage over 2 rounds, then averages the results into a final sync score.</p>
+            </div>
 
             <h3>Frequently Asked Questions</h3>
 
             <div class="faq-item">
-                <h4>What is Custom Love Prank?</h4>
-                <p>A simple tool where you can optionally add your name and write your own custom question. It generates a shareable link that opens a Yes/No prank page, where the "No" button playfully moves away from the tap, and tapping "Yes" shows a result page confirming the answer.</p>
-            </div>
-
-            <div class="faq-item">
-                <h4>What is Two-Way Love Decoder?</h4>
-                <p>A compatibility quiz for two people. The first person answers 6 fixed questions. A link is generated and sent to a second person. The second person answers the same 6 questions without ever seeing the first person's answers. Only after both people have answered does a compatibility match percentage get calculated and revealed. The full question-by-question breakdown is visible only to the two original participants; anyone else who opens a shared result link sees a limited preview (2 questions plus the overall match percentage) instead of the full breakdown.</p>
-            </div>
-
-            <div class="faq-item">
-                <h4>What is Time Capsule Confession?</h4>
-                <p>A tool for writing a message today that stays locked until a future date and time you choose (presets: 1 day, 1 week, 1 month, or a custom date). Anyone who opens the link before the unlock time sees a live countdown timer. After the unlock time passes, the message is revealed automatically with a confetti animation.</p>
-            </div>
-
-            <div class="faq-item">
-                <h4>What is Sync Pulse?</h4>
-                <p>A two-person, same-device mini-game. Two players share one phone, each tapping their own half of the screen. After a 3-2-Start countdown, both players must tap at the same moment within a 5-second window. The app measures the time difference between the two taps in milliseconds and converts it into a synchronization percentage. The game runs for 2 rounds and averages the results into a final sync score.</p>
-            </div>
-
-            <div class="faq-item">
                 <h4>Is any data sent to a server or stored in a database?</h4>
-                <p>No. There is no backend, no database, and no analytics collection of the content you enter. Every feature works by encoding the data into the URL hash (the part after the # symbol), which browsers do not send to servers during normal page loads. The link itself is the only "storage" — copying, saving, or sharing the link is the only way the data persists.</p>
+                <p>No. There is no backend, no database, and no analytics collection of the content entered into any feature. All data (names, custom questions, quiz answers, capsule messages, unlock dates) is encoded into the URL hash on the sender's device and decoded again on the receiver's device when they open the link — the content never passes through or touches a server.</p>
             </div>
 
             <div class="faq-item">
-                <h4>Do I need to create an account?</h4>
-                <p>No account, login, or signup is required for any feature on this site.</p>
+                <h4>Do I need to create an account or download an app?</h4>
+                <p>No account, login, email, phone number, or signup is required for any feature. No app store download is needed either — the site itself can optionally be installed to a phone or desktop home screen as a Progressive Web App (PWA) for quicker access and offline viewing of already-visited pages, but this is entirely optional.</p>
             </div>
 
             <div class="faq-item">
-                <h4>Is this site installable as an app?</h4>
-                <p>Yes. This site is a Progressive Web App (PWA) and can be installed to a phone's home screen or a desktop for an app-like experience, including offline access to previously visited pages.</p>
+                <h4>Can I skip a question or change a previous answer in the Two-Way Love Decoder?</h4>
+                <p>Yes. While answering the 6 questions (for either person), a "Skip" option moves to the next question without requiring an answer, and a "Previous" option goes back to review or edit an answer already given, before the final link is generated or submitted.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>Does the Two-Way Love Decoder link work if the other person opens it on a different phone or device?</h4>
+                <p>Yes. The link is fully self-contained — all of Person A's answers are encoded directly inside the URL itself, so Person B can open the exact same link on any device, any browser, with no login and no shared account, and the site will correctly load Person A's data and show the questions for Person B to answer.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>What happens if the shared link looks broken or shows "Link Not Valid"?</h4>
+                <p>This can happen if the link was cut off while copying or pasting (for example, a messaging app inserting a line break in the middle of the long link) so it arrives incomplete. Always use the in-app "Copy Link" or "Share" button rather than manually selecting the link text, and paste the full link exactly as copied into the browser's address bar.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>Is this site free to use?</h4>
+                <p>Yes, every feature on "Do You Love Me?" — the original Yes/No prank and all four Advance Options — is completely free with no in-app purchases, subscriptions, or hidden paywalls.</p>
             </div>
         </div>
     </div>
@@ -568,12 +603,17 @@
     function renderDecoderQuestionStep() {
         const qStep = document.getElementById('decoderQStep');
         const pct = Math.round((decoderCurrentQ / DECODER_QUESTIONS.length) * 100);
+        const isLast = decoderCurrentQ === DECODER_QUESTIONS.length - 1;
         qStep.innerHTML = `
             <div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>
             <div class="progress-label">${decoderCurrentQ + 1} / ${DECODER_QUESTIONS.length}</div>
             <label>${escapeHtml(DECODER_QUESTIONS[decoderCurrentQ])}</label>
             <textarea id="decoderAnswerInput" rows="2" maxlength="120" placeholder="Your answer...">${escapeHtml(decoderAnswers[decoderCurrentQ])}</textarea>
-            <button class="primary-btn" id="decoderNextBtn">${decoderCurrentQ === DECODER_QUESTIONS.length - 1 ? 'Generate Link 🔗' : 'Next →'}</button>
+            <button class="primary-btn" id="decoderNextBtn">${isLast ? 'Generate Link 🔗' : 'Next →'}</button>
+            <div class="step-nav-row">
+                <button class="link-btn" id="decoderPrevBtn" ${decoderCurrentQ === 0 ? 'disabled' : ''}>← Previous</button>
+                <button class="link-btn" id="decoderSkipBtn">${isLast ? 'Skip & Generate' : 'Skip →'}</button>
+            </div>
         `;
 
         document.getElementById('decoderNextBtn').addEventListener('click', () => {
@@ -584,17 +624,42 @@
             decoderAnswers[decoderCurrentQ] = ansVal;
             decoderName = name;
 
-            if (decoderCurrentQ < DECODER_QUESTIONS.length - 1) {
+            if (!isLast) {
                 decoderCurrentQ++;
                 renderDecoderQuestionStep();
             } else {
-                const finalName = name || 'Someone';
-                const payload = { n: finalName, a: decoderAnswers.slice() };
-                const encoded = encodeData(payload);
-                const link = window.location.origin + window.location.pathname.replace(/index3\.html$/, '') + 'index6.html#' + encoded;
-                renderDecoderLinkScreen(finalName, link);
+                finishDecoderCreate(name);
             }
         });
+
+        document.getElementById('decoderPrevBtn').addEventListener('click', () => {
+            if (decoderCurrentQ === 0) return;
+            decoderAnswers[decoderCurrentQ] = document.getElementById('decoderAnswerInput').value.trim();
+            decoderName = document.getElementById('decoderNameInput').value.trim();
+            decoderCurrentQ--;
+            renderDecoderQuestionStep();
+        });
+
+        document.getElementById('decoderSkipBtn').addEventListener('click', () => {
+            const name = document.getElementById('decoderNameInput').value.trim();
+            decoderAnswers[decoderCurrentQ] = document.getElementById('decoderAnswerInput').value.trim() || '(skipped)';
+            decoderName = name;
+
+            if (!isLast) {
+                decoderCurrentQ++;
+                renderDecoderQuestionStep();
+            } else {
+                finishDecoderCreate(name);
+            }
+        });
+    }
+
+    function finishDecoderCreate(name) {
+        const finalName = name || 'Someone';
+        const payload = { n: finalName, a: decoderAnswers.slice() };
+        const encoded = encodeData(payload);
+        const link = window.location.origin + window.location.pathname.replace(/index3\.html$/, '') + 'index6.html#' + encoded;
+        renderDecoderLinkScreen(finalName, link);
     }
 
     function renderDecoderLinkScreen(name, link) {
