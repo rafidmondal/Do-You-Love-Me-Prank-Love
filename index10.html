@@ -182,6 +182,47 @@
             pointer-events: none;
         }
 
+        .start-prompt-btn {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 7;
+            background: linear-gradient(135deg, #ffb238, #ff8c1a);
+            color: #4a2600;
+            border: none;
+            padding: 18px 44px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 1.3em;
+            cursor: pointer;
+            box-shadow: 0 8px 22px rgba(255,140,26,0.5);
+            animation: startPulse 1s ease-in-out infinite;
+        }
+        @keyframes startPulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.06); }
+        }
+
+        .pulse-timer-bar {
+            position: fixed;
+            top: calc(50% + 70px); left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            max-width: 260px;
+            height: 8px;
+            background: rgba(122,59,0,0.15);
+            border-radius: 10px;
+            overflow: hidden;
+            z-index: 6;
+        }
+        .pulse-timer-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #ff5e8e, #c2185b);
+            border-radius: 10px;
+        }
+
         /* ---------- Result screen ---------- */
         #resultScreen {
             display: none;
@@ -227,7 +268,7 @@
     <!-- ===== Intro ===== -->
     <div id="introScreen">
         <div class="title">Sync Pulse 🤝</div>
-        <div class="subtitle">One phone, two players. When the pulse hits its peak, both of you tap your side at the exact same moment. 3 rounds — let's see how in sync you really are.</div>
+        <div class="subtitle">One phone, two players. After the countdown, tap "Start" — then both of you tap your side at the exact same moment within 5 seconds. 2 rounds — let's see how in sync you really are.</div>
         <button class="primary-btn" id="startBtn">Start Game</button>
     </div>
 
@@ -258,7 +299,7 @@
     const zoneP1 = document.getElementById('zoneP1');
     const zoneP2 = document.getElementById('zoneP2');
 
-    const TOTAL_ROUNDS = 3;
+    const TOTAL_ROUNDS = 2;
     let currentRound = 0;
     let roundScores = [];
     let p1Time = null, p2Time = null;
@@ -292,7 +333,7 @@
         zoneP2.classList.remove('tapped');
 
         runCountdown(3, () => {
-            runPulse();
+            showStartPrompt();
         });
     }
 
@@ -321,30 +362,51 @@
         if (existing) existing.remove();
     }
 
+    function showStartPrompt() {
+        removeOverlay('.start-prompt-btn');
+        const btn = document.createElement('button');
+        btn.className = 'start-prompt-btn';
+        btn.textContent = 'Start';
+        gameScreen.appendChild(btn);
+
+        btn.addEventListener('click', () => {
+            btn.remove();
+            runPulse();
+        }, { once: true });
+    }
+
     function runPulse() {
         removeOverlay('.pulse-heart');
+        removeOverlay('.pulse-timer-bar');
+
         heartEl = document.createElement('div');
         heartEl.className = 'pulse-heart beat';
-        heartEl.textContent = '💗';
+        heartEl.textContent = '💞';
         gameScreen.appendChild(heartEl);
 
-        // Random delay before the "peak tap moment" (1.2s - 2.4s) to prevent predictable timing
-        const delay = 1200 + Math.random() * 1200;
-        pulseStartTime = null;
+        const timerBarWrap = document.createElement('div');
+        timerBarWrap.className = 'pulse-timer-bar';
+        const timerBarFill = document.createElement('div');
+        timerBarFill.className = 'pulse-timer-fill';
+        timerBarWrap.appendChild(timerBarFill);
+        gameScreen.appendChild(timerBarWrap);
+        // Force reflow so the transition below actually animates from 100% to 0%
+        void timerBarFill.offsetWidth;
+        timerBarFill.style.transition = 'width 5s linear';
+        timerBarFill.style.width = '0%';
 
-        setTimeout(() => {
-            pulseStartTime = Date.now();
-            acceptingTaps = true;
-            heartEl.style.filter = 'drop-shadow(0 0 14px #fff)';
-        }, delay);
+        // 5-second window: both players must tap together within this time
+        pulseStartTime = Date.now();
+        acceptingTaps = true;
+        heartEl.style.filter = 'drop-shadow(0 0 14px #fff)';
 
-        // Auto-resolve round if one or both players never tap
+        // Auto-resolve round if the 5s window runs out
         setTimeout(() => {
             if (acceptingTaps) {
                 acceptingTaps = false;
                 finishRound();
             }
-        }, delay + 2500);
+        }, 5000);
     }
 
     function spawnWave(zone, x, y) {
@@ -358,7 +420,7 @@
         zone.appendChild(ripple);
 
         const wave = document.createElement('div');
-        wave.textContent = '🌊';
+        wave.textContent = '💞';
         wave.style.position = 'absolute';
         wave.style.left = x + 'px';
         wave.style.top = y + 'px';
@@ -403,6 +465,7 @@
 
     function finishRound() {
         if (heartEl) heartEl.remove();
+        removeOverlay('.pulse-timer-bar');
 
         let scoreForRound;
         if (p1Time === null || p2Time === null) {

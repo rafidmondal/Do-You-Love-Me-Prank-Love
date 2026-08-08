@@ -245,6 +245,31 @@
             line-height: 1.5;
         }
 
+        /* Progress bar (multi-step decoder quiz) */
+        .progress-wrap {
+            width: 100%;
+            height: 6px;
+            background: #ffe1ec;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 22px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff5e8e, #c2185b);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-label {
+            font-size: 0.68em;
+            color: #7a4560;
+            font-weight: 700;
+            text-align: right;
+            margin-top: 6px;
+            margin-bottom: -14px;
+        }
+
         .mystery-icon { text-align: center; font-size: 3em; margin-bottom: 10px; }
 
         .toast {
@@ -284,7 +309,7 @@
                 <div class="chevron">›</div>
             </button>
 
-            <a class="feature-card" href="index6.html">
+            <button class="feature-card" id="openTwoWayBtn">
                 <span class="badge-new">NEW</span>
                 <div class="feature-icon icon-decoder" style="background:linear-gradient(135deg,#c792ff,#7b3fd6);">🔗</div>
                 <div class="feature-text">
@@ -292,7 +317,7 @@
                     <div class="feature-desc">Both of you answer the same questions and see a compatibility match — no app, no server.</div>
                 </div>
                 <div class="chevron">›</div>
-            </a>
+            </button>
 
             <a class="feature-card" href="index8.html">
                 <div class="feature-icon icon-capsule">🔒</div>
@@ -363,11 +388,100 @@
     }
 
     // ---------- Router: this page is only the "create" (Advance) screen now ----------
-    // Menu shows by default; tapping the card opens the customize form.
+    // Menu shows by default; tapping a card opens the relevant customize form.
     document.getElementById('openDecoderBtn').addEventListener('click', () => {
         showQuizScreen();
         renderCreateScreen();
     });
+
+    const DECODER_QUESTIONS = [
+        "When do you miss me the most?",
+        "Do you remember our first conversation?",
+        "What's your favorite thing about me?",
+        "Where would you want our first date to be?",
+        "What color are my eyes?",
+        "What's my favorite food?"
+    ];
+
+    document.getElementById('openTwoWayBtn').addEventListener('click', () => {
+        showQuizScreen();
+        renderDecoderCreateScreen();
+    });
+
+    // ---------- Screen: Two-Way Love Decoder — Person A answers first ----------
+    let decoderCurrentQ = 0;
+    const decoderAnswers = new Array(DECODER_QUESTIONS.length).fill('');
+    let decoderName = '';
+
+    function renderDecoderCreateScreen() {
+        card.innerHTML = `
+            <div class="title">Two-Way Decoder 🔗</div>
+            <div class="subtitle">Answer honestly, then send the link. They'll answer the same questions without seeing yours first.</div>
+
+            <label class="first name-label">Name</label>
+            <input type="text" id="decoderNameInput" placeholder="Who are you?" maxlength="24" value="${escapeHtml(decoderName)}">
+
+            <div id="decoderQStep"></div>
+        `;
+
+        document.getElementById('decoderNameInput').addEventListener('input', (e) => {
+            decoderName = e.target.value;
+        });
+
+        renderDecoderQuestionStep();
+    }
+
+    function renderDecoderQuestionStep() {
+        const qStep = document.getElementById('decoderQStep');
+        const pct = Math.round((decoderCurrentQ / DECODER_QUESTIONS.length) * 100);
+        qStep.innerHTML = `
+            <div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>
+            <div class="progress-label">${decoderCurrentQ + 1} / ${DECODER_QUESTIONS.length}</div>
+            <label>${escapeHtml(DECODER_QUESTIONS[decoderCurrentQ])}</label>
+            <textarea id="decoderAnswerInput" rows="2" maxlength="120" placeholder="Your answer...">${escapeHtml(decoderAnswers[decoderCurrentQ])}</textarea>
+            <button class="primary-btn" id="decoderNextBtn">${decoderCurrentQ === DECODER_QUESTIONS.length - 1 ? 'Generate Link 🔗' : 'Next →'}</button>
+        `;
+
+        document.getElementById('decoderNextBtn').addEventListener('click', () => {
+            const name = document.getElementById('decoderNameInput').value.trim();
+            if (!name) { showToast('Enter your name first 🙂'); return; }
+
+            const ansVal = document.getElementById('decoderAnswerInput').value.trim();
+            if (!ansVal) { showToast('Please answer the question'); return; }
+            decoderAnswers[decoderCurrentQ] = ansVal;
+            decoderName = name;
+
+            if (decoderCurrentQ < DECODER_QUESTIONS.length - 1) {
+                decoderCurrentQ++;
+                renderDecoderQuestionStep();
+            } else {
+                const payload = { n: name, a: decoderAnswers.slice() };
+                const encoded = encodeData(payload);
+                const link = window.location.origin + window.location.pathname.replace(/index3\.html$/, '') + 'index6.html#' + encoded;
+                renderDecoderLinkScreen(name, link);
+            }
+        });
+    }
+
+    function renderDecoderLinkScreen(name, link) {
+        card.innerHTML = `
+            <div class="title">Link Ready! 🎉</div>
+            <div class="subtitle">Send this link to them. Once they answer, you'll both see the compatibility result.</div>
+            <div class="link-box">${link}</div>
+            <button class="primary-btn" id="decoderCopyBtn">📋 Copy Link</button>
+            <button class="secondary-btn" id="decoderShareBtn">📤 Share</button>
+        `;
+        document.getElementById('decoderCopyBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(link).then(() => showToast('Link copied!'));
+        });
+        document.getElementById('decoderShareBtn').addEventListener('click', () => {
+            if (navigator.share) {
+                navigator.share({ title: 'Love Decoder', text: name + ' left something for you 💌', url: link }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(link).then(() => showToast('Link copied!'));
+            }
+        });
+    }
 
     // ---------- Screen: Customize the prank (Person A) ----------
     function renderCreateScreen() {

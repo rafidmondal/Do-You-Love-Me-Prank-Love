@@ -296,6 +296,7 @@
             } else {
                 const payload = { n: senderData.n, a: senderData.a, n2: nameVal, a2: myAnswers };
                 const encoded = encodeData(payload);
+                try { sessionStorage.setItem('decoderOwner_' + encoded.slice(0, 24), '1'); } catch (e) {}
                 window.location.href = 'index7.html#' + encoded;
             }
         });
