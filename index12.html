@@ -1,155 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link rel="icon" href="/favicon.ico" sizes="any" />
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
-<link rel="apple-touch-icon" href="/favicon-192.png" />
-<link rel="manifest" href="/manifest.json" />
-<meta name="theme-color" content="#ff5e8e" />
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Love Prank" />
-<title>One Question...</title>
-<meta name="description" content="A simple question, if you can catch the answer.">
-<meta name="robots" content="noindex, follow">
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --accent:#ff5e8e; --accent2:#ff8fb3; --bg1:#3a0d24; --bg2:#7a1444; --glass:rgba(255,255,255,0.14);
-    --glass-border:rgba(255,255,255,0.35); --text:#fff; --text-dim:rgba(255,255,255,0.72);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  *:focus{outline:none;}
-  html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;overflow:hidden;position:fixed;touch-action:none;}
-  body{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    background:linear-gradient(160deg,var(--bg1) 0%,var(--bg2) 100%);color:var(--text);
-    position:relative;padding:24px;text-align:center;
-  }
-  body::before{
-    content:'';position:fixed;inset:0;pointer-events:none;
-    background:radial-gradient(circle at 20% 15%, rgba(255,255,255,0.10), transparent 40%),
-               radial-gradient(circle at 85% 85%, rgba(255,255,255,0.08), transparent 45%);
-  }
-  .float-heart{position:fixed;pointer-events:none;font-size:1.4em;opacity:0.5;animation:floatUp linear forwards;}
-  @keyframes floatUp{
-    0%{transform:translateY(0) rotate(0deg);opacity:0.6;}
-    100%{transform:translateY(-100vh) rotate(25deg);opacity:0;}
-  }
-  .glass-card{
-    background:var(--glass);border:1px solid var(--glass-border);border-radius:26px;
-    backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
-    padding:34px 26px;max-width:340px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.25);
-    position:relative;z-index:2;
-  }
-  .question{
-    font-family:'Dancing Script',cursive;font-size:2em;line-height:1.2;margin-bottom:28px;
-    background:linear-gradient(90deg,#fff,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;
-  }
-  .btn-row{display:flex;gap:16px;justify-content:center;position:relative;height:56px;}
-  .btn{
-    padding:14px 28px;border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;
-    font-size:1em;cursor:pointer;transition:transform 0.15s;
-  }
-  .btn-yes{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 8px 20px rgba(255,94,142,0.45);}
-  .btn-yes:active{transform:scale(0.94);}
-  .btn-no{
-    background:rgba(255,255,255,0.16);color:#fff;border:1px solid var(--glass-border);
-    position:relative;
-  }
-  .btn-no.runaway{position:fixed;transition:top 0.18s ease, left 0.18s ease;z-index:50;}
-  .hint{margin-top:18px;font-size:0.78em;color:var(--text-dim);}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#c2185b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Love Prank" />
+    <title>Do You Love Me?</title>
+    <meta name="description" content="A simple question, if you can catch the answer.">
+    <meta name="robots" content="noindex, follow">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *:focus { outline: none !important; box-shadow: none !important; }
+
+        html, body {
+            width: 100%; height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(160deg, var(--c1) 0%, var(--c2) 55%, var(--c3) 100%);
+            overflow: hidden;
+        }
+        body {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 20px; position: relative;
+        }
+
+        .hearts-bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+        .floaty-heart {
+            position: absolute; bottom: -40px; font-size: 20px; opacity: 0.55;
+            animation: floatUp linear forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+            100% { transform: translateY(-110vh) rotate(25deg); opacity: 0; }
+        }
+
+        .container {
+            position: relative; z-index: 2;
+            background: rgba(255,255,255,0.95);
+            border-radius: 28px;
+            padding: 36px 26px 30px;
+            max-width: 360px; width: 100%;
+            text-align: center;
+            box-shadow: 0 14px 40px rgba(0,0,0,0.18);
+        }
+
+        .bears-container { position: relative; height: 60px; margin-bottom: 6px; }
+        .bear { position: absolute; font-size: 40px; animation: bearBounce 1.8s ease-in-out infinite; filter: drop-shadow(0 4px 8px rgba(190,70,110,0.18)); }
+        .bear-brown { left: 26%; animation-delay: 0s; }
+        .bear-white { right: 26%; animation-delay: 0.45s; }
+        @keyframes bearBounce {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-13px) rotate(3deg); }
+        }
+        .mini-heart { position: absolute; animation: miniFloat 3s ease-in-out infinite; pointer-events: none; }
+        .mini-heart:nth-child(1) { top: 4%; left: 22%; font-size: 13px; animation-delay: 0s; }
+        .mini-heart:nth-child(2) { top: 12%; right: 18%; font-size: 22px; animation-delay: 0.6s; }
+        @keyframes miniFloat {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+            50% { transform: translateY(-9px) scale(1.1); opacity: 1; }
+        }
+
+        h1.headline { font-weight: normal; margin: 0; }
+        .do-you {
+            display: block; font-family: 'Nunito', sans-serif;
+            font-size: clamp(1em, 3.8vw, 1.3em); color: var(--txt); font-weight: 600;
+            margin-bottom: 1px; opacity: 0.85;
+        }
+        .love-me {
+            display: block; font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.9em, 9.5vw, 2.7em);
+            background: linear-gradient(130deg, var(--c4), var(--c5));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            line-height: 1.1; animation: textPulse 2.2s ease-in-out infinite;
+        }
+        @keyframes textPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+
+        .divider {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; margin: 12px 0 16px; color: var(--c4); font-size: 12px;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--c4), transparent);
+        }
+
+        .buttons { display: flex; gap: 16px; justify-content: center; position: relative; min-height: 62px; align-items: center; width: 100%; }
+
+        .yes-btn {
+            padding: clamp(11px,3vw,15px) clamp(26px,7vw,42px);
+            font-size: clamp(1em, 3.8vw, 1.15em);
+            border: none; border-radius: 50px; cursor: pointer; font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 2px; line-height: 1.2;
+            background: linear-gradient(135deg, var(--c4) 0%, var(--c5) 100%);
+            color: white;
+            box-shadow: 0 6px 22px var(--c4-shadow), inset 0 1px 2px rgba(255,255,255,0.28);
+            border: 2px solid rgba(255,255,255,0.22);
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 115px; position: relative; overflow: hidden; touch-action: manipulation;
+        }
+        .yes-btn:hover, .yes-btn:active { transform: scale(1.08); }
+        .btn-icon { font-size: 1.05em; }
+
+        .no-btn {
+            padding: clamp(11px,3vw,15px) clamp(26px,7vw,42px);
+            font-size: clamp(1em, 3.8vw, 1.15em);
+            border: none; border-radius: 50px; cursor: pointer; font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 2px; line-height: 1.2;
+            background: linear-gradient(135deg, #3a86ff 0%, #00b4d8 100%);
+            color: white;
+            box-shadow: 0 6px 22px rgba(58,134,255,0.35), inset 0 1px 2px rgba(255,255,255,0.28);
+            border: 2px solid rgba(255,255,255,0.22);
+            position: relative; z-index: 9999; min-width: 115px;
+            transition: transform 0.2s, box-shadow 0.2s; touch-action: manipulation;
+        }
+        .no-btn.roaming {
+            position: fixed;
+            transition: left 0.38s cubic-bezier(0.68,-0.55,0.265,1.55),
+                        top  0.38s cubic-bezier(0.68,-0.55,0.265,1.55),
+                        transform 0.3s, background 0.3s, box-shadow 0.3s;
+        }
+        .no-btn:hover, .no-btn:active { transform: scale(1.08); }
+        .no-btn.hidden { display: none; }
+
+        .container.peel-tear {
+            animation: fadeOutScale 0.6s ease forwards;
+        }
+        @keyframes fadeOutScale {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.92); }
+        }
+    </style>
 </head>
-<body id="pageBody">
-<div class="glass-card">
-  <div class="question" id="questionText">Do you love me?</div>
-  <div class="btn-row">
-    <button class="btn btn-yes" id="yesBtn">Yes 💗</button>
-    <button class="btn btn-no" id="noBtn">No</button>
-  </div>
-  <div class="hint" id="hintText">Go on, tap Yes. It's easy 😌</div>
-</div>
+<body>
+    <div class="hearts-bg" id="heartsBg"></div>
 
-<script>
-const params = new URLSearchParams(window.location.search);
-const question = params.get('prankQuestion') || 'Do you love me?';
-const runaway = params.get('runaway') !== '0';
+    <div class="container" id="mainPage">
+        <div class="bears-container">
+            <span class="mini-heart">🩷</span>
+            <span class="mini-heart">💗</span>
+            <div class="bear bear-brown">🐻</div>
+            <div class="bear bear-white">🐼</div>
+        </div>
 
-document.getElementById('questionText').textContent = question;
+        <h1 class="headline">
+            <span class="do-you" id="doYouText">Do you</span>
+            <span class="love-me" id="loveMeText">love me?</span>
+        </h1>
 
-const THEME_COLORS = {
-  pink:{bg1:'#3a0d24',bg2:'#7a1444',accent:'#ff5e8e',accent2:'#ff8fb3'},
-  gold:{bg1:'#3a2905',bg2:'#7a5a10',accent:'#ffd76a',accent2:'#f0b429'},
-  emerald:{bg1:'#052e22',bg2:'#0e6b4a',accent:'#5be3a6',accent2:'#2fbf83'},
-  ruby:{bg1:'#330309',bg2:'#7a1020',accent:'#ff6b6b',accent2:'#e0223f'},
-  sunset:{bg1:'#3a1503',bg2:'#8a3d0c',accent:'#ff9a5a',accent2:'#ff7043'},
-  ocean:{bg1:'#02233a',bg2:'#0d5088',accent:'#5ac8ff',accent2:'#2a8fd8'}
-};
-const themeKey = params.get('theme') || 'pink';
-const t = THEME_COLORS[themeKey] || THEME_COLORS.pink;
-document.documentElement.style.setProperty('--bg1', t.bg1);
-document.documentElement.style.setProperty('--bg2', t.bg2);
-document.documentElement.style.setProperty('--accent', t.accent);
-document.documentElement.style.setProperty('--accent2', t.accent2);
+        <div class="divider">🩷</div>
 
-const noBtn = document.getElementById('noBtn');
-const yesBtn = document.getElementById('yesBtn');
-const hintText = document.getElementById('hintText');
-let dodgeCount = 0;
+        <div class="buttons" id="buttonContainer">
+            <button class="yes-btn" id="yesBtn" tabindex="-1">Yes<span class="btn-icon">❤️</span></button>
+            <button class="no-btn" id="noBtn" tabindex="-1">No<span class="btn-icon">💔</span></button>
+        </div>
+    </div>
 
-function spawnHeart(){
-  const h = document.createElement('div');
-  h.className = 'float-heart';
-  h.textContent = '💗';
-  h.style.left = Math.random()*100 + 'vw';
-  h.style.bottom = '-30px';
-  h.style.animationDuration = (4 + Math.random()*3) + 's';
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(), 7500);
-}
-setInterval(spawnHeart, 900);
+    <script>
+    const THEME_COLORS = {
+        pink:    { c1:'#ffe1ec', c2:'#ff9fc4', c3:'#ff6fa5', c4:'#f02580', c5:'#ff7ab5', shadow:'rgba(240,37,128,0.42)', txt:'#cc4b83' },
+        gold:    { c1:'#fff3d6', c2:'#ffd76a', c3:'#f0b429', c4:'#d9970d', c5:'#ffcf5c', shadow:'rgba(217,151,13,0.42)', txt:'#8a5c00' },
+        emerald: { c1:'#d9fbe8', c2:'#5be3a6', c3:'#0e8a5f', c4:'#0e8a5f', c5:'#3fd28c', shadow:'rgba(14,138,95,0.42)', txt:'#0e6b4a' },
+        ruby:    { c1:'#ffdde0', c2:'#ff6b6b', c3:'#a30f26', c4:'#c2172f', c5:'#ff5c6c', shadow:'rgba(194,23,47,0.42)', txt:'#8a0f22' },
+        sunset:  { c1:'#ffe8d6', c2:'#ff9a5a', c3:'#d9480f', c4:'#e0611b', c5:'#ff9a5a', shadow:'rgba(224,97,27,0.42)', txt:'#a33d0a' },
+        ocean:   { c1:'#d9f1ff', c2:'#5ac8ff', c3:'#1258a8', c4:'#1a6fc9', c5:'#5ac8ff', shadow:'rgba(26,111,201,0.42)', txt:'#154f8a' }
+    };
+    const params = new URLSearchParams(window.location.search);
+    const themeKey = params.get('theme') || 'pink';
+    const t = THEME_COLORS[themeKey] || THEME_COLORS.pink;
+    const root = document.documentElement.style;
+    root.setProperty('--c1', t.c1);
+    root.setProperty('--c2', t.c2);
+    root.setProperty('--c3', t.c3);
+    root.setProperty('--c4', t.c4);
+    root.setProperty('--c5', t.c5);
+    root.setProperty('--c4-shadow', t.shadow);
+    root.setProperty('--txt', t.txt);
 
-function dodge(){
-  if(!runaway) return;
-  dodgeCount++;
-  noBtn.classList.add('runaway');
-  const btnW = noBtn.offsetWidth || 90;
-  const btnH = noBtn.offsetHeight || 50;
-  const maxX = window.innerWidth - btnW - 16;
-  const maxY = window.innerHeight - btnH - 16;
-  const newX = Math.max(16, Math.random() * maxX);
-  const newY = Math.max(16, Math.random() * maxY);
-  noBtn.style.left = newX + 'px';
-  noBtn.style.top = newY + 'px';
+    const question = params.get('prankQuestion') || 'Do you love me?';
+    if (question.includes(' ')) {
+        const words = question.split(' ');
+        const last = words.pop();
+        document.getElementById('doYouText').textContent = words.join(' ') || 'Do you';
+        document.getElementById('loveMeText').textContent = last + (question.endsWith('?') ? '' : '?');
+    } else {
+        document.getElementById('loveMeText').textContent = question;
+    }
 
-  const hints = [
-    "Nice try 😏","Nope, can't catch this one","Try Yes instead 💗",
-    "So close!","Almost had it 😄","Yes is right there though..."
-  ];
-  hintText.textContent = hints[Math.min(dodgeCount-1, hints.length-1)];
-}
+    const runaway = params.get('runaway') !== '0';
 
-noBtn.addEventListener('pointerenter', dodge);
-noBtn.addEventListener('pointerdown', (e)=>{ e.preventDefault(); dodge(); });
-noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); dodge(); }, {passive:false});
-document.addEventListener('pointermove', (e)=>{
-  if(!runaway || !noBtn.classList.contains('runaway')) return;
-  const rect = noBtn.getBoundingClientRect();
-  const dx = e.clientX - (rect.left+rect.width/2);
-  const dy = e.clientY - (rect.top+rect.height/2);
-  const dist = Math.sqrt(dx*dx+dy*dy);
-  if(dist < 90) dodge();
-});
+    // Floating hearts
+    const heartsBg = document.getElementById('heartsBg');
+    const heartEmojis = ['💗','💕','🩷','❤️'];
+    function spawnHeart() {
+        const h = document.createElement('div');
+        h.className = 'floaty-heart';
+        h.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+        h.style.left = Math.random()*100 + 'vw';
+        h.style.animationDuration = (4 + Math.random()*3) + 's';
+        heartsBg.appendChild(h);
+        setTimeout(() => h.remove(), 7500);
+    }
+    setInterval(spawnHeart, 900);
 
-yesBtn.addEventListener('click', ()=>{
-  const search = window.location.search;
-  window.location.href = 'index13.html' + search;
-});
-</script>
+    // No button roam logic — matches site default
+    const noBtn = document.getElementById('noBtn');
+    let noBtnMoved = false;
+    let moveCount = 0;
+
+    function moveNoButton(e) {
+        if (!runaway) return;
+        if (e) e.preventDefault();
+
+        if (!noBtnMoved) {
+            const rect = noBtn.getBoundingClientRect();
+            noBtn.style.width = rect.width + 'px';
+            noBtn.style.height = rect.height + 'px';
+            noBtn.style.left = rect.left + 'px';
+            noBtn.style.top = rect.top + 'px';
+            document.body.appendChild(noBtn);
+            noBtn.offsetHeight;
+            noBtn.classList.add('roaming');
+            noBtnMoved = true;
+        }
+
+        moveCount++;
+        const margin = 16;
+        const maxX = window.innerWidth - noBtn.offsetWidth - margin;
+        const maxY = window.innerHeight - noBtn.offsetHeight - margin;
+        const p = {
+            x: Math.max(margin, Math.floor(Math.random() * maxX)),
+            y: Math.max(margin, Math.floor(Math.random() * maxY))
+        };
+        noBtn.style.left = p.x + 'px';
+        noBtn.style.top = p.y + 'px';
+        noBtn.style.transform = `rotate(${Math.random()*18-9}deg)`;
+
+        const speed = moveCount > 9 ? '0.08s' : moveCount > 5 ? '0.17s' : '0.36s';
+        noBtn.style.transition = `left ${speed} cubic-bezier(0.68,-0.55,0.265,1.55), top ${speed} cubic-bezier(0.68,-0.55,0.265,1.55), transform 0.28s, background 0.3s, box-shadow 0.3s`;
+
+        const texts = [
+            ['Nice try! 😜','💔'],['Catch me! 🏃','💔'],['Too slow! 🐌','💔'],
+            ['Nope! ❌','💔'],['Yes is better! 💝','💝'],['Missed! 😏','💔'],
+            ['Almost! 😅','💔'],['Try again! 🤭','💔'],['Gotcha! 😈','💔']
+        ];
+        const txt = texts[Math.floor(Math.random()*texts.length)];
+        noBtn.innerHTML = txt[0] + '<span class="btn-icon">' + txt[1] + '</span>';
+    }
+
+    if (runaway) {
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('mousedown', moveNoButton);
+        noBtn.addEventListener('click', moveNoButton);
+        noBtn.addEventListener('touchstart', moveNoButton, {passive:false});
+        noBtn.addEventListener('touchmove', moveNoButton, {passive:false});
+    } else {
+        noBtn.addEventListener('click', () => {
+            noBtn.textContent = "Try again? 🥺";
+        });
+    }
+
+    document.getElementById('yesBtn').addEventListener('click', () => {
+        const mainPage = document.getElementById('mainPage');
+        mainPage.classList.add('peel-tear');
+        noBtn.style.pointerEvents = 'none';
+        noBtn.style.opacity = '0';
+        noBtn.style.transition = 'opacity 0.4s ease';
+        setTimeout(() => { noBtn.classList.add('hidden'); }, 400);
+
+        setTimeout(() => {
+            const search = window.location.search;
+            window.location.href = 'index13.html' + search;
+        }, 550);
+    });
+    </script>
 </body>
 </html>
