@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#c2185b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Love Prank" />
+    <title>Love Decoder — Match Result</title>
+    <meta name="description" content="See how well your love decoder answers matched.">
+    <meta name="robots" content="noindex, follow">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: none !important; }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(160deg, #ffe1ec 0%, #ff9fc4 55%, #ff6fa5 100%);
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 18px 40px;
+            min-height: 100vh;
+        }
+
+        .top-back {
+            position: fixed;
+            top: 8px; left: 8px;
+            z-index: 10000;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.85);
+            color: #c2185b;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            white-space: nowrap;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 26px;
+            padding: 26px 22px;
+            box-shadow: 0 12px 32px rgba(194,24,91,0.22);
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.9em;
+            color: #c2185b;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .name-row {
+            text-align: center;
+            font-size: 0.85em;
+            color: #7a4560;
+            margin-bottom: 6px;
+        }
+        .name-row b { color: #c2185b; }
+
+        .subtitle {
+            font-size: 0.82em;
+            color: #7a4560;
+            text-align: center;
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+
+        .score-circle {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            margin: 14px auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: conic-gradient(#ff5e8e calc(var(--pct) * 1%), #ffe1ec 0);
+            position: relative;
+            transition: background 1s ease;
+        }
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 122px; height: 122px;
+            background: #fff;
+            border-radius: 50%;
+        }
+        .score-inner { position: relative; z-index: 1; text-align: center; }
+        .score-num { font-size: 1.9em; font-weight: 800; color: #c2185b; }
+        .score-label { font-size: 0.7em; color: #7a4560; font-weight: 700; }
+
+        .qa-item {
+            background: #fff8fb;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateY(8px);
+            animation: fadeUp 0.4s ease forwards;
+        }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        .qa-question { font-size: 0.78em; font-weight: 700; color: #4a1230; margin-bottom: 6px; }
+        .qa-answers { display: flex; gap: 8px; }
+        .qa-answer {
+            flex: 1;
+            font-size: 0.75em;
+            color: #7a4560;
+            background: #ffe1ec;
+            border-radius: 10px;
+            padding: 6px 9px;
+            line-height: 1.4;
+        }
+        .qa-answer.match { background: #d7f5df; color: #1f7a3d; }
+        .qa-answer-label { font-size: 0.62em; font-weight: 800; opacity: 0.6; display: block; margin-bottom: 2px; }
+
+        .secondary-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: rgba(194,24,91,0.08);
+            color: #c2185b;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.88em;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #7a4560;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.85em;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+    <a class="top-back" href="index3.html">← Back</a>
+
+    <div class="card" id="card"></div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    const QUESTIONS = [
+        "When do you miss me the most?",
+        "Do you remember our first conversation?",
+        "What's your favorite thing about me?",
+        "Where would you want our first date to be?",
+        "What color are my eyes?",
+        "What's my favorite food?"
+    ];
+
+    const card = document.getElementById('card');
+    const toastEl = document.getElementById('toast');
+
+    function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), 2200);
+    }
+
+    function decodeData(str) {
+        try {
+            let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+            while (b64.length % 4) b64 += '=';
+            const json = decodeURIComponent(escape(atob(b64)));
+            return JSON.parse(json);
+        } catch (e) {
+            return null;
+        }
+    }
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+    function normalize(s) {
+        return s.toLowerCase().trim().replace(/[.,!?;:'"]/g, '');
+    }
+    function similar(a, b) {
+        const na = normalize(a), nb = normalize(b);
+        if (!na || !nb) return false;
+        if (na === nb) return true;
+        const wordsA = new Set(na.split(' ').filter(w => w.length > 2));
+        const wordsB = new Set(nb.split(' ').filter(w => w.length > 2));
+        let overlap = 0;
+        wordsA.forEach(w => { if (wordsB.has(w)) overlap++; });
+        return overlap >= 1;
+    }
+
+    const hash = window.location.hash.slice(1);
+    const data = hash ? decodeData(hash) : null;
+
+    if (!data || !data.n || !data.a || !data.n2 || !data.a2) {
+        renderEmptyState();
+    } else {
+        let isOwner = false;
+        try { isOwner = sessionStorage.getItem('decoderOwner_' + hash.slice(0, 24)) === '1'; } catch (e) {}
+
+        if (isOwner) {
+            renderResult(data);
+        } else {
+            renderSummaryResult(data);
+        }
+    }
+
+    function renderEmptyState() {
+        card.innerHTML = `
+            <div class="title" style="font-size:1.6em;">No Result Found</div>
+            <div class="empty-state">
+                This link isn't valid, or the result data is missing.<br><br>
+                Start a new Love Decoder from "Advance Options".
+            </div>
+            <button class="secondary-btn" onclick="window.location.href='index3.html'">← Go to Advance Options</button>
+        `;
+    }
+
+    function computeMatch(data) {
+        const pairs = QUESTIONS.map((q, i) => ({
+            q,
+            a1: data.a[i] || '',
+            a2: data.a2[i] || '',
+            match: similar(data.a[i] || '', data.a2[i] || '')
+        }));
+        const matchCount = pairs.filter(p => p.match).length;
+        const pct = Math.round((matchCount / QUESTIONS.length) * 100);
+        return { pairs, pct };
+    }
+
+    function verdictFor(pct) {
+        if (pct >= 75) return "Wow, you two match really well! 💞";
+        if (pct >= 40) return "You match on some things, differ on others 💗";
+        return "Different perspectives — but that's interesting too! 💗";
+    }
+
+    // ---------- Summary view: for anyone who opens a shared result link (not the original A/B) ----------
+    function renderSummaryResult(data) {
+        const { pairs, pct } = computeMatch(data);
+        const highlightPairs = pairs.slice(0, 2); // only show 2 questions' worth of answers
+
+        card.innerHTML = `
+            <div class="title">Match Result 💕</div>
+            <div class="name-row"><b>${escapeHtml(data.n)}</b> &amp; <b>${escapeHtml(data.n2)}</b></div>
+
+            <div class="score-circle" style="--pct:${pct}">
+                <div class="score-inner">
+                    <div class="score-num">${pct}%</div>
+                    <div class="score-label">MATCH</div>
+                </div>
+            </div>
+            <div class="subtitle">${verdictFor(pct)}</div>
+
+            <div id="qaWrap" style="margin-top:14px;"></div>
+
+            <div class="subtitle" style="margin-top:4px; opacity:0.7; font-size:0.72em;">Only a preview is shown here — the full breakdown is visible to ${escapeHtml(data.n)} and ${escapeHtml(data.n2)} only.</div>
+
+            <button class="secondary-btn" id="restartBtn">🔄 Create Your Own</button>
+        `;
+
+        const qaWrap = document.getElementById('qaWrap');
+        highlightPairs.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'qa-item';
+            div.style.animationDelay = (i * 0.12) + 's';
+            div.innerHTML = `
+                <div class="qa-question">${escapeHtml(p.q)}</div>
+                <div class="qa-answers">
+                    <div class="qa-answer ${p.match ? 'match' : ''}">
+                        <span class="qa-answer-label">${escapeHtml(data.n)}</span>${escapeHtml(p.a1)}
+                    </div>
+                    <div class="qa-answer ${p.match ? 'match' : ''}">
+                        <span class="qa-answer-label">${escapeHtml(data.n2)}</span>${escapeHtml(p.a2)}
+                    </div>
+                </div>
+            `;
+            qaWrap.appendChild(div);
+        });
+
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            window.location.href = 'index3.html';
+        });
+    }
+
+    // ---------- Full view: only for the actual A/B who just completed the quiz ----------
+    function renderResult(data) {
+        const { pairs, pct } = computeMatch(data);
+        const verdict = verdictFor(pct);
+
+        card.innerHTML = `
+            <div class="title">Match Result 💕</div>
+            <div class="name-row"><b>${escapeHtml(data.n)}</b> &amp; <b>${escapeHtml(data.n2)}</b></div>
+
+            <div class="score-circle" style="--pct:0" id="scoreCircle">
+                <div class="score-inner">
+                    <div class="score-num" id="scoreNum">0%</div>
+                    <div class="score-label">MATCH</div>
+                </div>
+            </div>
+            <div class="subtitle">${verdict}</div>
+
+            <div id="qaWrap" style="margin-top:14px;"></div>
+
+            <button class="secondary-btn" id="shareResultBtn">📤 Share Result</button>
+            <button class="secondary-btn" id="restartBtn">🔄 Start New</button>
+        `;
+
+        // Animate the score circle counting up
+        const circle = document.getElementById('scoreCircle');
+        const numEl = document.getElementById('scoreNum');
+        let current = 0;
+        const step = () => {
+            current += 2;
+            if (current >= pct) current = pct;
+            circle.style.setProperty('--pct', current);
+            numEl.textContent = current + '%';
+            if (current < pct) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+
+        const qaWrap = document.getElementById('qaWrap');
+        pairs.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'qa-item';
+            div.style.animationDelay = (i * 0.12) + 's';
+            div.innerHTML = `
+                <div class="qa-question">${escapeHtml(p.q)}</div>
+                <div class="qa-answers">
+                    <div class="qa-answer ${p.match ? 'match' : ''}">
+                        <span class="qa-answer-label">${escapeHtml(data.n)}</span>${escapeHtml(p.a1)}
+                    </div>
+                    <div class="qa-answer ${p.match ? 'match' : ''}">
+                        <span class="qa-answer-label">${escapeHtml(data.n2)}</span>${escapeHtml(p.a2)}
+                    </div>
+                </div>
+            `;
+            qaWrap.appendChild(div);
+        });
+
+        document.getElementById('shareResultBtn').addEventListener('click', () => {
+            const text = `${data.n} & ${data.n2} — ${pct}% Love Match! 💕`;
+            if (navigator.share) {
+                navigator.share({ title: 'Love Decoder Result', text }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(text).then(() => showToast('Result copied!'));
+            }
+        });
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            window.location.href = 'index3.html';
+        });
+    }
+    </script>
+</body>
+</html>

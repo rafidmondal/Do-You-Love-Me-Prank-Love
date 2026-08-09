@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#c2185b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Love Prank" />
+    <meta name="google-site-verification" content="04Iccv3ZqlAfU3TeqdRVtJubMmkhUMxA2sDJNxoRLD8" />
+    <meta name="monetag" content="67eeece156b8f77ec3b035a7bda10830">
+    <title>Yes! 💝 Do You Love Me Prank – Result Page</title>
+    <meta name="description" content="They picked Yes! See the result screen of the Do You Love Me Yes or No prank game — the fun follow-up after the No button gets away.">
+    <meta name="robots" content="noindex, follow">
+    <meta name="keywords" content="do you love me prank, love prank game, send to crush, funny love game, prank link, Raxzen Team, interactive love prank, No button runs away">
+    <link rel="canonical" href="https://love-prank.raxzen.in/index2.html">
+    <meta property="og:title" content="Do You Love Me? 💕 — Send This to Your Crush!">
+    <meta property="og:description" content="A hilarious love prank — the No button runs away every time they try to click it! Share with your crush and watch the magic 😍">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://love-prank.raxzen.in/index2.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Do You Love Me? 💕 — Send This to Your Crush!">
+    <meta name="twitter:description" content="A hilarious love prank — the No button runs away every time they try to click it! Share with your crush 😍">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: none !important; box-shadow: none !important; }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #ff75aa 0%, #fda1d4 50%, #ffe3f1 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+
+        /* ── Hearts bg ── */
+        .hearts-bg {
+            position: fixed;
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 150;
+        }
+        .heart {
+            position: absolute;
+            animation: floatUp 7s ease-in infinite;
+            opacity: 0;
+        }
+        @keyframes floatUp {
+            0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10%  { opacity: 0.65; }
+            90%  { opacity: 0.45; }
+            100% { transform: translateY(-120px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Sparkle dots */
+        .sparkle {
+            position: fixed;
+            width: 5px; height: 5px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkleAnim 3s ease-in-out infinite;
+            opacity: 0;
+        }
+        @keyframes sparkleAnim {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50%       { opacity: 1; transform: scale(1); }
+        }
+
+        /* ── Main card ── */
+        .container {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            padding: clamp(24px, 5vw, 40px) clamp(20px, 6vw, 40px);
+            border-radius: 36px;
+            box-shadow: 
+                0 30px 70px rgba(230, 50, 120, 0.15), 
+                0 10px 30px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            text-align: center;
+            width: min(90vw, 420px);
+            z-index: 10;
+            position: relative;
+            animation: cardIn 0.8s cubic-bezier(.34,1.56,.64,1) both;
+            border: 1.5px solid rgba(255, 255, 255, 0.7);
+            overflow: visible;
+        }
+        @keyframes cardIn {
+            from { opacity: 0; transform: scale(0.72) translateY(30px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Bears area */
+        .bears-container {
+            position: relative;
+            height: clamp(120px, 28vw, 170px);
+            margin-bottom: 14px;
+        }
+        .heart-path {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -55%);
+            width: 195px; height: 135px;
+            opacity: 0.32;
+        }
+        .bear {
+            position: absolute;
+            font-size: clamp(58px, 15vw, 90px);
+            bottom: 0;
+            animation: bearBounce 2.4s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(190,70,110,0.18));
+        }
+        .bear-brown { left: 10%; animation-delay: 0s; }
+        .bear-white { right: 10%; animation-delay: 0.45s; }
+        @keyframes bearBounce {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50%       { transform: translateY(-13px) rotate(3deg); }
+        }
+
+        .mini-heart {
+            position: absolute;
+            animation: miniFloat 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .mini-heart:nth-child(1) { top: 4%;  left: 30%;  font-size: 13px; animation-delay: 0s; }
+        .mini-heart:nth-child(2) { top: 12%; right: 22%; font-size: 22px; animation-delay: 0.6s; }
+        .mini-heart:nth-child(3) { top: 0%;  right: 34%; font-size: 11px; animation-delay: 1.2s; }
+        .mini-heart:nth-child(4) { top: 22%; left: 14%;  font-size: 15px; animation-delay: 0.9s; }
+        @keyframes miniFloat {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+            50%       { transform: translateY(-9px) scale(1.1); opacity: 1; }
+        }
+
+        /* Text */
+        .do-you {
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(1em, 3.8vw, 1.3em);
+            color: #cc4b83;
+            font-weight: 600;
+            margin-bottom: 1px;
+            letter-spacing: 0.01em;
+        }
+        .love-me {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.9em, 9.5vw, 2.8em);
+            background: linear-gradient(130deg, #f02580, #ff6eb5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            animation: textPulse 2.2s ease-in-out infinite;
+        }
+        @keyframes textPulse {
+            0%, 100% { transform: scale(1); }
+            50%       { transform: scale(1.03); }
+        }
+
+        .divider {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; margin: 12px 0 16px; color: #ffaace; font-size: 12px;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px;
+            background: linear-gradient(90deg, transparent, #ffaace, transparent);
+        }
+
+        /* ── Buttons row ── */
+        .buttons {
+            display: flex; gap: 16px;
+            justify-content: center;
+            position: relative;
+            min-height: 62px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .yes-btn {
+            padding: clamp(11px,3vw,15px) clamp(26px,7vw,42px);
+            font-size: clamp(1em, 3.8vw, 1.15em);
+            border: none; border-radius: 50px;
+            cursor: pointer; font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 2px; line-height: 1.2;
+            background: linear-gradient(135deg, #f02580 0%, #ff7ab5 100%);
+            color: white;
+            box-shadow: 0 6px 22px rgba(240,37,128,0.42), inset 0 1px 2px rgba(255,255,255,0.28);
+            border: 2px solid rgba(255,255,255,0.22);
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 115px;
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        .yes-btn::before {
+            content: '';
+            position: absolute;
+            bottom: -28px; left: -10%;
+            width: 120%; height: 56px;
+            background: rgba(255,255,255,0.20);
+            border-radius: 50%;
+            animation: waveAnim 1.8s ease-in-out infinite;
+        }
+        .yes-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -24px; left: -5%;
+            width: 110%; height: 48px;
+            background: rgba(255,255,255,0.13);
+            border-radius: 50%;
+            animation: waveAnim 1.8s ease-in-out infinite 0.5s;
+        }
+        @keyframes waveAnim {
+            0%   { transform: translateX(-8%) scaleY(1); }
+            50%  { transform: translateX(8%) scaleY(1.22); }
+            100% { transform: translateX(-8%) scaleY(1); }
+        }
+        .yes-btn:hover, .yes-btn:active {
+            transform: scale(1.08);
+            box-shadow: 0 9px 28px rgba(240,37,128,0.52);
+        }
+        .btn-icon { font-size: 1.05em; }
+
+        /* ── Full screen burst overlay ── */
+        #burstOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            pointer-events: none;
+            display: none;
+            overflow: hidden;
+        }
+        #burstOverlay.active { display: block; }
+
+        /* Ripple circle that expands from center */
+        .burst-ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            animation: burstExpand 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        @keyframes burstExpand {
+            0%   { transform: translate(-50%, -50%) scale(0);   opacity: 1; }
+            70%  { opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(4.5); opacity: 0; }
+        }
+
+        /* Flying hearts burst */
+        .burst-heart {
+            position: absolute;
+            font-size: clamp(22px, 5vw, 38px);
+            animation: heartBurst 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            pointer-events: none;
+        }
+        @keyframes heartBurst {
+            0%   { transform: translate(-50%,-50%) scale(0) rotate(0deg); opacity: 1; }
+            60%  { opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.2) rotate(var(--rot)); opacity: 0; }
+        }
+
+        /* Flash white */
+        .burst-flash {
+            position: absolute;
+            inset: 0;
+            background: white;
+            animation: flashFade 0.5s ease-out forwards;
+        }
+        @keyframes flashFade {
+            0%   { opacity: 0.7; }
+            100% { opacity: 0; }
+        }
+
+        /* No button — fixed, roams screen */
+        /* No button — starts in the flow, then becomes fixed and roams */
+        .no-btn {
+            padding: clamp(11px,3vw,15px) clamp(26px,7vw,42px);
+            font-size: clamp(1em, 3.8vw, 1.15em);
+            border: none; border-radius: 50px;
+            cursor: pointer; font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 2px; line-height: 1.2;
+            background: linear-gradient(135deg, #3a86ff 0%, #00b4d8 100%);
+            color: white;
+            box-shadow: 0 6px 22px rgba(58, 134, 255, 0.35), inset 0 1px 2px rgba(255,255,255,0.28);
+            border: 2px solid rgba(255,255,255,0.22);
+            position: relative;
+            z-index: 9999;
+            min-width: 115px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            touch-action: manipulation;
+        }
+        .no-btn.roaming {
+            position: fixed;
+            transition: left 0.38s cubic-bezier(0.68,-0.55,0.265,1.55),
+                        top  0.38s cubic-bezier(0.68,-0.55,0.265,1.55),
+                        transform 0.3s,
+                        background 0.3s,
+                        box-shadow 0.3s;
+        }
+        .no-btn:hover, .no-btn:active {
+            transform: scale(1.08);
+            box-shadow: 0 9px 28px rgba(58, 134, 255, 0.45);
+        }
+
+        /* Paper peel/tear physics-based animation */
+        .container.peel-tear {
+            z-index: 150;
+            animation: paperPeelTear 1.2s cubic-bezier(0.25, 1, 0.50, 1) forwards;
+            pointer-events: none;
+        }
+
+        @keyframes paperPeelTear {
+            0% {
+                transform: translate(0, 0) rotate(0deg) skew(0deg) scale(1);
+                clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+                opacity: 1;
+            }
+            25% {
+                transform: translate(-15px, -30px) rotate(-6deg) skewX(-4deg) rotateY(15deg) scale(0.97);
+                clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 25% 100%);
+                opacity: 0.95;
+            }
+            50% {
+                transform: translate(40px, -110px) rotate(18deg) skewX(8deg) rotateY(-25deg) scale(0.9);
+                clip-path: polygon(0% 0%, 100% 0%, 85% 35%, 45% 65%);
+                opacity: 0.75;
+            }
+            75% {
+                transform: translate(140px, -280px) rotate(-28deg) skewX(-12deg) rotateY(55deg) scale(0.75);
+                clip-path: polygon(0% 0%, 75% 0%, 35% 10%, 15% 25%);
+                opacity: 0.4;
+            }
+            100% {
+                transform: translate(320px, -650px) rotate(48deg) skewX(18deg) rotateY(90deg) scale(0.4);
+                clip-path: polygon(0% 0%, 0% 0%, 0% 0%, 0% 0%);
+                opacity: 0;
+            }
+        }
+
+        /* ══════════════════════════════
+           SUCCESS PAGE
+        ══════════════════════════════ */
+        .success-page {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(160deg, #ff5fa8 0%, #ff88c8 40%, #ffb0dc 100%);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 16px;
+            padding-bottom: 72px;
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.55s ease;
+        }
+        .success-page.visible {
+            opacity: 1;
+        }
+
+        .success-content {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            padding: clamp(24px, 5vw, 40px) clamp(20px, 6vw, 40px);
+            border-radius: 36px;
+            box-shadow: 
+                0 30px 70px rgba(230, 50, 120, 0.15), 
+                0 10px 30px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            max-width: 480px;
+            width: 92%;
+            animation: slideIn 0.75s cubic-bezier(.34,1.56,.64,1) both;
+            border: 1.5px solid rgba(255, 255, 255, 0.7);
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px) scale(0.82); opacity: 0; }
+            to   { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        /* Big glowing heart */
+        .big-heart {
+            font-size: clamp(60px, 16vw, 88px);
+            animation: heartbeat 1s ease infinite;
+            display: block;
+            margin-bottom: 6px;
+            filter: drop-shadow(0 0 16px rgba(255,80,160,0.45));
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25%       { transform: scale(1.22); }
+            75%       { transform: scale(1.09); }
+        }
+
+        /* Confetti dots (CSS only) */
+        .confetti-wrap {
+            position: relative;
+            height: 0;
+            overflow: visible;
+            pointer-events: none;
+        }
+        .dot {
+            position: absolute;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            animation: dotFloat 3.5s ease-in-out infinite;
+        }
+        @keyframes dotFloat {
+            0%,100% { transform: translateY(0) scale(1); opacity: 0.7; }
+            50%      { transform: translateY(-18px) scale(1.2); opacity: 1; }
+        }
+
+        /* Yay text */
+        .yay-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
+            letter-spacing: 0;
+            font-size: clamp(2.2em, 9vw, 3.2em);
+            color: #f02580;
+            margin: 8px 0 4px;
+            line-height: 1.2;
+        }
+
+        /* Sub message */
+        .best-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 500;
+            letter-spacing: 0;
+            font-size: clamp(1.4em, 5.5vw, 2em);
+            color: #f02580;
+            margin: 4px 0 10px;
+            line-height: 1.4;
+        }
+
+        .forever-text {
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(0.82em, 3vw, 0.98em);
+            color: #bbb;
+            line-height: 1.7;
+            margin: 0 0 14px;
+        }
+
+        /* Share section — outside white box, on pink bg */
+        .share-section {
+            background: transparent;
+            border-radius: 0;
+            padding: 18px 12px 10px;
+            margin-top: 0;
+        }
+
+        /* Social icon-only circle buttons */
+        .share-row {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+            margin-bottom: 10px;
+        }
+
+        .soc-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+            padding: 0;
+            flex-shrink: 0;
+        }
+        .soc-btn:hover, .soc-btn:active { transform: scale(1.13); box-shadow: 0 6px 18px rgba(0,0,0,0.24); }
+        .soc-btn svg { width: 26px; height: 26px; }
+
+        .btn-wa   { background: linear-gradient(135deg, #25d366, #1aad52); }
+        .btn-fb   { background: linear-gradient(135deg, #1877f2, #0a5fd4); }
+        .btn-ig   { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); }
+        .btn-copy { background: linear-gradient(135deg, #667eea, #764ba2); }
+
+        /* Share title below icons */
+        .share-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(0.88em, 3.5vw, 1.05em);
+            font-weight: 400;
+            color: #f02580;
+            margin: 0;
+            letter-spacing: 0.01em;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(40,40,40,0.88);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 0.88em;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Fireworks canvas */
+        .fireworks {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        .hidden { display: none !important; }
+
+        /* PWA Install button — centered at top, glass pill style matching Birthday website badge */
+        #installBtn {
+            position: fixed;
+            top: 44px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            gap: 3px;
+            background: rgba(255,255,255,0.92);
+            color: #c2185b;
+            border: none;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 9px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            white-space: nowrap;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        #installBtn.show { display: inline-flex; }
+        #installBtn:hover { transform: translateX(-50%) translateY(-2px); }
+        #installBtn:active { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+    <button id="installBtn" onclick="installPWA()">⬇️ Install</button>
+    <audio id="bgMusic" src="assets/index2_sound.mp3" loop preload="auto"></audio>
+
+    <!-- Small birthday gift button, top of page -->
+    <a href="https://rafidmondal.github.io/Animated-Birthday-Wish/" target="_blank" rel="noopener"
+       style="position:fixed; top:8px; left:8px; z-index:10000;
+              background:rgba(255,255,255,0.85); color:#c2185b; text-decoration:none;
+              font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px;
+              box-shadow:0 2px 6px rgba(0,0,0,0.12); white-space:nowrap;">Birthday website 👈</a>
+
+    <!-- Floating Hearts Background -->
+    <div class="hearts-bg" id="heartsBg"></div>
+
+    <!-- ── SUCCESS PAGE ── -->
+    <div class="success-page" id="successPage">
+        <canvas class="fireworks" id="fireworks"></canvas>
+
+        <div class="success-content">
+            <!-- Confetti dots -->
+            <div class="confetti-wrap" aria-hidden="true" id="confettiWrap"></div>
+
+            <span class="big-heart">💖</span>
+
+            <h2 class="yay-text">Yay! I knew it! 😍</h2>
+            <p class="best-text">You are the best thing<br>that ever happened to me! 💕</p>
+            <p class="forever-text">
+                You are my first love,<br>
+                My last love, and my forever love! 🌹
+            </p>
+        </div>
+
+        <!-- Share section — outside white box, sits on pink background -->
+        <div class="share-section">
+                <div class="share-row">
+                    <!-- WhatsApp -->
+                    <button class="soc-btn btn-wa" onclick="shareWhatsApp()" title="WhatsApp">
+                        <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.112 1.519 5.852L.057 23.8c-.11.436.261.818.693.708l6.094-1.459A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.695-.523-5.224-1.431l-.374-.221-3.87.927.943-3.785-.242-.389A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+                    </button>
+                    <!-- Facebook -->
+                    <button class="soc-btn btn-fb" onclick="shareFacebook()" title="Facebook">
+                        <svg viewBox="0 0 24 24" fill="white"><path d="M24 12.073C24 5.406 18.627 0 12 0S0 5.406 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+                    </button>
+                    <!-- Instagram -->
+                    <button class="soc-btn btn-ig" onclick="shareInstagram()" title="Instagram">
+                        <svg viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </button>
+                    <!-- Copy Link -->
+                    <button class="soc-btn btn-copy" onclick="copyLink()" title="Copy Link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    </button>
+                </div>
+                <p class="share-title" style="color:#fff; text-shadow: 0 1px 6px rgba(200,50,100,0.3);">Share Your Answer! 📱</p>
+
+                <!-- Back button — small, liquid-glass, pink glow -->
+                <a href="index.html" style="display:inline-flex; align-items:center; gap:5px; text-decoration:none;
+                   margin-top:14px; padding:7px 20px; border-radius:999px; font-family:'Nunito', sans-serif;
+                   font-size:12px; font-weight:700; letter-spacing:0.3px; color:#fff;
+                   background:rgba(255,255,255,0.14);
+                   backdrop-filter:blur(14px) saturate(180%);
+                   -webkit-backdrop-filter:blur(14px) saturate(180%);
+                   border:1px solid rgba(255,255,255,0.35);
+                   box-shadow:0 0 18px rgba(255,105,180,0.55), 0 4px 14px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.4);">← Back</a>
+        </div>
+
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Full screen burst overlay -->
+    <div id="burstOverlay"></div>
+
+    <!-- About modal -->
+    <div id="aboutModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+        <div style="position:relative; background:#ffe6f2; border-radius:18px; max-width:360px; width:100%; padding:26px 22px; box-shadow:0 10px 40px rgba(0,0,0,0.25); font-family:'Nunito', sans-serif; color:#7a2048;">
+            <button onclick="document.getElementById('aboutModal').style.display='none';" style="position:absolute; top:10px; right:12px; background:none; border:none; font-size:18px; cursor:pointer; color:#7a2048;">❌</button>
+            <h3 style="margin:0 0 12px; font-size:18px;">💖 About Love Prank</h3>
+            <p style="margin:0 0 10px; font-size:14px; line-height:1.5;">Love Prank is a fun and interactive prank game designed to make your friends or crush smile prank! 😄💕</p>
+            <p style="margin:0 0 10px; font-size:14px; line-height:1.5;">Simply share the link, let them choose Yes or No, and enjoy the funny surprise. It's made purely for entertainment and laughter—no real love test, just good vibes! 🌸✨</p>
+            <p style="margin:0; font-size:14px; line-height:1.5;">💝 Share • Laugh • Enjoy • Repeat</p>
+        </div>
+    </div>
+
+<script>
+// Immediately blur any element that gets focused — no focus state ever
+document.addEventListener('focusin', e => { e.target.blur(); });
+
+// ── Floating hearts ──
+(function createHearts() {
+    const container = document.getElementById('heartsBg');
+    const hearts = ['💕','💖','💗','💓','💝','💘','💞','🩷','❤️'];
+    setInterval(() => {
+        const el = document.createElement('div');
+        el.className = 'heart';
+        el.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        el.style.left = Math.random() * 100 + '%';
+        el.style.animationDuration = (Math.random() * 4 + 4) + 's';
+        el.style.fontSize = (Math.random() * 16 + 11) + 'px';
+        el.style.animationDelay = (Math.random() * 1.5) + 's';
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 9000);
+    }, 420);
+})();
+
+// Sparkle dots
+for (let i = 0; i < 10; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top  = Math.random() * 100 + '%';
+    s.style.animationDelay    = (Math.random() * 3) + 's';
+    s.style.animationDuration = (Math.random() * 2 + 2) + 's';
+    document.body.appendChild(s);
+}
+
+// ── Show success page directly (this page has no prank/No-button step) ──
+function showSuccessDirect() {
+    const sp = document.getElementById('successPage');
+    sp.style.display = 'flex';
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => { sp.classList.add('visible'); });
+    });
+
+    buildConfetti();
+    startFireworks();
+}
+showSuccessDirect();
+
+// Confetti coloured dots
+function buildConfetti() {
+    const wrap = document.getElementById('confettiWrap');
+    const colours = ['#ff3a8c','#ff7ab5','#feca57','#a29bfe','#74b9ff','#fd79a8','#55efc4'];
+    for (let i = 0; i < 18; i++) {
+        const d = document.createElement('div');
+        d.className = 'dot';
+        d.style.background = colours[i % colours.length];
+        d.style.left = (Math.random() * 260 - 10) + 'px';
+        d.style.top  = (Math.random() * 30 - 40) + 'px';
+        d.style.animationDelay = (Math.random() * 2) + 's';
+        d.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+        d.style.width = d.style.height = (Math.random() * 7 + 5) + 'px';
+        wrap.appendChild(d);
+    }
+}
+
+// ── Fireworks ──
+function startFireworks() {
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const particles = [];
+    const colours = ['#f02580','#ff7ab5','#feca57','#ff9ff3','#54a0ff','#5f27cd','#ff6eb5'];
+
+    class Particle {
+        constructor(x, y, c) {
+            this.x = x; this.y = y; this.c = c;
+            this.vx = (Math.random() - 0.5) * 9;
+            this.vy = (Math.random() - 0.5) * 9;
+            this.alpha = 1;
+        }
+        update() { this.vx *= 0.978; this.vy *= 0.978; this.x += this.vx; this.y += this.vy; this.alpha -= 0.011; }
+        draw() {
+            ctx.save(); ctx.globalAlpha = this.alpha;
+            ctx.beginPath(); ctx.arc(this.x, this.y, 3, 0, Math.PI*2);
+            ctx.fillStyle = this.c; ctx.fill(); ctx.restore();
+        }
+    }
+
+    function boom() {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height * 0.55;
+        const c = colours[Math.floor(Math.random() * colours.length)];
+        for (let i = 0; i < 55; i++) particles.push(new Particle(x, y, c));
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = particles.length - 1; i >= 0; i--) {
+            if (particles[i].alpha <= 0) particles.splice(i, 1);
+            else { particles[i].update(); particles[i].draw(); }
+        }
+    }
+    setInterval(boom, 720);
+    animate();
+}
+
+// ── Toast helper ──
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Share functions ──
+function getShareUrl() {
+    return window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'index2.html';
+}
+
+function shareWhatsApp() {
+    const text = "💕 I just said YES to 'Do you love me?'! 💕\n👉 " + getShareUrl();
+    window.open("https://wa.me/?text=" + encodeURIComponent(text), '_blank');
+    showToast('Opening WhatsApp… 💬');
+}
+
+function shareFacebook() {
+    window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(getShareUrl()), '_blank');
+    showToast('Opening Facebook… 📘');
+}
+
+function shareInstagram() {
+    copyLink();
+    showToast('Link copied! Paste it on Instagram 📸');
+}
+
+function copyLink() {
+    navigator.clipboard.writeText(getShareUrl()).then(() => {
+        showToast('Link copied! Share with friends 🔗');
+    }).catch(() => {
+        showToast('Copy the URL from your browser 🔗');
+    });
+}
+</script>
+    <!-- Footer: links row, fixed at bottom -->
+    <div style="position:fixed; left:0; bottom:0; width:100%; z-index:9999; background:transparent;">
+
+        <!-- Links row -->
+        <div style="text-align:center; font-size:10px; display:flex; justify-content:center; align-items:center; gap:10px; flex-wrap:wrap; padding:4px 6px 6px; background:rgba(255,255,255,0.001);">
+            <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Privacy policy🔏</a>
+            <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Contact Us</a>
+            <a href="#" onclick="document.getElementById('aboutModal').style.display='flex'; return false;" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">About</a>
+        </div>
+    </div>
+
+    <div style="height:40px;"></div><!-- spacer so content isn't hidden behind the fixed links footer -->
+
+    <!-- Background music: low-volume auto-loop -->
+    <script>
+    (function() {
+        const bgMusic = document.getElementById('bgMusic');
+        if (!bgMusic) return;
+        bgMusic.volume = 0.18; // soft background volume
+        bgMusic.loop = true;
+
+        function tryPlay() {
+            const p = bgMusic.play();
+            if (p !== undefined) {
+                p.catch(() => {
+                    // Autoplay blocked by browser — start on first user interaction instead
+                    const resume = () => {
+                        bgMusic.play().catch(() => {});
+                        document.removeEventListener('click', resume);
+                        document.removeEventListener('touchstart', resume);
+                        document.removeEventListener('keydown', resume);
+                    };
+                    document.addEventListener('click', resume, { once: true });
+                    document.addEventListener('touchstart', resume, { once: true });
+                    document.addEventListener('keydown', resume, { once: true });
+                });
+            }
+        }
+
+        if (document.readyState === 'complete') {
+            tryPlay();
+        } else {
+            window.addEventListener('load', tryPlay);
+        }
+    })();
+    </script>
+
+    <!-- PWA: service worker registration + install prompt -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+        });
+    }
+
+    let deferredInstallPrompt = null;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        if (installBtn) installBtn.classList.add('show');
+    });
+
+    function installPWA() {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.finally(() => {
+            deferredInstallPrompt = null;
+            if (installBtn) installBtn.classList.remove('show');
+        });
+    }
+
+    window.addEventListener('appinstalled', () => {
+        if (installBtn) installBtn.classList.remove('show');
+        deferredInstallPrompt = null;
+    });
+    </script>
+
+</body>
+</html>

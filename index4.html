@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/favicon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#c2185b" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Love Prank" />
+    <title>Love Prank — Result</title>
+    <meta name="description" content="See the result of your love prank — did they say Yes?">
+    <meta name="robots" content="noindex, follow">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: none !important; }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(160deg, #ffe1ec 0%, #ff9fc4 55%, #ff6fa5 100%);
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 18px 40px;
+            min-height: 100vh;
+        }
+
+        .top-back {
+            position: fixed;
+            top: 8px; left: 8px;
+            z-index: 10000;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.85);
+            color: #c2185b;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+            white-space: nowrap;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 380px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 26px;
+            padding: 26px 22px;
+            box-shadow: 0 12px 32px rgba(194,24,91,0.22);
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2em;
+            color: #c2185b;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 0.82em;
+            color: #7a4560;
+            text-align: center;
+            margin-bottom: 6px;
+            line-height: 1.5;
+        }
+
+        .name-row {
+            text-align: center;
+            font-size: 0.85em;
+            color: #7a4560;
+            margin-bottom: 6px;
+        }
+        .name-row b { color: #c2185b; }
+
+        .score-circle {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            margin: 10px auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: conic-gradient(#ff5e8e calc(var(--pct) * 1%), #ffe1ec 0);
+            position: relative;
+        }
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 122px; height: 122px;
+            background: #fff;
+            border-radius: 50%;
+        }
+        .score-inner { position: relative; z-index: 1; text-align: center; }
+        .score-num { font-size: 1.9em; font-weight: 800; color: #c2185b; }
+        .score-label { font-size: 0.7em; color: #7a4560; font-weight: 700; }
+
+        .qa-item {
+            background: #fff8fb;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+        }
+        .qa-question { font-size: 0.78em; font-weight: 700; color: #4a1230; margin-bottom: 6px; }
+        .qa-answers { display: flex; gap: 8px; }
+        .qa-answer {
+            flex: 1;
+            font-size: 0.75em;
+            color: #7a4560;
+            background: #ffe1ec;
+            border-radius: 10px;
+            padding: 6px 9px;
+            line-height: 1.4;
+        }
+        .qa-answer.match { background: #d7f5df; color: #1f7a3d; }
+        .qa-answer-label { font-size: 0.62em; font-weight: 800; opacity: 0.6; display: block; margin-bottom: 2px; }
+
+        .secondary-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: rgba(194,24,91,0.08);
+            color: #c2185b;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.88em;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #7a4560;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.85em;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+    <a class="top-back" href="index3.html">← Back</a>
+
+    <div class="card" id="card"></div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+    const card = document.getElementById('card');
+    const toastEl = document.getElementById('toast');
+
+    function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), 2200);
+    }
+
+    function decodeData(str) {
+        try {
+            let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+            while (b64.length % 4) b64 += '=';
+            const json = decodeURIComponent(escape(atob(b64)));
+            return JSON.parse(json);
+        } catch (e) {
+            return null;
+        }
+    }
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    const hash = window.location.hash.slice(1);
+    const data = hash ? decodeData(hash) : null;
+
+    if (!data || (!data.n && !data.m)) {
+        renderEmptyState();
+    } else {
+        renderResult(data);
+    }
+
+    function renderEmptyState() {
+        card.innerHTML = `
+            <div class="title" style="font-size:1.6em;">No Result Found</div>
+            <div class="empty-state">
+                This link isn't valid, or no data was found.<br><br>
+                Create a new prank from "Advance Options".
+            </div>
+            <button class="secondary-btn" onclick="window.location.href='index3.html'">← Go to Advance Options</button>
+        `;
+    }
+
+    function renderResult(data) {
+        const name = data.n && data.n.trim() ? data.n.trim() : 'Someone';
+        const message = data.m && data.m.trim() ? data.m.trim() : '';
+
+        card.innerHTML = `
+            <div class="title" style="font-size:1.6em;">They said Yes! 💕</div>
+            <div class="name-row">From <b>${escapeHtml(name)}</b>:</div>
+            ${message ? `<div class="subtitle" style="font-weight:700; color:#4a1230;">"${escapeHtml(message)}"</div>` : ''}
+
+            <div class="score-circle" style="--pct:100">
+                <div class="score-inner">
+                    <div class="score-num">💖</div>
+                    <div class="score-label">YES!</div>
+                </div>
+            </div>
+            <div class="subtitle">The person you sent this to tapped "Yes"! 🎉</div>
+
+            <button class="secondary-btn" id="shareResultBtn">📤 Share This</button>
+            <button class="secondary-btn" id="restartBtn">🔄 Create New Prank</button>
+        `;
+
+        document.getElementById('shareResultBtn').addEventListener('click', () => {
+            const text = message
+                ? `${name} says: "${message}" — they said Yes! 💕`
+                : `${name} sent a love prank — they said Yes! 💕`;
+            if (navigator.share) {
+                navigator.share({ title: 'Love Prank Result', text }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(text).then(() => showToast('Result copied!'));
+            }
+        });
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            window.location.href = 'index3.html';
+        });
+    }
+    </script>
+</body>
+</html>
