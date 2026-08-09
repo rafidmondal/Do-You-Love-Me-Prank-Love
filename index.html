@@ -167,11 +167,22 @@
             background: linear-gradient(135deg, #ff75aa 0%, #fda1d4 50%, #ffe3f1 100%);
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             position: relative;
             min-height: 100vh;
             min-height: 100dvh;
+        }
+
+        /* Keeps the card vertically centered within the first screen, regardless of
+           content added further down the page (like the ad spacer). */
+        .hero-section {
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         /* ── Hearts bg ── */
@@ -748,7 +759,8 @@
     <!-- Floating Hearts Background -->
     <div class="hearts-bg" id="heartsBg"></div>
 
-    <!-- ── MAIN PAGE ── -->
+    <!-- ── MAIN PAGE (kept vertically centered in the first screen) ── -->
+    <div class="hero-section">
     <div class="container" id="mainPage">
         <div class="bears-container">
             <span class="mini-heart">🩷</span>
@@ -783,6 +795,7 @@
             </button>
         </div>
     </div>
+    </div><!-- /.hero-section -->
 
     <!-- Toast notification -->
     <div class="toast" id="toast"></div>
@@ -972,10 +985,10 @@ function copyPageLink() {
 }
 </script>
 
-    <!-- Footer: sticky ad banners + links row, all fixed at the very bottom of the screen -->
-    <div style="position:fixed; left:0; bottom:0; width:100%; z-index:9999; background:transparent;">
+    <!-- Footer: ad banners + links row, in normal page flow (reached only by scrolling down) -->
+    <div style="width:100%; background:transparent;">
 
-        <!-- Ad 1: Adsterra (highperformanceformat.com) banner — default size, always visible, no scrolling needed -->
+        <!-- Ad 1: Adsterra (highperformanceformat.com) banner — default size -->
         <div id="adRow" style="display:flex; align-items:center; justify-content:center; overflow-x:auto; padding:2px 4px; -webkit-overflow-scrolling:touch;">
             <div id="adLeft" style="flex-shrink:0; width:300px; height:250px;">
                 <script>
@@ -991,50 +1004,89 @@ function copyPageLink() {
             </div>
         </div>
 
-        <!-- Ad 2: Adstra (nap5k.com) banner — default size, also always visible -->
+        <!-- Ad 2: Adstra (nap5k.com) banner — default size -->
         <div style="display:flex; justify-content:center; align-items:center; background:rgba(255,255,255,0.001);">
-            <div id="adstra-banner"></div>
+            <div id="adstra-banner" style="max-width:350px; max-height:60px; overflow:hidden;"></div>
         </div>
 
         <!-- Links row -->
-        <div style="text-align:center; font-size:10px; display:flex; justify-content:center; align-items:center; gap:10px; flex-wrap:wrap; padding:4px 6px 6px; background:rgba(255,255,255,0.001);">
+        <div style="text-align:center; font-size:10px; display:flex; justify-content:center; align-items:center; gap:10px; flex-wrap:wrap; padding:4px 6px 12px; background:rgba(255,255,255,0.001);">
             <a href="https://www.termsfeed.com/live/27c8a172-0ab3-4366-beaf-f910b091110b" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Privacy policy🔏</a>
             <a href="https://rafid-mondal.netlify.app/" target="_blank" rel="noopener" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">Contact Us</a>
             <a href="#" onclick="document.getElementById('aboutModal').style.display='flex'; return false;" style="color:#c2185b; text-decoration:none; opacity:0.75; white-space:nowrap;">About</a>
         </div>
     </div>
 
-    <div style="height:320px;"></div><!-- spacer so content isn't hidden behind the fixed footer + ad banners -->
-
     <!-- Adstra banner ad script (zone 11534127) -->
     <script>(function(s){s.dataset.zone='11534127',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
     <!-- Force the Adstra ad (whatever container it injects) to sit fixed at the very bottom,
-         next to the Adsterra banner, instead of wherever it inserts itself by default. -->
+         next to the Adsterra banner, instead of wherever it inserts itself by default.
+         Runs repeatedly (MutationObserver) because this network can inject more than once
+         and at random times, including "popup"-styled banner units. -->
     <script>
     (function() {
-        function pinAdstraToBottom() {
-            var target = document.getElementById('adstra-banner');
-            if (!target) return;
-            // The nap5k script typically injects a new element as the last child of <body>.
-            // Move that element into our fixed-position container once it appears.
-            var before = new Set(Array.from(document.body.children));
-            var attempts = 0;
-            var timer = setInterval(function() {
-                attempts++;
-                var newEls = Array.from(document.body.children).filter(function(el) {
-                    return !before.has(el) && el.id !== 'adstra-banner' && el.tagName !== 'SCRIPT';
-                });
-                if (newEls.length > 0) {
-                    newEls.forEach(function(el) { target.appendChild(el); });
-                    clearInterval(timer);
-                } else if (attempts > 40) { // stop trying after ~10s
-                    clearInterval(timer);
-                }
-            }, 250);
+        var target = document.getElementById('adstra-banner');
+        if (!target) return;
+
+        function isOurs(el) {
+            return el === target || target.contains(el) || (target.parentElement && target.parentElement.contains(el) === false ? false : false);
         }
-        if (document.readyState === 'complete') pinAdstraToBottom();
-        else window.addEventListener('load', pinAdstraToBottom);
+
+        function relocate(el) {
+            if (!el || el.nodeType !== 1) return;
+            if (el === target) return;
+            if (target.contains(el)) return; // already relocated
+            // Don't touch our own footer container, links row, or the spacer.
+            if (el.closest && el.closest('#adstra-banner')) return;
+            // Shrink + relocate whatever the script dropped onto <body>.
+            el.style.setProperty('max-width', '350px', 'important');
+            el.style.setProperty('max-height', '60px', 'important');
+            el.style.setProperty('overflow', 'hidden', 'important');
+            el.style.setProperty('position', 'static', 'important');
+            el.style.setProperty('top', 'auto', 'important');
+            el.style.setProperty('left', 'auto', 'important');
+            el.style.setProperty('right', 'auto', 'important');
+            el.style.setProperty('bottom', 'auto', 'important');
+            el.style.setProperty('transform', 'scale(0.85)', 'important');
+            el.style.setProperty('transform-origin', 'center', 'important');
+            target.appendChild(el);
+        }
+
+        // Catch anything already present as a direct child of <body> that isn't part of our page.
+        var knownIds = ['adstra-banner', 'adRow', 'aboutModal'];
+        Array.from(document.body.children).forEach(function(el) {
+            if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return;
+            if (knownIds.indexOf(el.id) !== -1) return;
+            if (el.id === 'mainCard' || el.tagName === 'MAIN') return;
+        });
+
+        // Watch for new elements being added anywhere in <body> (Monetag/Adstra injects late & repeatedly).
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(m) {
+                m.addedNodes.forEach(function(node) {
+                    if (node.nodeType !== 1) return;
+                    if (node.id === 'adstra-banner') return;
+                    if (target.contains(node)) return;
+                    // Heuristic: Monetag/Adstra ad containers are typically fixed/absolute positioned
+                    // divs or iframes appended directly to <body> or <html>, outside our known layout.
+                    var parent = node.parentElement;
+                    if (parent === document.body || parent === document.documentElement) {
+                        var tag = node.tagName;
+                        if (tag === 'DIV' || tag === 'IFRAME' || tag === 'INS' || tag === 'A') {
+                            relocate(node);
+                        }
+                    }
+                });
+            });
+        });
+        observer.observe(document.body, { childList: true });
+        if (document.documentElement) {
+            observer.observe(document.documentElement, { childList: true });
+        }
+
+        // Stop watching after 30s to avoid running forever.
+        setTimeout(function() { observer.disconnect(); }, 30000);
     })();
     </script>
 
