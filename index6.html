@@ -356,6 +356,10 @@
         return "Different perspectives — but that's interesting too! 💗";
     }
 
+    let currentQ = 0;
+    const myAnswers = new Array(QUESTIONS.length).fill('');
+    let senderData = null;
+
     const hash = window.location.hash.slice(1);
     const incoming = hash ? decodeData(hash) : null;
 
@@ -365,7 +369,9 @@
         if (incoming.a.length > QUESTIONS.length) incoming.a = incoming.a.slice(0, QUESTIONS.length);
         renderAnswerScreen(incoming);
     } else if (!hash) {
-        renderEmptyState(false);
+        // No link data (direct visit / tab open) — still show the 6 questions,
+        // just without a sender to compare against later.
+        renderAnswerScreen(null);
     } else {
         // Hash exists but failed to decode — link was corrupted/cut off in transit
         renderEmptyState(true);
@@ -388,10 +394,6 @@
             <button class="secondary-btn" onclick="window.location.href='index3.html'">← Go to Advance Options</button>
         `;
     }
-
-    let currentQ = 0;
-    const myAnswers = new Array(QUESTIONS.length).fill('');
-    let senderData = null;
 
     function renderAnswerScreen(data) {
         senderData = data;
