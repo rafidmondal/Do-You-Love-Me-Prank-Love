@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+<link rel="apple-touch-icon" href="/favicon-192.png" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#ff5e8e" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Love Prank" />
+<title>For You 💗</title>
+<meta name="description" content="A little love experience made just for you.">
+<meta name="robots" content="noindex, follow">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#ff5e8e; --accent2:#ff8fb3; --bg1:#3a0d24; --bg2:#7a1444; --glass:rgba(255,255,255,0.14);
+    --glass-border:rgba(255,255,255,0.35); --text:#fff; --text-dim:rgba(255,255,255,0.72);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  *:focus{outline:none;}
+  html,body{width:100%;min-height:100%;font-family:'Nunito',sans-serif;color:var(--text);}
+  body{
+    background:linear-gradient(160deg,var(--bg1) 0%,var(--bg2) 100%);background-attachment:fixed;
+    padding:26px 16px 60px;position:relative;overflow-x:hidden;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(circle at 20% 10%, rgba(255,255,255,0.10), transparent 40%),
+               radial-gradient(circle at 90% 80%, rgba(255,255,255,0.08), transparent 45%);
+  }
+  .wrap{max-width:520px;margin:0 auto;position:relative;z-index:1;}
+  .hero{text-align:center;margin-bottom:22px;}
+  .hero h1{font-family:'Dancing Script',cursive;font-size:2.3em;
+    background:linear-gradient(90deg,#fff,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p{color:var(--text-dim);font-size:0.85em;margin-top:6px;}
+
+  .glass-card{
+    background:var(--glass);border:1px solid var(--glass-border);border-radius:22px;
+    backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+    padding:20px;margin-bottom:18px;box-shadow:0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+  .section-title{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.02em;margin-bottom:10px;}
+  .section-title .emoji{font-size:1.2em;}
+
+  /* Music player */
+  .player-card{display:flex;align-items:center;gap:14px;}
+  .play-btn{
+    width:52px;height:52px;border-radius:50%;border:none;flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:1.3em;cursor:pointer;
+    box-shadow:0 6px 16px rgba(0,0,0,0.3);
+  }
+  .player-meta{flex:1;}
+  .player-meta .title{font-weight:800;font-size:0.9em;}
+  .player-meta .sub{font-size:0.75em;color:var(--text-dim);}
+  .yt-hidden-frame{position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;bottom:0;right:0;}
+
+  /* Time capsule */
+  .capsule-locked{text-align:center;padding:14px 6px;}
+  .capsule-icon{font-size:2.2em;margin-bottom:8px;}
+  .countdown{font-size:1.3em;font-weight:800;margin:8px 0;letter-spacing:0.5px;}
+  .capsule-note{
+    display:none;background:rgba(255,255,255,0.10);border-radius:14px;padding:16px;font-size:0.95em;
+    line-height:1.6;text-align:center;font-family:'Dancing Script',cursive;font-size:1.3em;
+  }
+  .capsule-note.revealed{display:block;}
+  .unlock-btn{
+    margin-top:10px;padding:10px 22px;border:none;border-radius:50px;background:rgba(255,255,255,0.18);
+    color:#fff;font-weight:700;cursor:pointer;font-size:0.85em;
+  }
+
+  /* Decoder */
+  .decoder-hint{font-size:0.9em;margin-bottom:12px;color:var(--text-dim);font-style:italic;}
+  input.decoder-input{
+    width:100%;background:rgba(255,255,255,0.12);border:1px solid var(--glass-border);border-radius:12px;
+    padding:11px 13px;color:#fff;font-size:0.9em;margin-bottom:10px;
+  }
+  .decoder-submit{
+    width:100%;padding:12px;border:none;border-radius:50px;font-weight:800;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;
+  }
+  .decoder-feedback{margin-top:10px;font-size:0.85em;text-align:center;min-height:18px;}
+  .decoder-reveal{
+    display:none;margin-top:12px;background:rgba(255,255,255,0.12);border-radius:14px;padding:14px;
+    text-align:center;font-family:'Dancing Script',cursive;font-size:1.25em;
+  }
+  .decoder-reveal.show{display:block;}
+
+  /* Miss box */
+  .miss-quote{
+    text-align:center;font-family:'Dancing Script',cursive;font-size:1.3em;padding:6px 4px;line-height:1.4;
+  }
+
+  .float-heart{position:fixed;pointer-events:none;font-size:1.2em;opacity:0.45;animation:floatUp linear forwards;z-index:0;}
+  @keyframes floatUp{0%{transform:translateY(0) rotate(0deg);opacity:0.5;}100%{transform:translateY(-105vh) rotate(20deg);opacity:0;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>Made For You</h1>
+    <p id="heroSub">Someone put a little love into this.</p>
+  </div>
+
+  <!-- MUSIC PLAYER -->
+  <div class="glass-card player-card" id="playerCard">
+    <button class="play-btn" id="playBtn">▶</button>
+    <div class="player-meta">
+      <div class="title">Background Music</div>
+      <div class="sub" id="playerSub">Tap to play</div>
+    </div>
+  </div>
+  <div id="ytContainer"></div>
+
+  <!-- TIME CAPSULE -->
+  <div class="glass-card" id="capsuleCard" style="display:none;">
+    <div class="section-title"><span class="emoji">⏳</span> Time Capsule</div>
+    <div class="capsule-locked" id="capsuleLocked">
+      <div class="capsule-icon">🔒</div>
+      <div>This message unlocks at a set time.</div>
+      <div class="countdown" id="countdownText">--</div>
+    </div>
+    <div class="capsule-note" id="capsuleNote"></div>
+  </div>
+
+  <!-- DECODER -->
+  <div class="glass-card" id="decoderCard" style="display:none;">
+    <div class="section-title"><span class="emoji">🔐</span> Two-Way Love Decoder</div>
+    <div class="decoder-hint" id="decoderHintText"></div>
+    <input type="text" class="decoder-input" id="decoderInput" placeholder="Type your answer...">
+    <button class="decoder-submit" id="decoderSubmit">Unlock 💗</button>
+    <div class="decoder-feedback" id="decoderFeedback"></div>
+    <div class="decoder-reveal" id="decoderRevealBox"></div>
+  </div>
+
+  <!-- MISS BOX -->
+  <div class="glass-card" id="missCard" style="display:none;">
+    <div class="section-title"><span class="emoji">💭</span> When I Miss You Most</div>
+    <div class="miss-quote" id="missQuoteText"></div>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+
+const THEME_COLORS = {
+  pink:{bg1:'#3a0d24',bg2:'#7a1444',accent:'#ff5e8e',accent2:'#ff8fb3'},
+  gold:{bg1:'#3a2905',bg2:'#7a5a10',accent:'#ffd76a',accent2:'#f0b429'},
+  emerald:{bg1:'#052e22',bg2:'#0e6b4a',accent:'#5be3a6',accent2:'#2fbf83'},
+  ruby:{bg1:'#330309',bg2:'#7a1020',accent:'#ff6b6b',accent2:'#e0223f'},
+  sunset:{bg1:'#3a1503',bg2:'#8a3d0c',accent:'#ff9a5a',accent2:'#ff7043'},
+  ocean:{bg1:'#02233a',bg2:'#0d5088',accent:'#5ac8ff',accent2:'#2a8fd8'}
+};
+const themeKey = params.get('theme') || 'pink';
+const t = THEME_COLORS[themeKey] || THEME_COLORS.pink;
+document.documentElement.style.setProperty('--bg1', t.bg1);
+document.documentElement.style.setProperty('--bg2', t.bg2);
+document.documentElement.style.setProperty('--accent', t.accent);
+document.documentElement.style.setProperty('--accent2', t.accent2);
+
+function spawnHeart(){
+  const h = document.createElement('div');
+  h.className = 'float-heart';
+  h.textContent = '💗';
+  h.style.left = Math.random()*100 + 'vw';
+  h.style.bottom = '-30px';
+  h.style.animationDuration = (5 + Math.random()*3) + 's';
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(), 8500);
+}
+setInterval(spawnHeart, 1400);
+
+/* ---------- MUSIC ---------- */
+const music = params.get('music') || 'm1';
+const playBtn = document.getElementById('playBtn');
+const playerSub = document.getElementById('playerSub');
+let audioEl = null;
+let ytPlaying = false;
+
+if(music === 'youtube'){
+  const yturl = params.get('yturl') || '';
+  const vid = extractYouTubeId(yturl);
+  playerSub.textContent = 'YouTube audio · Tap to play';
+  playBtn.addEventListener('click', ()=>{
+    if(!vid){ playerSub.textContent = 'No valid YouTube link provided'; return; }
+    if(!ytPlaying){
+      const container = document.getElementById('ytContainer');
+      container.innerHTML = `<iframe class="yt-hidden-frame" src="https://www.youtube.com/embed/${vid}?autoplay=1&controls=0" allow="autoplay" frameborder="0"></iframe>`;
+      ytPlaying = true;
+      playBtn.textContent = '❚❚';
+      playerSub.textContent = 'Playing from YouTube';
+    } else {
+      document.getElementById('ytContainer').innerHTML = '';
+      ytPlaying = false;
+      playBtn.textContent = '▶';
+      playerSub.textContent = 'Paused';
+    }
+  });
+} else {
+  audioEl = new Audio(`assets/${music}.mp3`);
+  audioEl.loop = true;
+  playerSub.textContent = 'Tap to play';
+  playBtn.addEventListener('click', ()=>{
+    if(audioEl.paused){
+      audioEl.play().catch(()=>{ playerSub.textContent = 'Tap again to allow audio'; });
+      playBtn.textContent = '❚❚';
+      playerSub.textContent = 'Now playing';
+    } else {
+      audioEl.pause();
+      playBtn.textContent = '▶';
+      playerSub.textContent = 'Paused';
+    }
+  });
+}
+
+function extractYouTubeId(url){
+  if(!url) return null;
+  const m = url.match(/(?:youtu\.be\/|v=|embed\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+/* ---------- TIME CAPSULE ---------- */
+const capsuleMsg = params.get('capsuleMsg') || '';
+const capsuleTime = params.get('capsuleTime') || '';
+if(capsuleMsg){
+  document.getElementById('capsuleCard').style.display = 'block';
+  const note = document.getElementById('capsuleNote');
+  note.textContent = capsuleMsg;
+  const countdownText = document.getElementById('countdownText');
+  const lockedBox = document.getElementById('capsuleLocked');
+
+  let targetTime = capsuleTime ? new Date(capsuleTime).getTime() : null;
+
+  function checkUnlock(){
+    if(!targetTime || Date.now() >= targetTime){
+      lockedBox.style.display = 'none';
+      note.classList.add('revealed');
+      return true;
+    }
+    const diff = targetTime - Date.now();
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor((diff%86400000)/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+    countdownText.textContent = `${d}d ${h}h ${m}m ${s}s`;
+    return false;
+  }
+
+  if(!targetTime){
+    lockedBox.innerHTML = '<button class="unlock-btn" id="manualUnlock">Unlock Now 💌</button>';
+    document.getElementById('manualUnlock').addEventListener('click', ()=>{
+      lockedBox.style.display = 'none';
+      note.classList.add('revealed');
+    });
+  } else {
+    if(!checkUnlock()){
+      const iv = setInterval(()=>{ if(checkUnlock()) clearInterval(iv); }, 1000);
+    }
+  }
+}
+
+/* ---------- DECODER ---------- */
+const decoderHint = params.get('decoderHint') || '';
+const decoderAnswer = (params.get('decoderAnswer') || '').trim().toLowerCase();
+const decoderReveal = params.get('decoderReveal') || '';
+if(decoderHint && decoderAnswer){
+  document.getElementById('decoderCard').style.display = 'block';
+  document.getElementById('decoderHintText').textContent = '"' + decoderHint + '"';
+  const input = document.getElementById('decoderInput');
+  const feedback = document.getElementById('decoderFeedback');
+  const revealBox = document.getElementById('decoderRevealBox');
+
+  document.getElementById('decoderSubmit').addEventListener('click', ()=>{
+    const guess = input.value.trim().toLowerCase();
+    if(guess === decoderAnswer){
+      feedback.textContent = '✓ Correct!';
+      feedback.style.color = '#9dffb0';
+      revealBox.textContent = decoderReveal || 'You figured it out 💗';
+      revealBox.classList.add('show');
+    } else {
+      feedback.textContent = 'Not quite — try again';
+      feedback.style.color = '#ffb3b3';
+    }
+  });
+  input.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') document.getElementById('decoderSubmit').click();
+  });
+}
+
+/* ---------- MISS BOX ---------- */
+const missBox = params.get('missBox') || '';
+if(missBox){
+  document.getElementById('missCard').style.display = 'block';
+  document.getElementById('missQuoteText').textContent = missBox;
+}
+</script>
+</body>
+</html>

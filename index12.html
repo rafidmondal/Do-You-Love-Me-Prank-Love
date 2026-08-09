@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+<link rel="apple-touch-icon" href="/favicon-192.png" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#ff5e8e" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Love Prank" />
+<title>One Question...</title>
+<meta name="description" content="A simple question, if you can catch the answer.">
+<meta name="robots" content="noindex, follow">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#ff5e8e; --accent2:#ff8fb3; --bg1:#3a0d24; --bg2:#7a1444; --glass:rgba(255,255,255,0.14);
+    --glass-border:rgba(255,255,255,0.35); --text:#fff; --text-dim:rgba(255,255,255,0.72);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  *:focus{outline:none;}
+  html,body{width:100%;height:100%;font-family:'Nunito',sans-serif;overflow:hidden;position:fixed;touch-action:none;}
+  body{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:linear-gradient(160deg,var(--bg1) 0%,var(--bg2) 100%);color:var(--text);
+    position:relative;padding:24px;text-align:center;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;
+    background:radial-gradient(circle at 20% 15%, rgba(255,255,255,0.10), transparent 40%),
+               radial-gradient(circle at 85% 85%, rgba(255,255,255,0.08), transparent 45%);
+  }
+  .float-heart{position:fixed;pointer-events:none;font-size:1.4em;opacity:0.5;animation:floatUp linear forwards;}
+  @keyframes floatUp{
+    0%{transform:translateY(0) rotate(0deg);opacity:0.6;}
+    100%{transform:translateY(-100vh) rotate(25deg);opacity:0;}
+  }
+  .glass-card{
+    background:var(--glass);border:1px solid var(--glass-border);border-radius:26px;
+    backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+    padding:34px 26px;max-width:340px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.25);
+    position:relative;z-index:2;
+  }
+  .question{
+    font-family:'Dancing Script',cursive;font-size:2em;line-height:1.2;margin-bottom:28px;
+    background:linear-gradient(90deg,#fff,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .btn-row{display:flex;gap:16px;justify-content:center;position:relative;height:56px;}
+  .btn{
+    padding:14px 28px;border:none;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;
+    font-size:1em;cursor:pointer;transition:transform 0.15s;
+  }
+  .btn-yes{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 8px 20px rgba(255,94,142,0.45);}
+  .btn-yes:active{transform:scale(0.94);}
+  .btn-no{
+    background:rgba(255,255,255,0.16);color:#fff;border:1px solid var(--glass-border);
+    position:relative;
+  }
+  .btn-no.runaway{position:fixed;transition:top 0.18s ease, left 0.18s ease;z-index:50;}
+  .hint{margin-top:18px;font-size:0.78em;color:var(--text-dim);}
+</style>
+</head>
+<body id="pageBody">
+<div class="glass-card">
+  <div class="question" id="questionText">Do you love me?</div>
+  <div class="btn-row">
+    <button class="btn btn-yes" id="yesBtn">Yes 💗</button>
+    <button class="btn btn-no" id="noBtn">No</button>
+  </div>
+  <div class="hint" id="hintText">Go on, tap Yes. It's easy 😌</div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const question = params.get('prankQuestion') || 'Do you love me?';
+const runaway = params.get('runaway') !== '0';
+
+document.getElementById('questionText').textContent = question;
+
+const THEME_COLORS = {
+  pink:{bg1:'#3a0d24',bg2:'#7a1444',accent:'#ff5e8e',accent2:'#ff8fb3'},
+  gold:{bg1:'#3a2905',bg2:'#7a5a10',accent:'#ffd76a',accent2:'#f0b429'},
+  emerald:{bg1:'#052e22',bg2:'#0e6b4a',accent:'#5be3a6',accent2:'#2fbf83'},
+  ruby:{bg1:'#330309',bg2:'#7a1020',accent:'#ff6b6b',accent2:'#e0223f'},
+  sunset:{bg1:'#3a1503',bg2:'#8a3d0c',accent:'#ff9a5a',accent2:'#ff7043'},
+  ocean:{bg1:'#02233a',bg2:'#0d5088',accent:'#5ac8ff',accent2:'#2a8fd8'}
+};
+const themeKey = params.get('theme') || 'pink';
+const t = THEME_COLORS[themeKey] || THEME_COLORS.pink;
+document.documentElement.style.setProperty('--bg1', t.bg1);
+document.documentElement.style.setProperty('--bg2', t.bg2);
+document.documentElement.style.setProperty('--accent', t.accent);
+document.documentElement.style.setProperty('--accent2', t.accent2);
+
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+const hintText = document.getElementById('hintText');
+let dodgeCount = 0;
+
+function spawnHeart(){
+  const h = document.createElement('div');
+  h.className = 'float-heart';
+  h.textContent = '💗';
+  h.style.left = Math.random()*100 + 'vw';
+  h.style.bottom = '-30px';
+  h.style.animationDuration = (4 + Math.random()*3) + 's';
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(), 7500);
+}
+setInterval(spawnHeart, 900);
+
+function dodge(){
+  if(!runaway) return;
+  dodgeCount++;
+  noBtn.classList.add('runaway');
+  const btnW = noBtn.offsetWidth || 90;
+  const btnH = noBtn.offsetHeight || 50;
+  const maxX = window.innerWidth - btnW - 16;
+  const maxY = window.innerHeight - btnH - 16;
+  const newX = Math.max(16, Math.random() * maxX);
+  const newY = Math.max(16, Math.random() * maxY);
+  noBtn.style.left = newX + 'px';
+  noBtn.style.top = newY + 'px';
+
+  const hints = [
+    "Nice try 😏","Nope, can't catch this one","Try Yes instead 💗",
+    "So close!","Almost had it 😄","Yes is right there though..."
+  ];
+  hintText.textContent = hints[Math.min(dodgeCount-1, hints.length-1)];
+}
+
+noBtn.addEventListener('pointerenter', dodge);
+noBtn.addEventListener('pointerdown', (e)=>{ e.preventDefault(); dodge(); });
+noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); dodge(); }, {passive:false});
+document.addEventListener('pointermove', (e)=>{
+  if(!runaway || !noBtn.classList.contains('runaway')) return;
+  const rect = noBtn.getBoundingClientRect();
+  const dx = e.clientX - (rect.left+rect.width/2);
+  const dy = e.clientY - (rect.top+rect.height/2);
+  const dist = Math.sqrt(dx*dx+dy*dy);
+  if(dist < 90) dodge();
+});
+
+yesBtn.addEventListener('click', ()=>{
+  const search = window.location.search;
+  window.location.href = 'index13.html' + search;
+});
+</script>
+</body>
+</html>

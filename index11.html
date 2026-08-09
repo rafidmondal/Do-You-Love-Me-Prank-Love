@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+<link rel="apple-touch-icon" href="/favicon-192.png" />
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#ff5e8e" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Love Prank" />
+<title>Create Your Love Experience</title>
+<meta name="description" content="Design a custom love prank link — time capsule, decoder game, and music, all yours to configure.">
+<meta name="robots" content="noindex, follow">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#ff5e8e; --accent2:#ff8fb3; --bg1:#3a0d24; --bg2:#7a1444; --glass:rgba(255,255,255,0.14);
+    --glass-border:rgba(255,255,255,0.35); --text:#fff; --text-dim:rgba(255,255,255,0.72);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  *:focus{outline:none;}
+  html,body{width:100%;min-height:100%;font-family:'Nunito',sans-serif;color:var(--text);}
+  body{
+    background:linear-gradient(160deg,var(--bg1) 0%,var(--bg2) 100%);
+    background-attachment:fixed;
+    padding:26px 16px 60px;
+    transition:background 0.6s ease;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(circle at 20% 10%, rgba(255,255,255,0.10), transparent 40%),
+               radial-gradient(circle at 90% 80%, rgba(255,255,255,0.08), transparent 45%);
+  }
+  .wrap{max-width:520px;margin:0 auto;position:relative;z-index:1;}
+  .top-back{
+    display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.15);
+    color:#fff;text-decoration:none;font-size:12px;font-weight:700;padding:7px 14px;
+    border-radius:20px;margin-bottom:18px;border:1px solid var(--glass-border);backdrop-filter:blur(8px);
+  }
+  .hero{text-align:center;margin-bottom:26px;}
+  .hero h1{font-family:'Dancing Script',cursive;font-size:2.4em;line-height:1.1;
+    background:linear-gradient(90deg,#fff,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p{color:var(--text-dim);font-size:0.88em;margin-top:6px;}
+
+  .glass-card{
+    background:var(--glass);border:1px solid var(--glass-border);border-radius:22px;
+    backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+    padding:20px;margin-bottom:18px;box-shadow:0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+  .section-title{display:flex;align-items:center;gap:8px;font-weight:800;font-size:1.02em;margin-bottom:12px;}
+  .section-title .emoji{font-size:1.2em;}
+  .section-sub{color:var(--text-dim);font-size:0.8em;margin-bottom:12px;line-height:1.5;}
+
+  /* Theme selector */
+  .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .theme-swatch{
+    border-radius:14px;padding:12px 6px;text-align:center;cursor:pointer;border:2px solid transparent;
+    font-size:0.75em;font-weight:700;transition:transform 0.2s, border-color 0.2s;color:#fff;
+    position:relative;overflow:hidden;
+  }
+  .theme-swatch.active{border-color:#fff;transform:scale(1.04);}
+  .theme-swatch .dot{width:26px;height:26px;border-radius:50%;margin:0 auto 6px;box-shadow:0 3px 8px rgba(0,0,0,0.3);}
+  .t-pink .dot{background:linear-gradient(135deg,#ff5e8e,#c2185b);}
+  .t-gold .dot{background:linear-gradient(135deg,#ffd76a,#c98a1f);}
+  .t-emerald .dot{background:linear-gradient(135deg,#5be3a6,#0e8a5f);}
+  .t-ruby .dot{background:linear-gradient(135deg,#ff6b6b,#a30f26);}
+  .t-sunset .dot{background:linear-gradient(135deg,#ff9a5a,#d9480f);}
+  .t-ocean .dot{background:linear-gradient(135deg,#5ac8ff,#1258a8);}
+  .theme-swatch{background:rgba(255,255,255,0.08);}
+
+  label.field-label{display:block;font-size:0.82em;font-weight:700;margin-bottom:6px;color:var(--text);}
+  input[type="text"], input[type="datetime-local"], textarea, select{
+    width:100%;background:rgba(255,255,255,0.12);border:1px solid var(--glass-border);
+    border-radius:12px;padding:11px 13px;color:#fff;font-family:'Nunito',sans-serif;font-size:0.9em;
+    margin-bottom:12px;backdrop-filter:blur(6px);
+  }
+  input::placeholder, textarea::placeholder{color:rgba(255,255,255,0.55);}
+  textarea{resize:vertical;min-height:70px;}
+  select option{color:#111;}
+
+  .quote-list{display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto;margin-bottom:12px;
+    background:rgba(0,0,0,0.15);border-radius:12px;padding:8px;}
+  .quote-chip{
+    background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.2);border-radius:10px;
+    padding:9px 11px;font-size:0.8em;cursor:pointer;transition:background 0.15s;display:flex;justify-content:space-between;gap:8px;align-items:center;
+  }
+  .quote-chip:active{background:rgba(255,255,255,0.25);}
+  .quote-chip .copy-tag{font-size:0.7em;opacity:0.7;white-space:nowrap;}
+
+  .music-options{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+  .music-pill{
+    flex:1;min-width:80px;text-align:center;padding:10px 8px;border-radius:14px;
+    background:rgba(255,255,255,0.10);border:2px solid transparent;cursor:pointer;font-size:0.82em;font-weight:700;
+  }
+  .music-pill.active{border-color:#fff;background:rgba(255,255,255,0.22);}
+  .music-pill .icon{display:block;font-size:1.3em;margin-bottom:3px;}
+  audio.preview-audio{width:100%;margin-top:6px;}
+
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .switch{position:relative;width:46px;height:26px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider-toggle{position:absolute;cursor:pointer;inset:0;background:rgba(255,255,255,0.25);border-radius:34px;transition:0.3s;}
+  .slider-toggle::before{content:'';position:absolute;height:20px;width:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:0.3s;}
+  .switch input:checked + .slider-toggle{background:var(--accent);}
+  .switch input:checked + .slider-toggle::before{transform:translateX(20px);}
+
+  .generate-btn{
+    width:100%;padding:16px;border:none;border-radius:50px;font-family:'Nunito',sans-serif;
+    font-weight:800;font-size:1em;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));
+    color:#fff;box-shadow:0 8px 22px rgba(255,94,142,0.45);margin-top:6px;
+  }
+  .link-output{
+    margin-top:14px;background:rgba(0,0,0,0.25);border-radius:14px;padding:12px;font-size:0.75em;
+    word-break:break-all;color:var(--text-dim);display:none;
+  }
+  .link-output.show{display:block;}
+  .copied-msg{text-align:center;font-size:0.8em;color:#9dffb0;margin-top:8px;display:none;font-weight:700;}
+  .copied-msg.show{display:block;}
+
+  .live-preview{
+    text-align:center;padding:16px;border-radius:16px;margin-top:4px;
+    background:rgba(255,255,255,0.06);border:1px dashed var(--glass-border);font-size:0.8em;color:var(--text-dim);
+  }
+  ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.3);border-radius:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" class="top-back">← Back</a>
+  <div class="hero">
+    <h1>Craft It With Love</h1>
+    <p>Set your theme, hide a message, pick your song — then send the link.</p>
+  </div>
+
+  <!-- THEME -->
+  <div class="glass-card">
+    <div class="section-title"><span class="emoji">🎨</span> Choose Your Theme</div>
+    <div class="theme-grid" id="themeGrid">
+      <div class="theme-swatch t-pink active" data-theme="pink"><div class="dot"></div>Pink Glass</div>
+      <div class="theme-swatch t-gold" data-theme="gold"><div class="dot"></div>Yellow Gold</div>
+      <div class="theme-swatch t-emerald" data-theme="emerald"><div class="dot"></div>Emerald</div>
+      <div class="theme-swatch t-ruby" data-theme="ruby"><div class="dot"></div>Ruby Red</div>
+      <div class="theme-swatch t-sunset" data-theme="sunset"><div class="dot"></div>Sunset</div>
+      <div class="theme-swatch t-ocean" data-theme="ocean"><div class="dot"></div>Ocean Blue</div>
+    </div>
+  </div>
+
+  <!-- TIME CAPSULE -->
+  <div class="glass-card">
+    <div class="section-title"><span class="emoji">⏳</span> Time Capsule Confession</div>
+    <div class="section-sub">Write a hidden note. It unlocks only after the date/time you set.</div>
+    <label class="field-label">Your secret note</label>
+    <textarea id="capsuleMsg" placeholder="Something I've always wanted to tell you..."></textarea>
+    <label class="field-label">Unlocks at</label>
+    <input type="datetime-local" id="capsuleTime">
+  </div>
+
+  <!-- DECODER -->
+  <div class="glass-card">
+    <div class="section-title"><span class="emoji">🔐</span> Two-Way Love Decoder</div>
+    <div class="section-sub">Leave an encoded hint or question — they'll have to solve it to see your message.</div>
+    <label class="field-label">Hint / riddle</label>
+    <input type="text" id="decoderHint" placeholder="e.g. Where we had our first date">
+    <label class="field-label">Secret answer</label>
+    <input type="text" id="decoderAnswer" placeholder="e.g. cafe corner">
+    <label class="field-label">Message revealed on success</label>
+    <textarea id="decoderReveal" placeholder="You unlocked my heart 💗"></textarea>
+  </div>
+
+  <!-- PRANK -->
+  <div class="glass-card">
+    <div class="section-title"><span class="emoji">💘</span> Custom Love Prank</div>
+    <div class="section-sub">Ask a yes/no question. "No" can run away from their cursor/finger.</div>
+    <label class="field-label">Your question</label>
+    <input type="text" id="prankQuestion" placeholder="Do you love me?">
+    <div class="toggle-row">
+      <span>Make "No" button run away</span>
+      <label class="switch"><input type="checkbox" id="runawayToggle" checked><span class="slider-toggle"></span></label>
+    </div>
+    <label class="field-label">"When do you miss me the most?" — tap a quote to use it</label>
+    <div class="quote-list" id="quoteList"></div>
+    <input type="text" id="missBox" placeholder="Tap a quote above, or type your own">
+  </div>
+
+  <!-- MUSIC -->
+  <div class="glass-card">
+    <div class="section-title"><span class="emoji">🎵</span> Background Music</div>
+    <div class="music-options" id="musicOptions">
+      <div class="music-pill active" data-music="m1"><span class="icon">🎶</span>Track 1</div>
+      <div class="music-pill" data-music="m2"><span class="icon">🎼</span>Track 2</div>
+      <div class="music-pill" data-music="m3"><span class="icon">🎹</span>Track 3</div>
+      <div class="music-pill" data-music="youtube"><span class="icon">▶️</span>YouTube</div>
+    </div>
+    <audio id="previewAudio" class="preview-audio" controls src="assets/m1.mp3"></audio>
+    <input type="text" id="youtubeUrl" placeholder="Paste YouTube URL..." style="display:none;">
+  </div>
+
+  <!-- GENERATE -->
+  <div class="glass-card">
+    <div class="section-title"><span class="emoji">🔗</span> Generate Your Link</div>
+    <div class="live-preview" id="livePreview">Theme: Pink Glass · Music: Track 1</div>
+    <button class="generate-btn" id="generateBtn">Generate &amp; Copy Link</button>
+    <div class="copied-msg" id="copiedMsg">✓ Link copied to clipboard!</div>
+    <div class="link-output" id="linkOutput"></div>
+  </div>
+</div>
+
+<script>
+const THEME_COLORS = {
+  pink:   {bg1:'#3a0d24', bg2:'#7a1444', accent:'#ff5e8e', accent2:'#ff8fb3', label:'Pink Glass'},
+  gold:   {bg1:'#3a2905', bg2:'#7a5a10', accent:'#ffd76a', accent2:'#f0b429', label:'Yellow Gold'},
+  emerald:{bg1:'#052e22', bg2:'#0e6b4a', accent:'#5be3a6', accent2:'#2fbf83', label:'Emerald Green'},
+  ruby:   {bg1:'#330309', bg2:'#7a1020', accent:'#ff6b6b', accent2:'#e0223f', label:'Ruby Red'},
+  sunset: {bg1:'#3a1503', bg2:'#8a3d0c', accent:'#ff9a5a', accent2:'#ff7043', label:'Sunset Orange'},
+  ocean:  {bg1:'#02233a', bg2:'#0d5088', accent:'#5ac8ff', accent2:'#2a8fd8', label:'Ocean Blue'}
+};
+
+const QUOTES = [
+  "When the night gets quiet and the world slows down.",
+  "Every time a song reminds me of you.",
+  "In the space between one heartbeat and the next.",
+  "When I see something funny and want to tell you first.",
+  "Right before I fall asleep, and right after I wake up.",
+  "Whenever it rains — you always loved the rain.",
+  "In every empty seat beside me.",
+  "When I scroll past our old photos.",
+  "At 2am, when the world is asleep but my thoughts aren't.",
+  "Every single day, a little more than yesterday."
+];
+
+let selectedTheme = 'pink';
+let selectedMusic = 'm1';
+
+function applyTheme(key){
+  const t = THEME_COLORS[key];
+  document.documentElement.style.setProperty('--bg1', t.bg1);
+  document.documentElement.style.setProperty('--bg2', t.bg2);
+  document.documentElement.style.setProperty('--accent', t.accent);
+  document.documentElement.style.setProperty('--accent2', t.accent2);
+  updatePreview();
+}
+
+document.querySelectorAll('.theme-swatch').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.remove('active'));
+    el.classList.add('active');
+    selectedTheme = el.dataset.theme;
+    applyTheme(selectedTheme);
+  });
+});
+
+const quoteList = document.getElementById('quoteList');
+QUOTES.forEach(q=>{
+  const chip = document.createElement('div');
+  chip.className = 'quote-chip';
+  chip.innerHTML = `<span>${q}</span><span class="copy-tag">tap to use</span>`;
+  chip.addEventListener('click', ()=>{
+    document.getElementById('missBox').value = q;
+  });
+  quoteList.appendChild(chip);
+});
+
+const previewAudio = document.getElementById('previewAudio');
+const youtubeUrl = document.getElementById('youtubeUrl');
+document.querySelectorAll('.music-pill').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    document.querySelectorAll('.music-pill').forEach(s=>s.classList.remove('active'));
+    el.classList.add('active');
+    selectedMusic = el.dataset.music;
+    if(selectedMusic === 'youtube'){
+      previewAudio.style.display = 'none';
+      youtubeUrl.style.display = 'block';
+    } else {
+      previewAudio.style.display = 'block';
+      youtubeUrl.style.display = 'none';
+      previewAudio.src = `assets/${selectedMusic}.mp3`;
+    }
+    updatePreview();
+  });
+});
+
+function updatePreview(){
+  const musicLabel = selectedMusic === 'youtube' ? 'YouTube link' : selectedMusic.toUpperCase();
+  document.getElementById('livePreview').textContent =
+    `Theme: ${THEME_COLORS[selectedTheme].label} · Music: ${musicLabel}`;
+}
+updatePreview();
+
+document.getElementById('generateBtn').addEventListener('click', ()=>{
+  const params = new URLSearchParams();
+  params.set('theme', selectedTheme);
+  params.set('music', selectedMusic);
+  if(selectedMusic === 'youtube') params.set('yturl', youtubeUrl.value.trim());
+  params.set('capsuleMsg', document.getElementById('capsuleMsg').value.trim());
+  params.set('capsuleTime', document.getElementById('capsuleTime').value);
+  params.set('decoderHint', document.getElementById('decoderHint').value.trim());
+  params.set('decoderAnswer', document.getElementById('decoderAnswer').value.trim());
+  params.set('decoderReveal', document.getElementById('decoderReveal').value.trim());
+  params.set('prankQuestion', document.getElementById('prankQuestion').value.trim() || 'Do you love me?');
+  params.set('runaway', document.getElementById('runawayToggle').checked ? '1' : '0');
+  params.set('missBox', document.getElementById('missBox').value.trim());
+
+  const base = window.location.href.replace(/index11\.html.*$/, '');
+  const finalUrl = base + 'index12.html?' + params.toString();
+
+  const linkOutput = document.getElementById('linkOutput');
+  linkOutput.textContent = finalUrl;
+  linkOutput.classList.add('show');
+
+  const copiedMsg = document.getElementById('copiedMsg');
+  const showCopied = ()=>{
+    copiedMsg.classList.add('show');
+    setTimeout(()=>copiedMsg.classList.remove('show'), 2200);
+  };
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(finalUrl).then(showCopied).catch(()=>{
+      fallbackCopy(finalUrl); showCopied();
+    });
+  } else {
+    fallbackCopy(finalUrl); showCopied();
+  }
+});
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
+</script>
+</body>
+</html>
