@@ -171,6 +171,83 @@
             font-size: 0.9em;
             line-height: 1.6;
         }
+
+        .score-circle {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            margin: 14px auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: conic-gradient(#ff5e8e calc(var(--pct) * 1%), #ffe1ec 0);
+            position: relative;
+            transition: background 1s ease;
+        }
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 122px; height: 122px;
+            background: #fff;
+            border-radius: 50%;
+        }
+        .score-inner { position: relative; z-index: 1; text-align: center; }
+        .score-num { font-size: 1.9em; font-weight: 800; color: #c2185b; }
+        .score-label { font-size: 0.7em; color: #7a4560; font-weight: 700; }
+
+        .qa-item {
+            background: #fff8fb;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateY(8px);
+            animation: fadeUp 0.4s ease forwards;
+        }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        .qa-question-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .qa-question { font-size: 0.78em; font-weight: 700; color: #4a1230; }
+        .qa-badge {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.62em;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            padding: 4px 9px 4px 7px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        .qa-badge.is-match {
+            background: linear-gradient(135deg, #34d17a, #1f9e5c);
+            color: #fff;
+            box-shadow: 0 3px 8px rgba(31,158,92,0.35);
+        }
+        .qa-badge.is-nomatch {
+            background: #f1e4ea;
+            color: #9c7a8c;
+        }
+        .qa-badge svg { width: 11px; height: 11px; flex-shrink: 0; }
+        .qa-answers { display: flex; gap: 8px; }
+        .qa-answer {
+            flex: 1;
+            font-size: 0.75em;
+            color: #7a4560;
+            background: #ffe1ec;
+            border-radius: 10px;
+            padding: 6px 9px;
+            line-height: 1.4;
+        }
+        .qa-answer.match { background: #d7f5df; color: #1f7a3d; }
+        .qa-answer-label { font-size: 0.62em; font-weight: 800; opacity: 0.6; display: block; margin-bottom: 2px; }
+
         .secondary-btn {
             width: 100%;
             margin-top: 10px;
@@ -249,6 +326,35 @@
         div.textContent = str;
         return div.innerHTML;
     }
+    function normalize(s) {
+        return s.toLowerCase().trim().replace(/[.,!?;:'"]/g, '');
+    }
+    function similar(a, b) {
+        const na = normalize(a), nb = normalize(b);
+        if (!na || !nb) return false;
+        if (na === nb) return true;
+        const wordsA = new Set(na.split(' ').filter(w => w.length > 2));
+        const wordsB = new Set(nb.split(' ').filter(w => w.length > 2));
+        let overlap = 0;
+        wordsA.forEach(w => { if (wordsB.has(w)) overlap++; });
+        return overlap >= 1;
+    }
+    function computeMatch(senderAnswers, myAnswers) {
+        const pairs = QUESTIONS.map((q, i) => ({
+            q,
+            a1: senderAnswers[i] || '',
+            a2: myAnswers[i] || '',
+            match: similar(senderAnswers[i] || '', myAnswers[i] || '')
+        }));
+        const matchCount = pairs.filter(p => p.match).length;
+        const pct = Math.round((matchCount / QUESTIONS.length) * 100);
+        return { pairs, pct };
+    }
+    function verdictFor(pct) {
+        if (pct >= 75) return "Wow, you two match really well! 💞";
+        if (pct >= 40) return "You match on some things, differ on others 💗";
+        return "Different perspectives — but that's interesting too! 💗";
+    }
 
     const hash = window.location.hash.slice(1);
     const incoming = hash ? decodeData(hash) : null;
@@ -292,10 +398,7 @@
         card.innerHTML = `
             <div class="mystery-icon">💌</div>
             <div class="title">Someone left you something</div>
-            <div class="subtitle"><b>${escapeHtml(data.n)}</b> answered a few questions for you. Answer them too, and see how well you match!</div>
-
-            <label class="first">Your name</label>
-            <input type="text" id="myNameInput" placeholder="Who are you?" maxlength="24">
+            <div class="subtitle">Answer a few questions, and see how well you match!</div>
 
             <div id="qStep"></div>
         `;
@@ -319,9 +422,6 @@
         `;
 
         document.getElementById('nextBtn').addEventListener('click', () => {
-            const nameVal = document.getElementById('myNameInput').value.trim();
-            if (!nameVal) { showToast('Enter your name first 🙂'); return; }
-
             const ansVal = document.getElementById('answerInput').value.trim();
             if (!ansVal) { showToast('Please answer the question'); return; }
             myAnswers[currentQ] = ansVal;
@@ -330,7 +430,7 @@
                 currentQ++;
                 renderQuestionStep();
             } else {
-                finishAnswering(nameVal);
+                finishAnswering();
             }
         });
 
@@ -342,24 +442,94 @@
         });
 
         document.getElementById('skipBtn').addEventListener('click', () => {
-            const nameVal = document.getElementById('myNameInput').value.trim();
-            if (!nameVal) { showToast('Enter your name first 🙂'); return; }
             myAnswers[currentQ] = document.getElementById('answerInput').value.trim() || '(skipped)';
 
             if (!isLast) {
                 currentQ++;
                 renderQuestionStep();
             } else {
-                finishAnswering(nameVal);
+                finishAnswering();
             }
         });
     }
 
-    function finishAnswering(nameVal) {
-        const payload = { n: senderData.n, a: senderData.a, n2: nameVal, a2: myAnswers };
-        const encoded = encodeData(payload);
-        try { sessionStorage.setItem('decoderOwner_' + encoded.slice(0, 24), '1'); } catch (e) {}
-        window.location.href = 'index7.html#' + encoded;
+    function finishAnswering() {
+        renderMatchResult();
+    }
+
+    // ---------- Result: shown right here in index6, comparing sender vs my answers ----------
+    function renderMatchResult() {
+        const { pairs, pct } = computeMatch(senderData.a, myAnswers);
+        const verdict = verdictFor(pct);
+
+        card.innerHTML = `
+            <div class="title" style="font-size:1.6em;">Match Result 💕</div>
+            <div class="subtitle">Here's how your answers compare with <b>${escapeHtml(senderData.n)}</b>'s:</div>
+
+            <div class="score-circle" style="--pct:0" id="scoreCircle">
+                <div class="score-inner">
+                    <div class="score-num" id="scoreNum">0%</div>
+                    <div class="score-label">MATCH</div>
+                </div>
+            </div>
+            <div class="subtitle">${verdict}</div>
+
+            <div id="qaWrap" style="margin-top:14px;"></div>
+
+            <button class="secondary-btn" id="shareResultBtn">📤 Share Result</button>
+            <button class="secondary-btn" id="restartBtn">🔄 Start New</button>
+        `;
+
+        // Animate the score circle counting up
+        const circle = document.getElementById('scoreCircle');
+        const numEl = document.getElementById('scoreNum');
+        let current = 0;
+        const step = () => {
+            current += 2;
+            if (current >= pct) current = pct;
+            circle.style.setProperty('--pct', current);
+            numEl.textContent = current + '%';
+            if (current < pct) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+
+        const qaWrap = document.getElementById('qaWrap');
+        pairs.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'qa-item';
+            div.style.animationDelay = (i * 0.12) + 's';
+            div.innerHTML = `
+                <div class="qa-question-row">
+                    <div class="qa-question">${escapeHtml(p.q)}</div>
+                    <span class="qa-badge ${p.match ? 'is-match' : 'is-nomatch'}">
+                        ${p.match
+                            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Match'
+                            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> No match'}
+                    </span>
+                </div>
+                <div class="qa-answers">
+                    <div class="qa-answer ${p.match ? 'match' : ''}">
+                        <span class="qa-answer-label">${escapeHtml(senderData.n)}</span>${escapeHtml(p.a1)}
+                    </div>
+                    <div class="qa-answer ${p.match ? 'match' : ''}">
+                        <span class="qa-answer-label">You</span>${escapeHtml(p.a2)}
+                    </div>
+                </div>
+            `;
+            qaWrap.appendChild(div);
+        });
+
+        document.getElementById('shareResultBtn').addEventListener('click', () => {
+            const text = `${senderData.n} & You — ${pct}% Love Match! 💕`;
+            if (navigator.share) {
+                navigator.share({ title: 'Love Decoder Result', text }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(text).then(() => showToast('Result copied!'));
+            }
+        });
+        document.getElementById('restartBtn').addEventListener('click', () => {
+            window.location.href = 'index3.html';
+        });
     }
     </script>
 </body>
