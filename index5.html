@@ -713,15 +713,27 @@
               font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px;
               box-shadow:0 2px 6px rgba(0,0,0,0.12); white-space:nowrap;">Birthday website 👈</a>
 
-    <!-- Advance Option — premium button below Birthday website tag -->
+    <!-- Advance Edit — premium button below Birthday website tag -->
     <a href="index3.html"
        style="position:fixed; top:38px; left:8px; z-index:10000; text-decoration:none;
-              display:inline-flex; align-items:center; gap:5px;
-              background:linear-gradient(135deg,#ffd76e,#ffb238); color:#7a3b00;
+              display:inline-flex; align-items:center; gap:6px;
+              background:linear-gradient(135deg,#2c2a4a 0%,#1a1830 100%); color:#f3d98b;
               font-family:'Nunito', sans-serif; font-size:11px; font-weight:800;
-              padding:6px 13px; border-radius:20px;
-              box-shadow:0 3px 10px rgba(255,178,56,0.5), inset 0 1px 0 rgba(255,255,255,0.6);
-              white-space:nowrap;">✨ Advance Option</a>
+              padding:6px 14px 6px 10px; border-radius:20px;
+              box-shadow:0 3px 12px rgba(0,0,0,0.35), 0 0 0 1px rgba(243,217,139,0.35) inset, inset 0 1px 0 rgba(255,255,255,0.15);
+              white-space:nowrap; letter-spacing:0.2px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+            <defs>
+                <linearGradient id="advEditGrad2" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#ffe9a8"/>
+                    <stop offset="1" stop-color="#d4af37"/>
+                </linearGradient>
+            </defs>
+            <path d="M16.474 5.408l2.118 2.118a1.5 1.5 0 010 2.121l-8.383 8.383-4.239.706.706-4.24 8.383-8.382a1.5 1.5 0 012.121 0z" stroke="url(#advEditGrad2)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14.5 7.5l2 2" stroke="url(#advEditGrad2)" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        Advance Edit
+    </a>
 
     <!-- Share + Copy Link buttons, top-right, liquid-glass style -->
     <div style="position:fixed; top:8px; right:8px; z-index:10000; display:flex; gap:6px;">
@@ -836,7 +848,7 @@ yesBtn.addEventListener('click', function(e) {
     }
 
     const data = decodeData(hash);
-    if (!data || (!data.n && !data.m && !data.q)) return; // not a valid capsule link — show default page
+    if (!data) return; // not a valid capsule link — show default page
 
     window.__capsuleHash = hash; // forward this to index4.html when Yes is tapped
     window.__capsuleData = data;

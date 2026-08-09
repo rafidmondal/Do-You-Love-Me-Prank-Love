@@ -189,7 +189,7 @@
     const hash = window.location.hash.slice(1);
     const data = hash ? decodeData(hash) : null;
 
-    if (!data || (!data.n && !data.m)) {
+    if (!data) {
         renderEmptyState();
     } else {
         renderResult(data);
