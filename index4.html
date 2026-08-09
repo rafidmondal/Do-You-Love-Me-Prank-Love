@@ -186,10 +186,26 @@
         setTimeout(() => toastEl.classList.remove('show'), 2200);
     }
 
+    function decodeData(str) {
+        try {
+            let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+            while (b64.length % 4) b64 += '=';
+            const json = decodeURIComponent(escape(atob(b64)));
+            return JSON.parse(json);
+        } catch (e) {
+            return null;
+        }
+    }
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
     const hash = window.location.hash.slice(1);
     const data = hash ? decodeData(hash) : null;
 
-    if (!data) {
+    if (!data || (!data.n && !data.m)) {
         renderEmptyState();
     } else {
         renderResult(data);

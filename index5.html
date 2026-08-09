@@ -848,7 +848,7 @@ yesBtn.addEventListener('click', function(e) {
     }
 
     const data = decodeData(hash);
-    if (!data) return; // not a valid capsule link — show default page
+    if (!data || (!data.n && !data.m && !data.q)) return; // not a valid capsule link — show default page
 
     window.__capsuleHash = hash; // forward this to index4.html when Yes is tapped
     window.__capsuleData = data;
