@@ -1009,6 +1009,35 @@ function copyPageLink() {
     <!-- Adstra banner ad script (zone 11534127) -->
     <script>(function(s){s.dataset.zone='11534127',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 
+    <!-- Force the Adstra ad (whatever container it injects) to sit fixed at the very bottom,
+         next to the Adsterra banner, instead of wherever it inserts itself by default. -->
+    <script>
+    (function() {
+        function pinAdstraToBottom() {
+            var target = document.getElementById('adstra-banner');
+            if (!target) return;
+            // The nap5k script typically injects a new element as the last child of <body>.
+            // Move that element into our fixed-position container once it appears.
+            var before = new Set(Array.from(document.body.children));
+            var attempts = 0;
+            var timer = setInterval(function() {
+                attempts++;
+                var newEls = Array.from(document.body.children).filter(function(el) {
+                    return !before.has(el) && el.id !== 'adstra-banner' && el.tagName !== 'SCRIPT';
+                });
+                if (newEls.length > 0) {
+                    newEls.forEach(function(el) { target.appendChild(el); });
+                    clearInterval(timer);
+                } else if (attempts > 40) { // stop trying after ~10s
+                    clearInterval(timer);
+                }
+            }, 250);
+        }
+        if (document.readyState === 'complete') pinAdstraToBottom();
+        else window.addEventListener('load', pinAdstraToBottom);
+    })();
+    </script>
+
     <!-- PWA: service worker registration + install prompt -->
     <script>
     if ('serviceWorker' in navigator) {
