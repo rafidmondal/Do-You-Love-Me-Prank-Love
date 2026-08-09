@@ -1,7 +1,7 @@
 {
   "name": "Do You Love Me? Yes or No Prank Game",
   "short_name": "Love Prank",
-  "description": "Play Do You Love Me, the viral Yes or No love prank. Click Yes or try to catch the No button — it runs away every time!",
+  "description": "Play Do You Love Me — the viral Yes or No love prank and interactive proposal website. Click Yes or try to catch the No button (it runs away every time!). Send a personalized link to your crush, girlfriend, boyfriend, or valentine.",
   "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
