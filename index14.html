@@ -998,109 +998,126 @@ $('#trackSelect').addEventListener('change', ()=>{
   if(musicPlaying){ clearTimeout(musicTimer); chordIndex=0; scheduleTrack(); }
 });
 
-/* ===================== EXPORT: PNG / JPEG / PDF / PRINT / SHARE ===================== */
-function waitFrames(n){
-  return new Promise(resolve=>{
-    function step(){ n--; if(n<=0) resolve(); else requestAnimationFrame(step); }
-    requestAnimationFrame(step);
+/* ===================== FIXED EXPORT: PNG / JPEG / PDF / PRINT / SHARE ===================== */
+
+// Resolve ALL color-mix() values in computed styles and bake them as inline styles
+function bakeAllColors(root) {
+  const els = root.querySelectorAll('*');
+  const colorProps = [
+    'color','backgroundColor','borderColor','borderTopColor','borderRightColor',
+    'borderBottomColor','borderLeftColor','outlineColor','textShadow','boxShadow',
+    'background','backgroundImage'
+  ];
+  const baked = [];
+  els.forEach(el => {
+    const cs = getComputedStyle(el);
+    colorProps.forEach(prop => {
+      const val = cs[prop];
+      if (val && val.includes('color-mix')) {
+        baked.push({ el, prop, old: el.style[prop] });
+        el.style[prop] = val;
+      }
+    });
+  });
+  return baked;
+}
+
+function restoreBakedColors(baked) {
+  baked.forEach(b => {
+    b.el.style[b.prop] = b.old;
   });
 }
-async function captureCanvas(){
-  const target = $('#book');
-  const wasOpen = state.opened;
-  const prevTransform = bookTilt.style.transform;
 
-  // Freeze all motion and force the cover instantly open (no mid-transition frame),
-  // so every export always reflects the latest edits cleanly instead of a half-animated state.
-  bookCover.style.transition = 'none';
-  bookTilt.style.transition = 'none';
-  document.querySelector('.book-float').style.animation = 'none';
-  bookTilt.style.transform = 'none';
-  book.classList.add('open');
+// Create a clean 2D clone of the card for export (no 3D transforms)
+function createExportClone() {
+  const original = $('#book');
+  const clone = original.cloneNode(true);
 
-  // html2canvas cannot render real 3D CSS (perspective / preserve-3d / translateZ / rotateY).
-  // Flatten every 3D-transformed element in the card to plain 2D just for the capture,
-  // then restore each inline style exactly afterward so the live card is unaffected.
-  const els = [target, ...target.querySelectorAll('*')];
-  const restore = [];
-  els.forEach(el=>{
-    const cs = getComputedStyle(el);
-    const needsFlatten = cs.transformStyle === 'preserve-3d' || cs.perspective !== 'none' ||
-      (cs.transform !== 'none' && /translateZ|rotateY|rotateX|matrix3d|perspective/.test(el.style.transform || cs.transform));
-    if(needsFlatten){
-      restore.push({ el, transform: el.style.transform, transformStyle: el.style.transformStyle, perspective: el.style.perspective, transition: el.style.transition });
-      el.style.transition = 'none';
-      el.style.perspective = 'none';
-      el.style.transformStyle = 'flat';
-      if(el.id !== 'bookCover'){
-        el.style.transform = 'none';
-      }
-    }
-  });
-  document.querySelectorAll('.cover-face').forEach(f=> f.style.display = 'none');
-  const insideEl = document.getElementById('insideContent');
-  if(insideEl) insideEl.style.visibility = 'visible';
+  // Position off-screen but visible for html2canvas
+  clone.style.position = 'fixed';
+  clone.style.top = '-9999px';
+  clone.style.left = '-9999px';
+  clone.style.width = original.offsetWidth + 'px';
+  clone.style.height = original.offsetHeight + 'px';
+  clone.style.maxWidth = 'none';
+  clone.style.maxHeight = 'none';
+  clone.style.transform = 'none';
+  clone.style.perspective = 'none';
+  clone.style.transformStyle = 'flat';
+  clone.style.animation = 'none';
+  clone.style.transition = 'none';
+  clone.classList.add('open');
 
-  // html2canvas's CSS engine does not understand color-mix(), so any background/border/shadow
-  // using it renders wrong or throws. The browser itself resolves color-mix() through
-  // getComputedStyle, so we bake those resolved colors in as inline styles just for the
-  // capture, then restore the original inline styles afterward.
-  const colorProps = ['backgroundColor','borderColor','borderTopColor','borderRightColor','borderBottomColor','borderLeftColor','color','boxShadow','textShadow','background'];
-  const colorRestore = [];
-  els.forEach(el=>{
-    const cs = getComputedStyle(el);
-    const raw = el.getAttribute('style') || '';
-    if(raw.includes('color-mix')){
-      colorRestore.push({ el, style: raw });
-      colorProps.forEach(p=>{
-        const camel = p.replace(/-([a-z])/g, (_,c)=>c.toUpperCase());
-        try{ if(cs[camel]) el.style[camel] = cs[camel]; }catch(e){}
-      });
-    }
+  // Flatten all 3D in clone
+  const all = clone.querySelectorAll('*');
+  all.forEach(el => {
+    el.style.transform = 'none';
+    el.style.transformStyle = 'flat';
+    el.style.perspective = 'none';
+    el.style.transition = 'none';
+    el.style.animation = 'none';
   });
 
-  // Let the DOM settle, resync the texture canvas to the current card size, then capture.
-  await waitFrames(2);
-  resizeTexCanvas();
-  drawTexture(performance.now());
-  await waitFrames(1);
+  // Hide cover faces in clone (show inside only)
+  clone.querySelectorAll('.cover-face').forEach(f => f.style.display = 'none');
+
+  // Ensure inside is visible
+  const inside = clone.querySelector('.book-inside');
+  if (inside) {
+    inside.style.visibility = 'visible';
+    inside.style.opacity = '1';
+    inside.style.display = 'flex';
+  }
+
+  document.body.appendChild(clone);
+  return clone;
+}
+
+function removeExportClone(clone) {
+  if (clone && clone.parentNode) {
+    clone.parentNode.removeChild(clone);
+  }
+}
+
+async function captureCanvas() {
+  const clone = createExportClone();
+  const baked = bakeAllColors(clone);
+
+  await document.fonts.ready;
+  await new Promise(r => requestAnimationFrame(r));
+  await new Promise(r => setTimeout(r, 150));
 
   let canvas;
-  try{
-    canvas = await html2canvas(target, { scale:2, backgroundColor:null, useCORS:true, allowTaint:true, logging:false });
-  } finally {
-    // Restore every flattened/rewritten inline style exactly as it was before capture.
-    restore.forEach(r=>{
-      r.el.style.transform = r.transform;
-      r.el.style.transformStyle = r.transformStyle;
-      r.el.style.perspective = r.perspective;
-      r.el.style.transition = r.transition;
+  try {
+    canvas = await html2canvas(clone, {
+      scale: 2,
+      backgroundColor: null,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      removeContainer: false,
+      imageTimeout: 0
     });
-    colorRestore.forEach(r=> r.el.setAttribute('style', r.style));
-    document.querySelectorAll('.cover-face').forEach(f=> f.style.display = '');
-    if(!wasOpen) book.classList.remove('open');
-    bookCover.style.transition = '';
-    bookTilt.style.transition = '';
-    document.querySelector('.book-float').style.animation = '';
-    bookTilt.style.transform = prevTransform;
+  } finally {
+    restoreBakedColors(baked);
+    removeExportClone(clone);
   }
 
   return canvas;
 }
+
 function downloadDataUrl(dataUrl, filename){
-  // Blob-URL downloads are far more reliable than raw data-URL anchor clicks on mobile
-  // Chrome/Android webviews, which frequently ignore the download attribute on huge data URIs.
   fetch(dataUrl).then(res=> res.blob()).then(blob=>{
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = filename;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(()=> URL.revokeObjectURL(url), 4000);
   }).catch(()=>{
-    // Fallback for very old browsers where fetch() can't read a data: URL.
     const a = document.createElement('a'); a.href = dataUrl; a.download = filename;
     document.body.appendChild(a); a.click(); a.remove();
   });
 }
+
 $('#exportPng').addEventListener('click', async ()=>{
   toast('Rendering PNG...');
   try{
@@ -1112,6 +1129,7 @@ $('#exportPng').addEventListener('click', async ()=>{
     toast('PNG export failed — try again');
   }
 });
+
 $('#exportJpg').addEventListener('click', async ()=>{
   toast('Rendering JPEG...');
   try{
@@ -1123,6 +1141,7 @@ $('#exportJpg').addEventListener('click', async ()=>{
     toast('JPEG export failed — try again');
   }
 });
+
 $('#exportPdf').addEventListener('click', async ()=>{
   toast('Rendering PDF...');
   try{
@@ -1140,11 +1159,13 @@ $('#exportPdf').addEventListener('click', async ()=>{
     toast('PDF export failed — try again');
   }
 });
+
 $('#printBtn').addEventListener('click', ()=>{
   book.classList.add('open');
   bookTilt.style.transform = 'none';
   setTimeout(()=> window.print(), 150);
 });
+
 $('#shareBtn').addEventListener('click', async ()=>{
   toast('Preparing share...');
   try{
@@ -1165,7 +1186,6 @@ $('#shareBtn').addEventListener('click', async ()=>{
     toast('Share failed — try again');
   }
 });
-
 /* ===================== INIT ===================== */
 applyTheme('pink');
 $('#trackName').textContent = tracks.piano.name;
