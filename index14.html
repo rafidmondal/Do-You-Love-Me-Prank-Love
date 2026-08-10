@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Premium 3D Card Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Playfair+Display:wght@500;700;900&family=Great+Vibes&family=Dancing+Script:wght@500;700&family=Courier+Prime:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.2/confetti.browser.min.js"></script>
+<style>
+/* ============ NEUTRAL UI CHROME (never changes with card theme) ============ */
+:root{
+  --ui-bg1:#0e0a13; --ui-bg2:#1a1120;
+  --ui-primary:#c9a24d; --ui-accent:#e9dcb8; --ui-glow:#c9a24d;
+  --ui-text:#f6f1ea; --ui-text-dim:#a89cae;
+  --serif:'Playfair Display', serif;
+  --script:'Great Vibes', cursive;
+  --body-font:'Poppins', sans-serif;
+  --elegant:'Cormorant Garamond', serif;
+  --cursive2:'Dancing Script', cursive;
+  --mono:'Courier Prime', monospace;
+  --msg-font: var(--elegant);
+  --msg-style: italic;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  font-family: var(--body-font);
+  background: radial-gradient(ellipse at 20% 20%, var(--ui-bg2), var(--ui-bg1) 70%);
+  color: var(--ui-text);
+  min-height:100vh; overflow-x:hidden;
+}
+body::before{
+  content:''; position:fixed; inset:0;
+  background:
+    radial-gradient(circle at 15% 25%, color-mix(in srgb, var(--ui-primary) 10%, transparent), transparent 45%),
+    radial-gradient(circle at 85% 80%, color-mix(in srgb, var(--ui-primary) 8%, transparent), transparent 45%);
+  pointer-events:none; z-index:0;
+}
+::-webkit-scrollbar{width:9px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:color-mix(in srgb, var(--ui-primary) 55%, #000); border-radius:10px;}
+
+/* ============ LAYOUT ============ */
+.app{ position:relative; z-index:1; display:grid; grid-template-columns: 360px 1fr; min-height:100vh; }
+@media (max-width: 980px){ .app{ grid-template-columns: 1fr; } }
+
+.panel{
+  background: rgba(20,14,24,0.6); backdrop-filter: blur(16px) saturate(140%);
+  border-right: 1px solid rgba(255,255,255,0.08);
+  padding: 24px 20px 60px; max-height:100vh; overflow-y:auto;
+}
+@media (max-width: 980px){ .panel{ max-height:none; border-right:none; border-bottom:1px solid rgba(255,255,255,0.08);} }
+
+.brand{ display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+.brand .logo{ width:34px;height:34px;border-radius:50%; background: conic-gradient(from 180deg, var(--ui-primary), #7a5c1a, var(--ui-accent), var(--ui-primary)); box-shadow:0 0 16px color-mix(in srgb, var(--ui-primary) 60%, transparent); flex-shrink:0; }
+.brand h1{ font-family: var(--serif); font-size:1.05rem; font-weight:700; color:var(--ui-accent); }
+.brand span{ display:block; font-size:0.64rem; color:var(--ui-text-dim); letter-spacing:1.5px; text-transform:uppercase; }
+
+.section{ margin-bottom:24px; }
+.section-title{ font-size:0.68rem; letter-spacing:1.8px; text-transform:uppercase; color:var(--ui-accent); margin-bottom:10px; font-weight:600; display:flex; align-items:center; gap:8px; }
+.section-title::after{ content:''; flex:1; height:1px; background:linear-gradient(90deg, color-mix(in srgb, var(--ui-primary) 50%, transparent), transparent); }
+
+label{ display:block; font-size:0.74rem; color:var(--ui-text-dim); margin:10px 0 5px; font-weight:500; }
+input[type=text], textarea, select{
+  width:100%; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14);
+  color:var(--ui-text); padding:9px 11px; border-radius:11px; font-family: var(--body-font);
+  font-size:0.85rem; outline:none; transition: border-color .2s, box-shadow .2s;
+}
+input[type=text]:focus, textarea:focus, select:focus{ border-color: var(--ui-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-primary) 22%, transparent); }
+textarea{ resize:vertical; min-height:60px; line-height:1.5; }
+textarea.message-box{ min-height:132px; line-height:1.6; font-size:0.87rem; }
+select{ cursor:pointer; }
+select option{ background:#1a1020; color:#fff; }
+
+.field-head{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+.field-head label{ margin:0 0 5px; }
+.chip-toggle{
+  display:flex; align-items:center; gap:5px; background:none; border:none; cursor:pointer;
+  color:var(--ui-primary); font-family:var(--body-font); font-size:0.68rem; font-weight:600;
+  letter-spacing:0.2px; padding:3px 2px 5px; transition: color .15s, opacity .15s;
+}
+.chip-toggle svg{ width:12px; height:12px; transition: transform .2s; flex-shrink:0; }
+.chip-toggle:hover{ opacity:0.8; }
+.chip-toggle.open svg{ transform: rotate(180deg); }
+
+.chip-panel{
+  display:none; flex-direction:column; margin:8px 0 4px;
+  border-radius:13px; background: rgba(255,255,255,0.035);
+  border:1px solid rgba(255,255,255,0.08); overflow:hidden;
+}
+.chip-panel.open{ display:flex; }
+.chip-panel-head{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:9px 8px 9px 12px; border-bottom:1px solid rgba(255,255,255,0.07);
+  font-size:0.68rem; color:var(--ui-text-dim); letter-spacing:0.2px;
+}
+.chip-close{
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  width:24px; height:24px; border-radius:50%; border:none; cursor:pointer;
+  background: rgba(255,255,255,0.07); color:var(--ui-text-dim);
+  transition: background .15s, color .15s, transform .12s;
+}
+.chip-close svg{ width:11px; height:11px; }
+.chip-close:hover{ background: color-mix(in srgb, var(--ui-primary) 30%, transparent); color:var(--ui-text); }
+.chip-close:active{ transform: scale(0.92); }
+.chip-panel-body{ display:flex; flex-wrap:wrap; gap:6px; padding:10px; }
+.sugg-chip{
+  background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14);
+  color:var(--ui-text); font-family:var(--body-font); font-size:0.72rem; font-weight:500;
+  padding:6px 11px; border-radius:20px; cursor:pointer; transition: background .15s, border-color .15s, transform .12s;
+  line-height:1.3;
+}
+.sugg-chip:hover{ background: color-mix(in srgb, var(--ui-primary) 22%, transparent); border-color: color-mix(in srgb, var(--ui-primary) 55%, transparent); }
+.sugg-chip:active{ transform: scale(0.96); }
+
+.upload-box{
+  border:1.5px dashed color-mix(in srgb, var(--ui-primary) 50%, transparent); border-radius:13px;
+  padding:16px 14px; text-align:center; cursor:pointer; transition: background .2s, border-color .2s;
+  background: rgba(255,255,255,0.03);
+}
+.upload-box:hover{ background: color-mix(in srgb, var(--ui-primary) 8%, transparent); border-color: var(--ui-primary); }
+.upload-box input{ display:none; }
+.upload-box .up-icon{ display:flex; align-items:center; justify-content:center; margin-bottom:6px; color:var(--ui-primary); }
+.upload-box .up-icon svg{ width:22px; height:22px; }
+.upload-box div{ font-size:0.82rem; font-weight:500; }
+.upload-box small{ color:var(--ui-text-dim); font-size:0.7rem; }
+
+.thumb-strip{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.thumb{ position:relative; width:56px; height:56px; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.15); }
+.thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.thumb .rm{ position:absolute; top:0; right:0; width:20px; height:20px; background:rgba(0,0,0,0.65); color:#fff; border:none; cursor:pointer; line-height:1; border-radius:0 0 0 8px; display:flex; align-items:center; justify-content:center; transition:background .15s; }
+.thumb .rm:hover{ background:rgba(0,0,0,0.85); }
+.thumb .rm svg{ width:10px; height:10px; }
+
+.theme-grid{ display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+.theme-card{
+  position:relative; border-radius:14px; padding:0; cursor:pointer; text-align:left;
+  border:1px solid rgba(255,255,255,0.1); font-size:0.72rem; font-weight:600; color:var(--ui-text);
+  transition: transform .18s, border-color .18s, box-shadow .18s; overflow:hidden;
+  background: rgba(255,255,255,0.02);
+}
+.theme-card:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,0.22); }
+.theme-card.active{ border-color: color-mix(in srgb, var(--ui-primary) 70%, #fff 10%); box-shadow:0 0 0 2px color-mix(in srgb, var(--ui-primary) 55%, transparent), 0 8px 18px rgba(0,0,0,0.4); }
+.theme-card.active .theme-name::after{ content:''; display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--ui-primary); margin-left:6px; box-shadow:0 0 6px var(--ui-primary); }
+.theme-swatch{ height:46px; position:relative; }
+.theme-swatch::after{ content:''; position:absolute; inset:0; background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.35)); }
+.theme-name{ display:block; padding:8px 10px 9px; font-size:0.7rem; }
+.t-pink .theme-swatch{ background: linear-gradient(135deg,#ff9ec4,#ff3d81,#ffd1e8); }
+.t-gold .theme-swatch{ background: linear-gradient(135deg,#f3d47a,#d4af37,#7a5c14); }
+.t-emerald .theme-swatch{ background: linear-gradient(135deg,#a7f3d0,#10b981,#053a26); }
+.t-cyberpunk .theme-swatch{ background: linear-gradient(135deg,#00eaff,#ff2079,#180a2e); }
+.t-ruby .theme-swatch{ background: linear-gradient(135deg,#ff5d7a,#c8102e,#2b0510); }
+.t-sapphire .theme-swatch{ background: linear-gradient(135deg,#93c5fd,#2563eb,#0b1d3a); }
+.t-amethyst .theme-swatch{ background: linear-gradient(135deg,#e9d5ff,#8b5cf6,#2a123f); }
+.t-champagne .theme-swatch{ background: linear-gradient(135deg,#f7ecd0,#c9a24d,#5c451c); }
+.t-midnight .theme-swatch{ background: linear-gradient(135deg,#cbd5e1,#4b5563,#1a212b); }
+.t-coral .theme-swatch{ background: linear-gradient(135deg,#ffd7c2,#fb7185,#3a1710); }
+
+.color-row{ display:flex; gap:8px; }
+.color-field{ flex:1; text-align:center; }
+.color-field input[type=color]{ width:100%; height:36px; border:none; border-radius:9px; cursor:pointer; background:none; }
+.color-field small{ display:block; margin-top:3px; color:var(--ui-text-dim); font-size:0.64rem; }
+
+.font-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+.font-chip{
+  display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:12px;
+  border:1px solid rgba(255,255,255,0.12); cursor:pointer; transition: transform .15s, border-color .18s, background .18s;
+  background: rgba(255,255,255,0.02);
+}
+.font-chip:hover{ transform: translateY(-2px); }
+.font-chip.active{ background: color-mix(in srgb, var(--ui-primary) 16%, transparent); border-color: var(--ui-primary); box-shadow:0 0 0 1px color-mix(in srgb, var(--ui-primary) 40%, transparent); }
+.font-chip .f-preview{ font-size:1.3rem; color:var(--ui-accent); flex-shrink:0; width:28px; text-align:center; }
+.font-chip .f-name{ font-size:0.72rem; color:var(--ui-text-dim); }
+.font-chip.active .f-name{ color:var(--ui-text); }
+.f-elegant .f-preview{ font-family:'Cormorant Garamond', serif; font-style:italic; }
+.f-classic .f-preview{ font-family:'Playfair Display', serif; font-weight:700; }
+.f-romantic .f-preview{ font-family:'Dancing Script', cursive; font-weight:600; font-size:1.5rem; }
+.f-modern .f-preview{ font-family:'Poppins', sans-serif; font-weight:500; }
+.f-typewriter .f-preview{ font-family:'Courier Prime', monospace; font-weight:700; }
+
+.music-row{ display:flex; align-items:center; gap:11px; margin-top:9px; }
+.music-btn{ width:42px; height:42px; border-radius:50%; border:none; cursor:pointer; flex-shrink:0; background: linear-gradient(135deg, var(--ui-accent), var(--ui-primary) 60%, #7a5c1a); color:#1a1208; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px -2px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.35); transition:transform .12s; }
+.music-btn:active{ transform:scale(0.94); }
+.music-btn svg{ width:15px; height:15px; }
+.music-info{ flex:1; min-width:0; }
+.music-info .track-name{ font-size:0.78rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.vis-bars{ display:flex; gap:2px; align-items:flex-end; height:13px; margin-top:4px; }
+.vis-bars span{ width:3px; background:var(--ui-primary); border-radius:2px; height:3px; transition:height .15s; }
+
+.export-btns{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px; }
+.btn{
+  border:none; border-radius:11px; padding:11px 10px; cursor:pointer; font-family:var(--body-font);
+  font-weight:600; font-size:0.78rem; letter-spacing:0.2px; display:flex; align-items:center; justify-content:center; gap:7px;
+  transition: transform .12s, box-shadow .2s, background .2s, border-color .2s; position:relative;
+}
+.btn svg{ width:15px; height:15px; flex-shrink:0; }
+.btn:active{ transform: scale(0.97); }
+.btn-primary{
+  background: linear-gradient(135deg, var(--ui-accent), var(--ui-primary) 55%, #8a6a20);
+  color:#1a1208; box-shadow:0 8px 20px -4px color-mix(in srgb, var(--ui-primary) 55%, transparent), inset 0 1px 0 rgba(255,255,255,0.35);
+  grid-column: 1 / -1; padding:12px 10px; font-size:0.82rem;
+}
+.btn-primary:hover{ box-shadow:0 10px 24px -4px color-mix(in srgb, var(--ui-primary) 65%, transparent), inset 0 1px 0 rgba(255,255,255,0.4); }
+.btn-ghost{
+  background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+  color:var(--ui-text); border:1px solid rgba(255,255,255,0.14);
+}
+.btn-ghost:hover{ background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06)); border-color: color-mix(in srgb, var(--ui-primary) 45%, rgba(255,255,255,0.2)); }
+.btn-full{ grid-column: 1 / -1; }
+.footnote{ font-size:0.66rem; color:var(--ui-text-dim); margin-top:10px; line-height:1.5; }
+
+/* ============ STAGE ============ */
+.stage{ position:relative; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:44px 20px; perspective: 1900px; }
+.stage-bg-particles{ position:absolute; inset:0; pointer-events:none; }
+
+.stage.fullscreen-mode{ position:fixed; inset:0; z-index:500; padding:0; background: var(--ui-bg1); }
+.app.fullscreen-active .panel{ display:none; }
+.app.fullscreen-active{ grid-template-columns: 1fr; }
+.fs-exit{ position:fixed; top:16px; right:16px; z-index:600; width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,0.25); background:rgba(0,0,0,0.5); color:#fff; cursor:pointer; display:none; align-items:center; justify-content:center; transition:background .15s; }
+.fs-exit:hover{ background:rgba(0,0,0,0.7); }
+.fs-exit svg{ width:16px; height:16px; }
+.stage.fullscreen-mode ~ .fs-exit, .fullscreen-mode .fs-exit{ display:flex; }
+
+.book-tilt{ transform-style: preserve-3d; transition: transform .12s ease-out; will-change: transform; }
+.book-float{ transform-style: preserve-3d; animation: idleFloat 7s ease-in-out infinite; }
+@keyframes idleFloat{
+  0%,100%{ transform: translateY(0) rotateZ(0deg); }
+  50%{ transform: translateY(-9px) rotateZ(0.4deg); }
+}
+
+.book{
+  --primary:#ff6fa5; --accent:#ffd1e8; --glow:#ff3d81; --bg1:#2a0f1e; --bg2:#4a1230; --gold:#e8c26a;
+  position: relative; width: var(--card-w, 480px); height: var(--card-h, 700px);
+  max-width: 92vw; max-height: 86vh;
+  transform-style: preserve-3d; perspective: 1200px;
+}
+.stage.fullscreen-mode .book{ width:min(92vw, 620px); height:min(88vh, 880px); }
+
+.book[data-theme="gold"]{ --primary:#d4af37; --accent:#fff3c4; --glow:#ffcc33; --bg1:#160f02; --bg2:#3a2708; --gold:#f3d47a; }
+.book[data-theme="emerald"]{ --primary:#10b981; --accent:#a7f3d0; --glow:#34e6a5; --bg1:#02120c; --bg2:#053a26; --gold:#bff2d6; }
+.book[data-theme="cyberpunk"]{ --primary:#ff2079; --accent:#00eaff; --glow:#ff2079; --bg1:#04030b; --bg2:#180a2e; --gold:#00eaff; }
+.book[data-theme="ruby"]{ --primary:#c8102e; --accent:#ff5d7a; --glow:#ff1053; --bg1:#0a0203; --bg2:#2b0510; --gold:#e0a9b4; }
+.book[data-theme="sapphire"]{ --primary:#2563eb; --accent:#93c5fd; --glow:#3b82f6; --bg1:#020714; --bg2:#0b1d3a; --gold:#bcd4ff; }
+.book[data-theme="amethyst"]{ --primary:#8b5cf6; --accent:#e9d5ff; --glow:#a855f7; --bg1:#0d0616; --bg2:#2a123f; --gold:#d9c4ff; }
+.book[data-theme="champagne"]{ --primary:#c9a24d; --accent:#f7ecd0; --glow:#e8c26a; --bg1:#160f04; --bg2:#3a2a12; --gold:#f3e2b8; }
+.book[data-theme="midnight"]{ --primary:#4b5563; --accent:#cbd5e1; --glow:#94a3b8; --bg1:#05070a; --bg2:#1a212b; --gold:#d8dee6; }
+.book[data-theme="coral"]{ --primary:#fb7185; --accent:#ffd7c2; --glow:#fb923c; --bg1:#170805; --bg2:#3a1710; --gold:#ffcf9e; }
+
+.book-inside{
+  position:absolute; inset:0; border-radius:26px; transform-style: preserve-3d;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--bg2) 85%, #000 15%), color-mix(in srgb, var(--bg1) 90%, #000 10%));
+  border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+  box-shadow: 0 34px 80px rgba(0,0,0,0.55), inset 0 0 60px color-mix(in srgb, var(--primary) 12%, transparent);
+  overflow:hidden; display:flex; flex-direction:column; align-items:center; padding:30px 26px 26px; text-align:center;
+}
+.inside-texture{ position:absolute; inset:0; pointer-events:none; z-index:0; }
+
+.photo-frame{
+  position:relative; z-index:2; width:170px; height:170px; border-radius:50%; margin:4px auto 16px; padding:6px;
+  background: linear-gradient(135deg, var(--gold), var(--primary), var(--accent));
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.25), 0 10px 30px color-mix(in srgb, var(--glow) 45%, transparent);
+  animation: framePulse 3.5s ease-in-out infinite; transform: translateZ(55px);
+}
+@keyframes framePulse{ 0%,100%{ box-shadow:0 0 0 1px rgba(255,255,255,0.25), 0 10px 30px color-mix(in srgb, var(--glow) 40%, transparent);} 50%{ box-shadow:0 0 0 1px rgba(255,255,255,0.4), 0 14px 40px color-mix(in srgb, var(--glow) 65%, transparent);} }
+.photo-frame .photo-inner{ width:100%; height:100%; border-radius:50%; overflow:hidden; background: rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; backdrop-filter: blur(6px); position:relative; }
+.photo-inner img{ width:100%; height:100%; object-fit:cover; display:block; }
+.photo-inner .ph-placeholder{ font-size:2.2rem; opacity:0.5; }
+.photo-inner::after{ content:''; position:absolute; inset:0; border-radius:50%; background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,0.35) 50%, transparent 65%); background-size:220% 220%; animation: holoSheen 3.2s linear infinite; mix-blend-mode: overlay; }
+@keyframes holoSheen{ 0%{ background-position:-120% -120%; } 100%{ background-position:120% 120%; } }
+
+.photo-gallery{
+  position:relative; z-index:2; display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;
+  width:100%; max-width:340px; margin:4px auto 16px; transform: translateZ(45px);
+}
+.photo-gallery .g-item{
+  aspect-ratio:1; border-radius:12px; overflow:hidden; border:2px solid color-mix(in srgb, var(--gold) 60%, transparent);
+  box-shadow:0 6px 16px rgba(0,0,0,0.4); background: rgba(255,255,255,0.06);
+}
+.photo-gallery .g-item:nth-child(odd){ transform: rotate(-2.5deg); }
+.photo-gallery .g-item:nth-child(even){ transform: rotate(2deg); }
+.photo-gallery .g-item img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+.i-names{ font-family: var(--script); font-size:1.55rem; color: var(--accent); z-index:2; line-height:1.2; text-shadow:0 0 14px color-mix(in srgb, var(--glow) 70%, transparent); transform: translateZ(30px); }
+.i-headline{ font-family: var(--serif); font-weight:700; font-size:1.32rem; margin:12px 0 10px; z-index:2; color: color-mix(in srgb, var(--accent) 55%, #fff 45%); text-shadow:0 0 18px color-mix(in srgb, var(--glow) 60%, transparent); line-height:1.3; transform: translateZ(25px); }
+.i-divider{ width:60px; height:2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin:2px 0 14px; transform: translateZ(20px); }
+.i-message{ font-family: var(--msg-font); font-style: var(--msg-style); font-size:1.06rem; color: color-mix(in srgb, var(--accent) 30%, #f3edf0 70%); z-index:2; line-height:1.6; max-width:360px; transform: translateZ(15px); }
+.i-footer{ margin-top:auto; padding-top:20px; font-family: var(--script); font-size:1.2rem; color: color-mix(in srgb, var(--gold) 85%, #fff 10%); z-index:2; transform: translateZ(10px); }
+
+.book-cover{ position:absolute; inset:0; border-radius:26px; transform-style: preserve-3d; transform-origin: left center; transition: transform 1.15s cubic-bezier(.22,.9,.28,1.02); cursor:pointer; z-index:5; }
+.book.open .book-cover{ transform: rotateY(-172deg); }
+.cover-face{ position:absolute; inset:0; border-radius:26px; backface-visibility:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; }
+.cover-front{ background: radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--accent) 25%, transparent), transparent 55%), linear-gradient(155deg, color-mix(in srgb, var(--primary) 92%, #000 8%), color-mix(in srgb, var(--bg1) 92%, #000 8%) 75%); border:1px solid color-mix(in srgb, var(--gold) 55%, transparent); box-shadow:0 34px 80px rgba(0,0,0,0.55); }
+.cover-back{ background: linear-gradient(155deg, var(--bg1), var(--bg2)); transform: rotateY(180deg); display:flex; align-items:center; justify-content:center; border:1px solid color-mix(in srgb, var(--gold) 30%, transparent); }
+.cover-back-mark{ font-family: var(--script); font-size:2rem; color: color-mix(in srgb, var(--gold) 70%, transparent); opacity:.6; }
+
+.ribbon{ position:absolute; top:0; left:50%; transform:translateX(-50%) translateZ(20px); width:60px; height:130%; background: linear-gradient(180deg, var(--gold), color-mix(in srgb, var(--gold) 60%, #000)); box-shadow:0 0 20px rgba(0,0,0,0.4); z-index:2; }
+.wax-seal{ position:relative; z-index:3; width:76px; height:76px; border-radius:50%; background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--glow) 80%, #fff 10%), color-mix(in srgb, var(--glow) 90%, #000 25%)); display:flex; align-items:center; justify-content:center; box-shadow:0 8px 18px rgba(0,0,0,0.5), inset 0 -4px 8px rgba(0,0,0,0.35), inset 0 3px 6px rgba(255,255,255,0.25); font-family: var(--serif); font-size:1.5rem; color:#fff2f6; margin-top:24px; animation: sealShine 4s ease-in-out infinite; transform: translateZ(45px); }
+@keyframes sealShine{ 0%,100%{ filter:brightness(1);} 50%{ filter:brightness(1.15);} }
+.cover-title{ font-family: var(--script); font-size:2.1rem; color: var(--accent); margin-top:20px; z-index:3; text-shadow:0 2px 14px color-mix(in srgb, var(--glow) 55%, transparent); transform: translateZ(35px); }
+.cover-sub{ font-family: var(--elegant); font-style:italic; color:#f1e9ee; z-index:3; margin-top:6px; font-size:1rem; letter-spacing:0.4px; padding:0 30px; opacity:0.92; transform: translateZ(25px); }
+.cover-hint{ position:absolute; bottom:24px; z-index:3; font-size:0.68rem; color:#ffffffcc; letter-spacing:1.5px; text-transform:uppercase; animation: hintPulse 1.8s ease-in-out infinite; }
+@keyframes hintPulse{ 0%,100%{ opacity:.5; } 50%{ opacity:1; } }
+
+.heart-particle{ position:fixed; pointer-events:none; z-index:998; animation: floatHeart linear forwards; display:flex; }
+@keyframes floatHeart{ 0%{ transform: translateY(0) rotate(0deg) scale(1); opacity:1; } 100%{ transform: translateY(-90vh) rotate(300deg) scale(0.6); opacity:0; } }
+
+#toast{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%) translateY(20px); background: rgba(16,10,18,0.94); color:#fff; padding:11px 20px; border-radius:30px; font-size:0.82rem; z-index:1000; opacity:0; pointer-events:none; transition: all .3s; border:1px solid color-mix(in srgb, var(--ui-primary) 50%, transparent); box-shadow:0 10px 26px rgba(0,0,0,0.4); }
+#toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+@media print{
+  .panel, .stage-bg-particles, .footnote, .fs-exit{ display:none !important; }
+  body{ background:#fff; }
+  .app{ display:block; }
+  .stage{ min-height:auto; padding:0; }
+  .book{ margin:0 auto; }
+}
+@media (max-width:560px){
+  .book{ --card-w: 92vw; --card-h: 78vh; }
+  .cover-title{ font-size:1.7rem; }
+  .i-headline{ font-size:1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ================= PANEL ================= -->
+  <aside class="panel" id="panel">
+    <div class="brand">
+      <div class="logo"></div>
+      <div><h1>Card Studio</h1><span>Premium 3D Cards</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Details</div>
+      <label for="senderName">Your Name</label>
+      <input type="text" id="senderName" placeholder="Your name" value="Alex">
+      <label for="recipientName">Recipient Name</label>
+      <input type="text" id="recipientName" placeholder="Recipient name" value="Sam">
+      <label>Photos</label>
+      <div class="upload-box" id="uploadBox">
+        <span class="up-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l4.5-4.5a2 2 0 0 1 2.8 0L16 16"/><path d="M14 14l1.5-1.5a2 2 0 0 1 2.8 0L21 15"/><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="9" r="1.4"/></svg></span>
+        <div>Add Photos</div>
+        <small>Click to upload — multiple allowed</small>
+        <input type="file" id="photoInput" accept="image/*" multiple>
+      </div>
+      <div class="thumb-strip" id="thumbStrip"></div>
+
+      <div class="field-head">
+        <label for="headline">Headline</label>
+        <button type="button" class="chip-toggle" id="headlineChipsBtn" aria-expanded="false">
+          Suggestions
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </div>
+      <input type="text" id="headline" placeholder="Headline" value="Happy Anniversary">
+      <div class="chip-panel" id="headlineChips">
+        <div class="chip-panel-head">
+          <span>Tap a suggestion to use it</span>
+          <button type="button" class="chip-close" id="headlineChipsClose" aria-label="Close suggestions">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+        <div class="chip-panel-body" id="headlineChipsBody"></div>
+      </div>
+
+      <div class="field-head">
+        <label for="message">Message</label>
+        <button type="button" class="chip-toggle" id="messageChipsBtn" aria-expanded="false">
+          Suggestions
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </div>
+      <textarea id="message" placeholder="Your message" class="message-box">Every moment with you feels like a quiet kind of magic. Thank you for being mine, today and always.</textarea>
+      <div class="chip-panel" id="messageChips">
+        <div class="chip-panel-head">
+          <span>Tap a suggestion to use it</span>
+          <button type="button" class="chip-close" id="messageChipsClose" aria-label="Close suggestions">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+        <div class="chip-panel-body" id="messageChipsBody"></div>
+      </div>
+
+      <label>Message Style</label>
+      <div class="font-grid" id="fontGrid">
+        <div class="font-chip f-elegant active" data-font="elegant" data-pattern="hearts"><span class="f-preview">Aa</span><span class="f-name">Elegant Script</span></div>
+        <div class="font-chip f-classic" data-font="classic" data-pattern="dust"><span class="f-preview">Aa</span><span class="f-name">Classic Serif</span></div>
+        <div class="font-chip f-romantic" data-font="romantic" data-pattern="ribbon"><span class="f-preview">Aa</span><span class="f-name">Romantic Cursive</span></div>
+        <div class="font-chip f-modern" data-font="modern" data-pattern="stars"><span class="f-preview">Aa</span><span class="f-name">Modern Clean</span></div>
+        <div class="font-chip f-typewriter" data-font="typewriter" data-pattern="snow"><span class="f-preview">Aa</span><span class="f-name">Typewriter</span></div>
+        <div class="font-chip f-elegant2" data-font="elegant" data-pattern="confetti"><span class="f-preview" style="font-family:'Cormorant Garamond',serif;font-style:italic">Aa</span><span class="f-name">Confetti Elegant</span></div>
+        <div class="font-chip f-romantic2" data-font="romantic" data-pattern="petals"><span class="f-preview" style="font-family:'Dancing Script',cursive">Aa</span><span class="f-name">Petal Cursive</span></div>
+        <div class="font-chip f-classic2" data-font="classic" data-pattern="glitter"><span class="f-preview" style="font-family:'Playfair Display',serif;font-weight:700">Aa</span><span class="f-name">Glitter Serif</span></div>
+        <div class="font-chip f-elegant3" data-font="elegant" data-pattern="fireflies"><span class="f-preview" style="font-family:'Cormorant Garamond',serif;font-style:italic">Aa</span><span class="f-name">Firefly Script</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Card Theme</div>
+      <div class="theme-grid" id="themeGrid">
+        <div class="theme-card t-pink active" data-theme="pink"><div class="theme-swatch"></div><span class="theme-name">Liquid Glass Pink</span></div>
+        <div class="theme-card t-gold" data-theme="gold"><div class="theme-swatch"></div><span class="theme-name">Royal Gold</span></div>
+        <div class="theme-card t-emerald" data-theme="emerald"><div class="theme-swatch"></div><span class="theme-name">Emerald Glow</span></div>
+        <div class="theme-card t-cyberpunk" data-theme="cyberpunk"><div class="theme-swatch"></div><span class="theme-name">Cyberpunk Love</span></div>
+        <div class="theme-card t-ruby" data-theme="ruby"><div class="theme-swatch"></div><span class="theme-name">Midnight Ruby</span></div>
+        <div class="theme-card t-sapphire" data-theme="sapphire"><div class="theme-swatch"></div><span class="theme-name">Sapphire Dream</span></div>
+        <div class="theme-card t-amethyst" data-theme="amethyst"><div class="theme-swatch"></div><span class="theme-name">Amethyst Silk</span></div>
+        <div class="theme-card t-champagne" data-theme="champagne"><div class="theme-swatch"></div><span class="theme-name">Champagne Luxe</span></div>
+        <div class="theme-card t-midnight" data-theme="midnight"><div class="theme-swatch"></div><span class="theme-name">Midnight Steel</span></div>
+        <div class="theme-card t-coral" data-theme="coral"><div class="theme-swatch"></div><span class="theme-name">Sunset Coral</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Card Colors</div>
+      <div class="color-row">
+        <div class="color-field"><input type="color" id="colorPrimary" value="#ff6fa5"><small>Primary</small></div>
+        <div class="color-field"><input type="color" id="colorAccent" value="#ffd1e8"><small>Accent</small></div>
+        <div class="color-field"><input type="color" id="colorGlow" value="#ff3d81"><small>Glow</small></div>
+        <div class="color-field"><input type="color" id="colorGold" value="#e8c26a"><small>Gold</small></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Music</div>
+      <select id="trackSelect">
+        <option value="piano">Soft Piano Waves</option>
+        <option value="strings">Romantic Strings</option>
+        <option value="dream">Dreamy Synth</option>
+      </select>
+      <div class="music-row">
+        <button class="music-btn" id="musicToggle" aria-label="Play music">
+          <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5z"/></svg>
+          <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+        </button>
+        <div class="music-info">
+          <div class="track-name" id="trackName">Soft Piano Waves</div>
+          <div class="vis-bars" id="visBars"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Export / Download</div>
+      <div class="export-btns">
+        <button class="btn btn-ghost" id="exportPng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>PNG</button>
+        <button class="btn btn-ghost" id="exportJpg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>JPEG</button>
+        <button class="btn btn-ghost" id="printBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="1.5"/><path d="M6 17v4h12v-4"/></svg>Print</button>
+        <button class="btn btn-ghost" id="shareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.4"/><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="19" r="2.4"/><path d="M8.1 10.7l7.8-4.4M8.1 13.3l7.8 4.4"/></svg>Share</button>
+        <button class="btn btn-primary" id="exportPdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg>Save as PDF</button>
+        <button class="btn btn-ghost btn-full" id="fullscreenBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V5a1 1 0 0 1 1-1h4"/><path d="M20 9V5a1 1 0 0 0-1-1h-4"/><path d="M4 15v4a1 1 0 0 0 1 1h4"/><path d="M20 15v4a1 1 0 0 1-1 1h-4"/></svg>View Fullscreen</button>
+        <button class="btn btn-ghost btn-full" id="gyroBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="4.5"/><ellipse cx="12" cy="12" rx="4.5" ry="9" transform="rotate(35 12 12)"/></svg>Enable Motion Tilt</button>
+      </div>
+      <div class="footnote">Everything is generated and saved on your device. No links, no uploads, no sharing servers.</div>
+    </div>
+  </aside>
+
+  <!-- ================= 3D STAGE ================= -->
+  <main class="stage" id="stage">
+    <canvas class="stage-bg-particles" id="bgCanvas"></canvas>
+
+    <div class="book-tilt" id="bookTilt">
+      <div class="book-float">
+        <div class="book" id="book" data-theme="pink">
+
+          <div class="book-inside" id="exportTarget">
+            <canvas class="inside-texture" id="textureCanvas"></canvas>
+
+            <div id="photoArea"></div>
+
+            <div class="i-names" id="iNames">Alex &amp; Sam</div>
+            <div class="i-headline" id="iHeadline">Happy Anniversary</div>
+            <div class="i-divider"></div>
+            <div class="i-message" id="iMessage">Every moment with you feels like a quiet kind of magic. Thank you for being mine, today and always.</div>
+            <div class="i-footer" id="iFooter">— Alex</div>
+          </div>
+
+          <div class="book-cover" id="bookCover">
+            <div class="cover-face cover-front">
+              <div class="ribbon"></div>
+              <div class="wax-seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px"><path d="M3 6.5h18v11H3z"/><path d="M3 6.5l9 7 9-7"/></svg></div>
+              <div class="cover-title" id="coverTitle">For Sam</div>
+              <div class="cover-sub" id="coverSub">A little something for you...</div>
+              <div class="cover-hint">Tap to open</div>
+            </div>
+            <div class="cover-face cover-back"><div class="cover-back-mark">✦</div></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+  <button class="fs-exit" id="fsExit" aria-label="Exit fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+const state = { theme:'pink', pattern:'hearts', opened:false, photos:[] };
+const MAX_PHOTOS = 6;
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const book = $('#book');
+
+/* ===================== TOAST ===================== */
+let toastTimer=null;
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ===================== TEXT BINDING ===================== */
+function updateNames(){
+  const s = $('#senderName').value.trim() || 'Your Name';
+  const r = $('#recipientName').value.trim() || 'Recipient';
+  $('#iNames').textContent = s + ' & ' + r;
+  $('#coverTitle').textContent = 'For ' + r;
+  $('#iFooter').textContent = '— ' + s;
+}
+function updateHeadline(){ $('#iHeadline').textContent = $('#headline').value.trim() || 'A Message For You'; }
+function updateMessage(){ $('#iMessage').textContent = $('#message').value.trim(); }
+function updateCoverSub(){
+  const msg = $('#message').value.trim();
+  $('#coverSub').textContent = msg.length ? (msg.length>46 ? msg.slice(0,46)+'…' : msg) : 'A little something for you...';
+}
+['senderName','recipientName'].forEach(id=> $('#'+id).addEventListener('input', updateNames));
+$('#headline').addEventListener('input', updateHeadline);
+$('#message').addEventListener('input', ()=>{ updateMessage(); updateCoverSub(); });
+updateNames(); updateHeadline(); updateMessage(); updateCoverSub();
+
+/* ===================== SUGGESTION CHIPS (Headline & Message) ===================== */
+const headlinePresets = [
+  'Happy Anniversary','Happy Birthday','Happy Mother\'s Day','Happy Father\'s Day',
+  'Happy Valentine\'s Day','Congratulations','Happy Wedding Day','Welcome to the Family',
+  'Get Well Soon','Happy Graduation','Merry Christmas','Happy New Year',
+  'Thinking of You','Thank You','Happy Retirement','Good Luck'
+];
+const messagePresets = [
+  'Every moment with you feels like a quiet kind of magic. Thank you for being mine, today and always.',
+  'Wishing you a day filled with love, laughter, and every little thing that makes you smile.',
+  'You make ordinary days feel extraordinary. Grateful for you, always.',
+  'To the world\'s best mom — thank you for your endless love and patience. I love you.',
+  'Dad, thank you for always being my rock. I couldn\'t have asked for a better guide in life.',
+  'Wishing you all the happiness your heart can hold, today and every day.',
+  'So proud of everything you\'ve achieved. Here\'s to the next chapter!',
+  'May this year bring you closer to every dream you\'re chasing.',
+  'Sending you strength, comfort, and warm thoughts as you rest and recover.',
+  'Cheers to new beginnings and the wonderful memories still to come.',
+  'Just a little note to say I\'m thinking of you today, and always.',
+  'Thank you for everything you do — it means more than words can say.'
+];
+function buildChips(containerId, presets, targetInputId, onPick){
+  const el = $('#'+containerId);
+  el.innerHTML = presets.map(t=> '<button type="button" class="sugg-chip">'+t+'</button>').join('');
+  el.querySelectorAll('.sugg-chip').forEach((chip, i)=>{
+    chip.addEventListener('click', ()=>{
+      $('#'+targetInputId).value = presets[i];
+      onPick();
+      toast('Applied');
+    });
+  });
+}
+buildChips('headlineChipsBody', headlinePresets, 'headline', updateHeadline);
+buildChips('messageChipsBody', messagePresets, 'message', ()=>{ updateMessage(); updateCoverSub(); });
+
+function wireChipToggle(btnId, panelId, closeId){
+  const btn = $('#'+btnId), panel = $('#'+panelId);
+  function setOpen(open){
+    panel.classList.toggle('open', open);
+    btn.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+  }
+  btn.addEventListener('click', ()=> setOpen(!panel.classList.contains('open')));
+  if(closeId) $('#'+closeId).addEventListener('click', ()=> setOpen(false));
+}
+wireChipToggle('headlineChipsBtn', 'headlineChips', 'headlineChipsClose');
+wireChipToggle('messageChipsBtn', 'messageChips', 'messageChipsClose');
+
+/* ===================== MESSAGE FONT STYLE ===================== */
+const messageFonts = {
+  elegant:{ family:"'Cormorant Garamond', serif", style:'italic' },
+  classic:{ family:"'Playfair Display', serif", style:'normal' },
+  romantic:{ family:"'Dancing Script', cursive", style:'normal' },
+  modern:{ family:"'Poppins', sans-serif", style:'normal' },
+  typewriter:{ family:"'Courier Prime', monospace", style:'normal' }
+};
+function applyMessageFont(key){
+  const f = messageFonts[key];
+  book.style.setProperty('--msg-font', f.family);
+  book.style.setProperty('--msg-style', f.style);
+  $$('.font-chip').forEach(c=> c.classList.toggle('active', c.dataset.font===key));
+}
+$$('.font-chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    applyMessageFont(chip.dataset.font);
+    toast('Message style: ' + chip.querySelector('.f-name').textContent);
+  });
+});
+
+/* ===================== MULTI PHOTO UPLOAD ===================== */
+const uploadBox = $('#uploadBox');
+const photoInput = $('#photoInput');
+uploadBox.addEventListener('click', ()=> photoInput.click());
+['dragover','dragenter'].forEach(ev=> uploadBox.addEventListener(ev, e=>{ e.preventDefault(); uploadBox.style.borderColor='var(--ui-primary)'; }));
+uploadBox.addEventListener('drop', e=>{
+  e.preventDefault();
+  if(e.dataTransfer.files) handleFiles(e.dataTransfer.files);
+});
+photoInput.addEventListener('change', e=>{
+  if(e.target.files) handleFiles(e.target.files);
+  photoInput.value = '';
+});
+function handleFiles(fileList){
+  const files = Array.from(fileList).filter(f=> f.type.startsWith('image/'));
+  if(!files.length){ toast('Please select image files'); return; }
+  let remaining = MAX_PHOTOS - state.photos.length;
+  if(remaining<=0){ toast('Maximum ' + MAX_PHOTOS + ' photos reached'); return; }
+  files.slice(0, remaining).forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      state.photos.push(e.target.result);
+      renderThumbs();
+      renderPhotoArea();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function renderThumbs(){
+  const strip = $('#thumbStrip');
+  strip.innerHTML = '';
+  state.photos.forEach((src, i)=>{
+    const div = document.createElement('div');
+    div.className = 'thumb';
+    div.innerHTML = '<img src="'+src+'"><button class="rm" data-i="'+i+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+    strip.appendChild(div);
+  });
+  strip.querySelectorAll('.rm').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.photos.splice(Number(btn.dataset.i), 1);
+      renderThumbs(); renderPhotoArea();
+    });
+  });
+}
+function renderPhotoArea(){
+  const area = $('#photoArea');
+  if(state.photos.length <= 1){
+    area.className = '';
+    const src = state.photos[0];
+    area.innerHTML = '<div class="photo-frame"><div class="photo-inner">' +
+      (src ? '<img src="'+src+'">' : '<span class="ph-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="width:2rem;height:2rem"><path d="M4 16l4.5-4.5a2 2 0 0 1 2.8 0L16 16"/><path d="M14 14l1.5-1.5a2 2 0 0 1 2.8 0L21 15"/><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="9" r="1.4"/></svg></span>') +
+      '</div></div>';
+  } else {
+    area.className = '';
+    area.innerHTML = '<div class="photo-gallery">' +
+      state.photos.map(src=> '<div class="g-item"><img src="'+src+'"></div>').join('') +
+      '</div>';
+  }
+  // Card height can change with the layout above, so resync the texture canvas.
+  requestAnimationFrame(()=>{ resizeTexCanvas(); seedTexParticles(); });
+}
+renderPhotoArea();
+
+/* ===================== THEMES (scoped to card only) ===================== */
+const themePresets = {
+  pink:{ primary:'#ff6fa5', accent:'#ffd1e8', glow:'#ff3d81', gold:'#e8c26a' },
+  gold:{ primary:'#d4af37', accent:'#fff3c4', glow:'#ffcc33', gold:'#f3d47a' },
+  emerald:{ primary:'#10b981', accent:'#a7f3d0', glow:'#34e6a5', gold:'#bff2d6' },
+  cyberpunk:{ primary:'#ff2079', accent:'#00eaff', glow:'#ff2079', gold:'#00eaff' },
+  ruby:{ primary:'#c8102e', accent:'#ff5d7a', glow:'#ff1053', gold:'#e0a9b4' },
+  sapphire:{ primary:'#2563eb', accent:'#93c5fd', glow:'#3b82f6', gold:'#bcd4ff' },
+  amethyst:{ primary:'#8b5cf6', accent:'#e9d5ff', glow:'#a855f7', gold:'#d9c4ff' },
+  champagne:{ primary:'#c9a24d', accent:'#f7ecd0', glow:'#e8c26a', gold:'#f3e2b8' },
+  midnight:{ primary:'#4b5563', accent:'#cbd5e1', glow:'#94a3b8', gold:'#d8dee6' },
+  coral:{ primary:'#fb7185', accent:'#ffd7c2', glow:'#fb923c', gold:'#ffcf9e' }
+};
+function applyTheme(name){
+  state.theme = name;
+  book.setAttribute('data-theme', name);
+  const p = themePresets[name];
+  ['--primary','--accent','--glow','--gold'].forEach(v=> book.style.removeProperty(v));
+  $('#colorPrimary').value = p.primary;
+  $('#colorAccent').value = p.accent;
+  $('#colorGlow').value = p.glow;
+  $('#colorGold').value = p.gold;
+  $$('.theme-card').forEach(c=> c.classList.toggle('active', c.dataset.theme===name));
+  requestAnimationFrame(()=>{ resizeTexCanvas(); seedTexParticles(); });
+}
+$$('.theme-card').forEach(card=> card.addEventListener('click', ()=> applyTheme(card.dataset.theme)));
+
+function applyCustomColors(){
+  book.style.setProperty('--primary', $('#colorPrimary').value);
+  book.style.setProperty('--accent', $('#colorAccent').value);
+  book.style.setProperty('--glow', $('#colorGlow').value);
+  book.style.setProperty('--gold', $('#colorGold').value);
+  $$('.theme-card').forEach(c=> c.classList.remove('active'));
+  requestAnimationFrame(()=>{ resizeTexCanvas(); seedTexParticles(); });
+}
+['colorPrimary','colorAccent','colorGlow','colorGold'].forEach(id=> $('#'+id).addEventListener('input', applyCustomColors));
+
+/* ===================== TEXTURE PATTERNS ===================== */
+$$('.pattern-chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    $$('.pattern-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    state.pattern = chip.dataset.pattern;
+    seedTexParticles();
+    toast('Texture: ' + chip.querySelector('.p-label').textContent);
+  });
+});
+
+const texCanvas = $('#textureCanvas');
+const texCtx = texCanvas.getContext('2d');
+let texParticles = [];
+function resizeTexCanvas(){
+  const rect = $('#exportTarget').getBoundingClientRect();
+  texCanvas.width = rect.width; texCanvas.height = rect.height;
+}
+function seedTexParticles(){
+  texParticles = [];
+  const count = state.pattern==='ribbon' ? 14 : (state.pattern==='confetti' ? 44 : 34);
+  for(let i=0;i<count;i++){
+    texParticles.push({
+      x:Math.random()*texCanvas.width, y:Math.random()*texCanvas.height, s:Math.random()*10+6,
+      v:Math.random()*0.5+0.2, drift:Math.random()*0.6-0.3, phase:Math.random()*Math.PI*2,
+      rot:Math.random()*360, rotV:(Math.random()*2-1)*1.5,
+      hue:Math.floor(Math.random()*4), flick:Math.random()*Math.PI*2
+    });
+  }
+}
+function cardColor(varName, fallback){
+  const v = getComputedStyle(book).getPropertyValue(varName).trim();
+  return v || fallback;
+}
+function drawTexture(t){
+  if(!texCanvas.width) return;
+  texCtx.clearRect(0,0,texCanvas.width,texCanvas.height);
+  const primary = cardColor('--primary', '#ff6fa5');
+  const gold = cardColor('--gold', '#e8c26a');
+
+  if(state.pattern==='hearts'){
+    texParticles.forEach(p=>{
+      p.y -= p.v; if(p.y < -20){ p.y = texCanvas.height+20; p.x = Math.random()*texCanvas.width; }
+      p.x += Math.sin(t*0.001+p.phase)*0.4;
+      texCtx.globalAlpha = 0.32 + 0.24*Math.sin(t*0.002+p.phase);
+      texCtx.fillStyle = primary;
+      texCtx.font = p.s+'px serif';
+      texCtx.fillText('❤', p.x, p.y);
+    });
+  } else if(state.pattern==='dust'){
+    texParticles.forEach(p=>{
+      p.y -= p.v*0.6; p.x += p.drift*0.5;
+      if(p.y<-10) p.y = texCanvas.height+10;
+      if(p.x<-10) p.x = texCanvas.width+10;
+      if(p.x>texCanvas.width+10) p.x = -10;
+      texCtx.globalAlpha = 0.3+0.5*Math.abs(Math.sin(t*0.003+p.phase));
+      texCtx.fillStyle = gold;
+      texCtx.beginPath(); texCtx.arc(p.x,p.y, p.s*0.12, 0, Math.PI*2); texCtx.fill();
+    });
+  } else if(state.pattern==='ribbon'){
+    texCtx.globalAlpha = 0.12; texCtx.strokeStyle = gold; texCtx.lineWidth = 18;
+    for(let i=-2;i<8;i++){
+      texCtx.beginPath();
+      const offset = (t*0.02)%80;
+      texCtx.moveTo(i*80 - offset, 0);
+      texCtx.lineTo(i*80 - offset + texCanvas.height, texCanvas.height);
+      texCtx.stroke();
+    }
+  } else if(state.pattern==='stars'){
+    texParticles.forEach(p=>{
+      texCtx.globalAlpha = 0.4+0.6*Math.abs(Math.sin(t*0.002+p.phase));
+      texCtx.fillStyle = '#fff';
+      texCtx.beginPath(); texCtx.arc(p.x,p.y, p.s*0.09, 0, Math.PI*2); texCtx.fill();
+    });
+  } else if(state.pattern==='snow'){
+    texParticles.forEach(p=>{
+      p.y += p.v*0.7; p.x += Math.sin(t*0.0012+p.phase)*0.5;
+      if(p.y>texCanvas.height+10) p.y = -10;
+      texCtx.globalAlpha = 0.35+0.35*Math.abs(Math.sin(t*0.002+p.phase));
+      texCtx.fillStyle = '#ffffff';
+      texCtx.beginPath(); texCtx.arc(p.x,p.y, p.s*0.11, 0, Math.PI*2); texCtx.fill();
+    });
+  } else if(state.pattern==='confetti'){
+    const hues = [primary, gold, cardColor('--accent','#ffd1e8'), '#ffffff'];
+    texParticles.forEach(p=>{
+      p.y += p.v*0.8; p.rot += p.rotV;
+      if(p.y>texCanvas.height+10){ p.y=-10; p.x=Math.random()*texCanvas.width; }
+      texCtx.save();
+      texCtx.translate(p.x,p.y); texCtx.rotate(p.rot*Math.PI/180);
+      texCtx.globalAlpha = 0.55;
+      texCtx.fillStyle = hues[p.hue];
+      texCtx.fillRect(-p.s*0.22, -p.s*0.12, p.s*0.44, p.s*0.24);
+      texCtx.restore();
+    });
+  } else if(state.pattern==='petals'){
+    texParticles.forEach(p=>{
+      p.y += p.v*0.5; p.x += Math.sin(t*0.001+p.phase)*0.6;
+      if(p.y>texCanvas.height+10){ p.y=-10; p.x=Math.random()*texCanvas.width; }
+      texCtx.save();
+      texCtx.translate(p.x,p.y); texCtx.rotate(Math.sin(t*0.0008+p.phase)*0.6);
+      texCtx.globalAlpha = 0.4+0.25*Math.sin(t*0.002+p.phase);
+      texCtx.fillStyle = primary;
+      texCtx.beginPath();
+      texCtx.ellipse(0,0, p.s*0.22, p.s*0.11, 0, 0, Math.PI*2);
+      texCtx.fill();
+      texCtx.restore();
+    });
+  } else if(state.pattern==='glitter'){
+    texParticles.forEach(p=>{
+      const tw = Math.abs(Math.sin(t*0.004+p.phase));
+      texCtx.globalAlpha = tw*0.9;
+      texCtx.strokeStyle = '#ffffff';
+      texCtx.lineWidth = 1;
+      const r = p.s*0.16*tw + 1;
+      texCtx.beginPath(); texCtx.moveTo(p.x-r,p.y); texCtx.lineTo(p.x+r,p.y);
+      texCtx.moveTo(p.x,p.y-r); texCtx.lineTo(p.x,p.y+r); texCtx.stroke();
+    });
+  } else if(state.pattern==='fireflies'){
+    texParticles.forEach(p=>{
+      p.x += Math.sin(t*0.0011+p.phase)*0.5;
+      p.y += Math.cos(t*0.0009+p.phase)*0.4;
+      const glow = 0.3+0.55*Math.abs(Math.sin(t*0.0025+p.flick));
+      const grad = texCtx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.s*0.9);
+      grad.addColorStop(0, 'rgba(200,255,180,'+glow+')');
+      grad.addColorStop(1, 'rgba(200,255,180,0)');
+      texCtx.globalAlpha = 1;
+      texCtx.fillStyle = grad;
+      texCtx.beginPath(); texCtx.arc(p.x,p.y, p.s*0.9, 0, Math.PI*2); texCtx.fill();
+    });
+  }
+  texCtx.globalAlpha = 1;
+}
+
+/* ===================== NEUTRAL BACKGROUND PARTICLES ===================== */
+const bgCanvas = $('#bgCanvas');
+const bgCtx = bgCanvas.getContext('2d');
+function resizeBg(){ bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; }
+let bgParticles = [];
+function seedBg(){
+  bgParticles = [];
+  for(let i=0;i<50;i++){ bgParticles.push({x:Math.random()*bgCanvas.width, y:Math.random()*bgCanvas.height, s:Math.random()*1.8+0.5, v:Math.random()*0.25+0.05}); }
+}
+function drawBg(){
+  bgCtx.clearRect(0,0,bgCanvas.width,bgCanvas.height);
+  bgCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ui-primary').trim() || '#c9a24d';
+  bgParticles.forEach(p=>{
+    p.y -= p.v; if(p.y<0) p.y = bgCanvas.height;
+    bgCtx.globalAlpha = 0.18;
+    bgCtx.beginPath(); bgCtx.arc(p.x,p.y,p.s,0,Math.PI*2); bgCtx.fill();
+  });
+  bgCtx.globalAlpha = 1;
+}
+window.addEventListener('resize', ()=>{ resizeBg(); resizeTexCanvas(); seedTexParticles(); });
+resizeBg(); seedBg(); resizeTexCanvas(); seedTexParticles();
+
+function mainLoop(t){ drawBg(); drawTexture(t); requestAnimationFrame(mainLoop); }
+requestAnimationFrame(mainLoop);
+
+/* ===================== BOOK OPEN / CLOSE ===================== */
+const bookCover = $('#bookCover');
+bookCover.addEventListener('click', ()=>{
+  state.opened = !state.opened;
+  book.classList.toggle('open', state.opened);
+  if(state.opened){ toast('Card opened'); softReveal(); }
+});
+function softReveal(){
+  if(window.confetti){
+    const c = [cardColor('--primary','#ff6fa5'), cardColor('--accent','#ffd1e8'), cardColor('--glow','#ff3d81'), '#ffffff'];
+    confetti({ particleCount:60, spread:75, startVelocity:28, origin:{y:0.35}, colors:c, scalar:0.8 });
+  }
+  for(let i=0;i<8;i++){ setTimeout(spawnHeart, i*90); }
+}
+function spawnHeart(){
+  const h = document.createElement('div');
+  h.className = 'heart-particle';
+  const size = Math.random()*10+14;
+  h.innerHTML = '<svg viewBox="0 0 24 24" width="'+size+'" height="'+size+'" fill="currentColor"><path d="M12 21s-7.5-4.6-10.2-9.1C.4 9.2 1.6 5.8 4.7 4.8c2-.6 3.9.2 5.3 2 .9-1.8 2.8-2.6 4.8-2 3.1 1 4.3 4.4 2.9 7.1C15 16.4 12 21 12 21z"/></svg>';
+  h.style.left = (Math.random()*100)+'vw';
+  h.style.bottom = '-30px';
+  h.style.color = ['#ff8fb3','#ffd1e8','#ff3d81'][Math.floor(Math.random()*3)];
+  h.style.animationDuration = (Math.random()*2+3)+'s';
+  document.body.appendChild(h);
+  setTimeout(()=> h.remove(), 5200);
+}
+
+/* ===================== 3D TILT / PARALLAX ===================== */
+const bookTilt = $('#bookTilt');
+let targetX=0, targetY=0, curX=0, curY=0;
+const stage = $('#stage');
+stage.addEventListener('mousemove', e=>{
+  const rect = stage.getBoundingClientRect();
+  const px = (e.clientX - rect.left)/rect.width - 0.5;
+  const py = (e.clientY - rect.top)/rect.height - 0.5;
+  targetX = py * -14; targetY = px * 18;
+});
+stage.addEventListener('mouseleave', ()=>{ targetX=0; targetY=0; });
+stage.addEventListener('touchmove', e=>{
+  if(!e.touches[0]) return;
+  const rect = stage.getBoundingClientRect();
+  const t = e.touches[0];
+  const px = (t.clientX - rect.left)/rect.width - 0.5;
+  const py = (t.clientY - rect.top)/rect.height - 0.5;
+  targetX = py * -10; targetY = px * 14;
+}, {passive:true});
+function tiltLoop(){
+  curX += (targetX-curX)*0.09;
+  curY += (targetY-curY)*0.09;
+  bookTilt.style.transform = `rotateX(${curX}deg) rotateY(${curY}deg)`;
+  requestAnimationFrame(tiltLoop);
+}
+tiltLoop();
+
+$('#gyroBtn').addEventListener('click', async ()=>{
+  if(typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
+    try{
+      const res = await DeviceOrientationEvent.requestPermission();
+      if(res === 'granted'){ enableGyro(); toast('Motion tilt enabled'); }
+      else toast('Permission denied');
+    }catch(err){ toast('Motion tilt not supported'); }
+  } else { enableGyro(); toast('Motion tilt enabled'); }
+});
+function enableGyro(){
+  window.addEventListener('deviceorientation', e=>{
+    if(e.beta==null || e.gamma==null) return;
+    targetX = Math.max(-16, Math.min(16, (e.beta-45)*0.32));
+    targetY = Math.max(-22, Math.min(22, e.gamma*0.46));
+  });
+}
+
+/* ===================== FULLSCREEN MODE ===================== */
+const appEl = $('#app');
+$('#fullscreenBtn').addEventListener('click', ()=>{
+  stage.classList.add('fullscreen-mode');
+  appEl.classList.add('fullscreen-active');
+});
+$('#fsExit').addEventListener('click', exitFullscreen);
+function exitFullscreen(){
+  stage.classList.remove('fullscreen-mode');
+  appEl.classList.remove('fullscreen-active');
+}
+
+/* ===================== MUSIC (generative, no audio files) ===================== */
+let audioCtx=null, musicPlaying=false, musicTimer=null, masterGain=null, chordIndex=0;
+const tracks = {
+  piano:{ name:'Soft Piano Waves', wave:'triangle', chords:[[261.6,329.6,392.0],[293.7,349.2,440.0],[220.0,261.6,329.6],[246.9,329.6,392.0]], tempo:900, vol:0.05 },
+  strings:{ name:'Romantic Strings', wave:'sawtooth', chords:[[220.0,277.2,329.6],[196.0,246.9,293.7],[174.6,220.0,261.6],[196.0,246.9,349.2]], tempo:1400, vol:0.03 },
+  dream:{ name:'Dreamy Synth', wave:'sine', chords:[[329.6,415.3,493.9],[349.2,440.0,523.3],[293.7,369.9,440.0],[311.1,392.0,466.2]], tempo:700, vol:0.045 }
+};
+function ensureAudio(){
+  if(!audioCtx){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain(); masterGain.gain.value = 1; masterGain.connect(audioCtx.destination);
+  }
+}
+function playChord(freqs, dur, wave, vol){
+  const now = audioCtx.currentTime;
+  freqs.forEach(f=>{
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = wave; osc.frequency.value = f;
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(vol, now+0.25);
+    gain.gain.linearRampToValueAtTime(0, now+dur/1000);
+    osc.connect(gain); gain.connect(masterGain);
+    osc.start(now); osc.stop(now+dur/1000+0.05);
+  });
+}
+function scheduleTrack(){
+  const key = $('#trackSelect').value;
+  const tr = tracks[key];
+  playChord(tr.chords[chordIndex % tr.chords.length], tr.tempo, tr.wave, tr.vol);
+  $$('#visBars span').forEach(bar=> bar.style.height = (Math.random()*12+3)+'px');
+  chordIndex++;
+  musicTimer = setTimeout(scheduleTrack, tr.tempo*0.95);
+}
+function toggleMusic(){
+  ensureAudio();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  musicPlaying = !musicPlaying;
+  $('#playIcon').style.display = musicPlaying ? 'none' : '';
+  $('#pauseIcon').style.display = musicPlaying ? '' : 'none';
+  $('#musicToggle').setAttribute('aria-label', musicPlaying ? 'Pause music' : 'Play music');
+  if(musicPlaying){ chordIndex = 0; scheduleTrack(); toast('Music playing'); }
+  else{ clearTimeout(musicTimer); $$('#visBars span').forEach(bar=> bar.style.height='3px'); }
+}
+$('#musicToggle').addEventListener('click', toggleMusic);
+$('#trackSelect').addEventListener('change', ()=>{
+  $('#trackName').textContent = tracks[$('#trackSelect').value].name;
+  if(musicPlaying){ clearTimeout(musicTimer); chordIndex=0; scheduleTrack(); }
+});
+
+/* ===================== EXPORT: PNG / JPEG / PDF / PRINT / SHARE ===================== */
+function waitFrames(n){
+  return new Promise(resolve=>{
+    function step(){ n--; if(n<=0) resolve(); else requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  });
+}
+async function captureCanvas(){
+  const target = $('#exportTarget');
+  const wasOpen = state.opened;
+  const prevTransform = bookTilt.style.transform;
+
+  // Freeze all motion and force the cover instantly open (no mid-transition frame),
+  // so every export always reflects the latest edits cleanly instead of a half-animated state.
+  bookCover.style.transition = 'none';
+  bookTilt.style.transition = 'none';
+  document.querySelector('.book-float').style.animation = 'none';
+  bookTilt.style.transform = 'none';
+  book.classList.add('open');
+
+  // Let the DOM settle, resync the texture canvas to the current card size, then capture.
+  await waitFrames(2);
+  resizeTexCanvas();
+  drawTexture(performance.now());
+  await waitFrames(1);
+
+  const canvas = await html2canvas(target, { scale:2, backgroundColor:null, useCORS:true, logging:false });
+
+  // Restore live state exactly as it was before capture.
+  if(!wasOpen) book.classList.remove('open');
+  bookCover.style.transition = '';
+  bookTilt.style.transition = '';
+  document.querySelector('.book-float').style.animation = '';
+  bookTilt.style.transform = prevTransform;
+
+  return canvas;
+}
+function downloadDataUrl(dataUrl, filename){
+  const a = document.createElement('a'); a.href = dataUrl; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+$('#exportPng').addEventListener('click', async ()=>{
+  toast('Rendering PNG...');
+  const canvas = await captureCanvas();
+  downloadDataUrl(canvas.toDataURL('image/png'), 'premium-card.png');
+  toast('PNG saved');
+});
+$('#exportJpg').addEventListener('click', async ()=>{
+  toast('Rendering JPEG...');
+  const canvas = await captureCanvas();
+  downloadDataUrl(canvas.toDataURL('image/jpeg', 0.95), 'premium-card.jpg');
+  toast('JPEG saved');
+});
+$('#exportPdf').addEventListener('click', async ()=>{
+  toast('Rendering PDF...');
+  const canvas = await captureCanvas();
+  const { jsPDF } = window.jspdf;
+  const imgData = canvas.toDataURL('image/jpeg', 0.95);
+  const w = canvas.width, h = canvas.height;
+  const orientation = w > h ? 'landscape' : 'portrait';
+  const pdf = new jsPDF({ orientation, unit:'px', format:[w,h] });
+  pdf.addImage(imgData, 'JPEG', 0, 0, w, h);
+  pdf.save('premium-card.pdf');
+  toast('PDF saved');
+});
+$('#printBtn').addEventListener('click', ()=>{
+  book.classList.add('open');
+  bookTilt.style.transform = 'none';
+  setTimeout(()=> window.print(), 150);
+});
+$('#shareBtn').addEventListener('click', async ()=>{
+  toast('Preparing share...');
+  const canvas = await captureCanvas();
+  canvas.toBlob(async (blob)=>{
+    if(!blob) return;
+    const file = new File([blob], 'premium-card.png', { type:'image/png' });
+    if(navigator.canShare && navigator.canShare({ files:[file] })){
+      try{ await navigator.share({ files:[file], title:'Premium Card' }); toast('Shared'); }
+      catch(err){ /* user cancelled */ }
+    } else {
+      downloadDataUrl(canvas.toDataURL('image/png'), 'premium-card.png');
+      toast('Share not supported — downloaded instead');
+    }
+  }, 'image/png');
+});
+
+/* ===================== INIT ===================== */
+applyTheme('pink');
+$('#trackName').textContent = tracks.piano.name;
+toast('Customize your card to get started');
+
+})();
+</script>
+</body>
+</html>
