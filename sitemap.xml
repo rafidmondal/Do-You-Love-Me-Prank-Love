@@ -2,13 +2,19 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://love-prank.raxzen.in/</loc>
-    <lastmod>2026-08-08</lastmod>
+    <loc>https://do-you-love-me-website.raxzen.in/</loc>
+    <lastmod>2026-08-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://love-prank.raxzen.in/logo.png</image:loc>
+      <image:loc>https://do-you-love-me-website.raxzen.in/logo.png</image:loc>
       <image:title>Do You Love Me? — Yes or No love prank and proposal website. Also known as: Amar Sathe Prem Korbe, Valobaso Kina, Tum Mujhse Pyar Karte Ho, Will You Be My Girlfriend, Will You Be My Valentine.</image:title>
     </image:image>
+  </url>
+  <url>
+    <loc>https://do-you-love-me-website.raxzen.in/index3.html</loc>
+    <lastmod>2026-08-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>

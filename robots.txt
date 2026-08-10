@@ -13,4 +13,4 @@ Allow: /
 User-agent: ClaudeBot
 Allow: /
 
-Sitemap: https://love-prank.raxzen.in/sitemap.xml
+Sitemap: https://do-you-love-me-website.raxzen.in/sitemap.xml
