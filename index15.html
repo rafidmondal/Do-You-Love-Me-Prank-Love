@@ -322,6 +322,58 @@ select option{ background:#1a1020; color:#fff; }
   .cover-title{ font-size:1.7rem; }
   .i-headline{ font-size:1.1rem; }
 }
+
+/* Compact result action buttons — fit phone + PC screens */
+#resultExportBar{
+  padding-left:10px !important;
+  padding-right:10px !important;
+}
+#resultExportBtns{
+  gap:7px !important;
+  width:100%;
+}
+#resultExportBtns .btn{
+  min-width:0 !important;
+  padding:9px 11px !important;
+  font-size:.72rem !important;
+  gap:6px !important;
+  border-radius:12px !important;
+}
+#resultExportBtns .btn svg{
+  width:14px !important;
+  height:14px !important;
+}
+@media (max-width:520px){
+  #resultExportBtns{
+    gap:5px !important;
+    overflow-x:visible !important;
+  }
+  #resultExportBtns .btn{
+    flex:1 1 0 !important;
+    padding:8px 6px !important;
+    font-size:.66rem !important;
+    white-space:nowrap;
+  }
+  #resultExportBtns .btn svg{
+    width:13px !important;
+    height:13px !important;
+  }
+}
+@media (max-width:360px){
+  #resultExportBtns{
+    gap:4px !important;
+  }
+  #resultExportBtns .btn{
+    padding:8px 4px !important;
+    font-size:.60rem !important;
+    gap:4px !important;
+  }
+  #resultExportBtns .btn svg{
+    width:12px !important;
+    height:12px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -448,8 +500,7 @@ select option{ background:#1a1020; color:#fff; }
     <div class="section">
       <div class="section-title">Export / Download</div>
       <div class="export-btns">
-        <button class="btn btn-ghost" id="exportPng"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>PNG</button>
-        <button class="btn btn-ghost" id="exportJpg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>JPEG</button>
+        <button class="btn btn-ghost" id="exportPhoto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>Photo</button>
         <button class="btn btn-ghost" id="printBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="1.5"/><path d="M6 17v4h12v-4"/></svg>Print</button>
         <button class="btn btn-ghost" id="shareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.4"/><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="19" r="2.4"/><path d="M8.1 10.7l7.8-4.4M8.1 13.3l7.8 4.4"/></svg>Share</button>
         <button class="btn btn-primary" id="exportPdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg>Save as PDF</button>
@@ -464,9 +515,9 @@ select option{ background:#1a1020; color:#fff; }
   <main class="stage" id="stage">
     <div id="resultExportBar" style="position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(15,15,20,0.9);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.1);padding:12px 16px calc(12px + env(safe-area-inset-bottom));">
       <div class="export-btns" id="resultExportBtns" style="display:flex;gap:10px;flex-wrap:nowrap;overflow-x:auto;justify-content:center;max-width:100%;">
-        <button class="btn btn-ghost" id="exportPngResult" style="flex:0 0 auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>PNG</button>
-        <button class="btn btn-ghost" id="exportJpgResult" style="flex:0 0 auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>JPEG</button>
+        <button class="btn btn-ghost" id="exportPhotoResult" style="flex:0 0 auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>Photo</button>
         <button class="btn btn-ghost" id="shareBtnResult" style="flex:0 0 auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.4"/><circle cx="6" cy="12" r="2.4"/><circle cx="18" cy="19" r="2.4"/><path d="M8.1 10.7l7.8-4.4M8.1 13.3l7.8 4.4"/></svg>Share</button>
+        <button class="btn btn-ghost" id="printBtnResult" style="flex:0 0 auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="1.5"/><path d="M6 17v4h12v-4"/></svg>Print</button>
         <button class="btn btn-primary" id="exportPdfResult" style="flex:0 0 auto;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg>Save as PDF</button>
       </div>
     </div>
@@ -1096,7 +1147,7 @@ async function captureCanvas(){
 
   let canvas;
   try{
-    canvas = await html2canvas(target, { scale:2, backgroundColor:null, useCORS:true, allowTaint:true, logging:false });
+    canvas = await html2canvas(target, { scale:2, backgroundColor:null, useCORS:true, allowTaint:false, imageTimeout:15000, logging:false });
   } finally {
     // Restore every flattened/rewritten inline style exactly as it was before capture.
     restore.forEach(r=>{
@@ -1139,26 +1190,28 @@ function downloadDataUrl(dataUrl, filename){
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=> URL.revokeObjectURL(url), 4000);
 }
-$('#exportPng').addEventListener('click', async ()=>{
-  toast('Rendering PNG...');
+$('#exportPhoto').addEventListener('click', async ()=>{
+  toast('Rendering Photo...');
   try{
     const canvas = await captureCanvas();
-    downloadDataUrl(canvas.toDataURL('image/png'), 'premium-card.png');
-    toast('PNG saved');
+    await new Promise((resolve, reject)=>{
+      canvas.toBlob(blob=>{
+        if(!blob){ reject(new Error('Canvas could not be converted to PNG')); return; }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'premium-card.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url), 4000);
+        resolve();
+      }, 'image/png');
+    });
+    toast('Photo downloaded');
   }catch(err){
-    console.error(err);
-    toast('PNG export failed — try again');
-  }
-});
-$('#exportJpg').addEventListener('click', async ()=>{
-  toast('Rendering JPEG...');
-  try{
-    const canvas = await captureCanvas();
-    downloadDataUrl(canvas.toDataURL('image/jpeg', 0.95), 'premium-card.jpg');
-    toast('JPEG saved');
-  }catch(err){
-    console.error(err);
-    toast('JPEG export failed — try again');
+    console.error('Photo export error:', err);
+    toast('Photo download failed — try again');
   }
 });
 $('#exportPdf').addEventListener('click', async ()=>{
@@ -1254,10 +1307,10 @@ $('#trackName').textContent = tracks.piano.name;
 })();
 
 /* ===================== RESULT PAGE EXPORT BUTTONS ===================== */
-$('#exportPngResult').addEventListener('click', ()=> $('#exportPng').click());
-$('#exportJpgResult').addEventListener('click', ()=> $('#exportJpg').click());
+$('#exportPhotoResult').addEventListener('click', ()=> $('#exportPhoto').click());
 $('#exportPdfResult').addEventListener('click', ()=> $('#exportPdf').click());
 $('#shareBtnResult').addEventListener('click', ()=> $('#shareBtn').click());
+$('#printBtnResult').addEventListener('click', ()=> $('#printBtn').click());
 
 })();
 </script>
