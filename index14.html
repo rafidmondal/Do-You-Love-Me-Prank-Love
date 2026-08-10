@@ -1021,8 +1021,7 @@ async function captureCanvas(){
   // html2canvas cannot render real 3D CSS (perspective / preserve-3d / translateZ / rotateY).
   // Flatten every 3D-transformed element in the card to plain 2D just for the capture,
   // then restore each inline style exactly afterward so the live card is unaffected.
-  const flattenSelector = '#book, #book *';
-  const els = target.matches(flattenSelector) ? [target, ...target.querySelectorAll('*')] : Array.from(target.querySelectorAll('*'));
+  const els = [target, ...target.querySelectorAll('*')];
   const restore = [];
   els.forEach(el=>{
     const cs = getComputedStyle(el);
@@ -1033,8 +1032,6 @@ async function captureCanvas(){
       el.style.transition = 'none';
       el.style.perspective = 'none';
       el.style.transformStyle = 'flat';
-      // Keep the cover's open rotation logic intact (it's already forced open above via class),
-      // but strip translateZ/rotateY so html2canvas paints a flat, correctly-stacked frame.
       if(el.id !== 'bookCover'){
         el.style.transform = 'none';
       }
@@ -1044,57 +1041,104 @@ async function captureCanvas(){
   const insideEl = document.getElementById('insideContent');
   if(insideEl) insideEl.style.visibility = 'visible';
 
+  // html2canvas's CSS engine does not understand color-mix(), so any background/border/shadow
+  // using it renders wrong or throws. The browser itself resolves color-mix() through
+  // getComputedStyle, so we bake those resolved colors in as inline styles just for the
+  // capture, then restore the original inline styles afterward.
+  const colorProps = ['backgroundColor','borderColor','borderTopColor','borderRightColor','borderBottomColor','borderLeftColor','color','boxShadow','textShadow','background'];
+  const colorRestore = [];
+  els.forEach(el=>{
+    const cs = getComputedStyle(el);
+    const raw = el.getAttribute('style') || '';
+    if(raw.includes('color-mix')){
+      colorRestore.push({ el, style: raw });
+      colorProps.forEach(p=>{
+        const camel = p.replace(/-([a-z])/g, (_,c)=>c.toUpperCase());
+        try{ if(cs[camel]) el.style[camel] = cs[camel]; }catch(e){}
+      });
+    }
+  });
+
   // Let the DOM settle, resync the texture canvas to the current card size, then capture.
   await waitFrames(2);
   resizeTexCanvas();
   drawTexture(performance.now());
   await waitFrames(1);
 
-  const canvas = await html2canvas(target, { scale:2, backgroundColor:null, useCORS:true, logging:false });
-
-  // Restore every flattened inline style exactly as it was before capture.
-  restore.forEach(r=>{
-    r.el.style.transform = r.transform;
-    r.el.style.transformStyle = r.transformStyle;
-    r.el.style.perspective = r.perspective;
-    r.el.style.transition = r.transition;
-  });
-  document.querySelectorAll('.cover-face').forEach(f=> f.style.display = '');
-  if(!wasOpen) book.classList.remove('open');
-  bookCover.style.transition = '';
-  bookTilt.style.transition = '';
-  document.querySelector('.book-float').style.animation = '';
-  bookTilt.style.transform = prevTransform;
+  let canvas;
+  try{
+    canvas = await html2canvas(target, { scale:2, backgroundColor:null, useCORS:true, allowTaint:true, logging:false });
+  } finally {
+    // Restore every flattened/rewritten inline style exactly as it was before capture.
+    restore.forEach(r=>{
+      r.el.style.transform = r.transform;
+      r.el.style.transformStyle = r.transformStyle;
+      r.el.style.perspective = r.perspective;
+      r.el.style.transition = r.transition;
+    });
+    colorRestore.forEach(r=> r.el.setAttribute('style', r.style));
+    document.querySelectorAll('.cover-face').forEach(f=> f.style.display = '');
+    if(!wasOpen) book.classList.remove('open');
+    bookCover.style.transition = '';
+    bookTilt.style.transition = '';
+    document.querySelector('.book-float').style.animation = '';
+    bookTilt.style.transform = prevTransform;
+  }
 
   return canvas;
 }
 function downloadDataUrl(dataUrl, filename){
-  const a = document.createElement('a'); a.href = dataUrl; a.download = filename;
-  document.body.appendChild(a); a.click(); a.remove();
+  // Blob-URL downloads are far more reliable than raw data-URL anchor clicks on mobile
+  // Chrome/Android webviews, which frequently ignore the download attribute on huge data URIs.
+  fetch(dataUrl).then(res=> res.blob()).then(blob=>{
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=> URL.revokeObjectURL(url), 4000);
+  }).catch(()=>{
+    // Fallback for very old browsers where fetch() can't read a data: URL.
+    const a = document.createElement('a'); a.href = dataUrl; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+  });
 }
 $('#exportPng').addEventListener('click', async ()=>{
   toast('Rendering PNG...');
-  const canvas = await captureCanvas();
-  downloadDataUrl(canvas.toDataURL('image/png'), 'premium-card.png');
-  toast('PNG saved');
+  try{
+    const canvas = await captureCanvas();
+    downloadDataUrl(canvas.toDataURL('image/png'), 'premium-card.png');
+    toast('PNG saved');
+  }catch(err){
+    console.error(err);
+    toast('PNG export failed — try again');
+  }
 });
 $('#exportJpg').addEventListener('click', async ()=>{
   toast('Rendering JPEG...');
-  const canvas = await captureCanvas();
-  downloadDataUrl(canvas.toDataURL('image/jpeg', 0.95), 'premium-card.jpg');
-  toast('JPEG saved');
+  try{
+    const canvas = await captureCanvas();
+    downloadDataUrl(canvas.toDataURL('image/jpeg', 0.95), 'premium-card.jpg');
+    toast('JPEG saved');
+  }catch(err){
+    console.error(err);
+    toast('JPEG export failed — try again');
+  }
 });
 $('#exportPdf').addEventListener('click', async ()=>{
   toast('Rendering PDF...');
-  const canvas = await captureCanvas();
-  const { jsPDF } = window.jspdf;
-  const imgData = canvas.toDataURL('image/jpeg', 0.95);
-  const w = canvas.width, h = canvas.height;
-  const orientation = w > h ? 'landscape' : 'portrait';
-  const pdf = new jsPDF({ orientation, unit:'px', format:[w,h] });
-  pdf.addImage(imgData, 'JPEG', 0, 0, w, h);
-  pdf.save('premium-card.pdf');
-  toast('PDF saved');
+  try{
+    const canvas = await captureCanvas();
+    const { jsPDF } = window.jspdf;
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    const w = canvas.width, h = canvas.height;
+    const orientation = w > h ? 'landscape' : 'portrait';
+    const pdf = new jsPDF({ orientation, unit:'px', format:[w,h] });
+    pdf.addImage(imgData, 'JPEG', 0, 0, w, h);
+    pdf.save('premium-card.pdf');
+    toast('PDF saved');
+  }catch(err){
+    console.error(err);
+    toast('PDF export failed — try again');
+  }
 });
 $('#printBtn').addEventListener('click', ()=>{
   book.classList.add('open');
@@ -1103,18 +1147,23 @@ $('#printBtn').addEventListener('click', ()=>{
 });
 $('#shareBtn').addEventListener('click', async ()=>{
   toast('Preparing share...');
-  const canvas = await captureCanvas();
-  canvas.toBlob(async (blob)=>{
-    if(!blob) return;
-    const file = new File([blob], 'premium-card.png', { type:'image/png' });
-    if(navigator.canShare && navigator.canShare({ files:[file] })){
-      try{ await navigator.share({ files:[file], title:'Premium Card' }); toast('Shared'); }
-      catch(err){ /* user cancelled */ }
-    } else {
-      downloadDataUrl(canvas.toDataURL('image/png'), 'premium-card.png');
-      toast('Share not supported — downloaded instead');
-    }
-  }, 'image/png');
+  try{
+    const canvas = await captureCanvas();
+    canvas.toBlob(async (blob)=>{
+      if(!blob){ toast('Share failed — try again'); return; }
+      const file = new File([blob], 'premium-card.png', { type:'image/png' });
+      if(navigator.canShare && navigator.canShare({ files:[file] })){
+        try{ await navigator.share({ files:[file], title:'Premium Card' }); toast('Shared'); }
+        catch(err){ /* user cancelled */ }
+      } else {
+        downloadDataUrl(canvas.toDataURL('image/png'), 'premium-card.png');
+        toast('Share not supported — downloaded instead');
+      }
+    }, 'image/png');
+  }catch(err){
+    console.error(err);
+    toast('Share failed — try again');
+  }
 });
 
 /* ===================== INIT ===================== */
