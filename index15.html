@@ -6,7 +6,12 @@
 <title>Premium 3D Card Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=Playfair+Display:wght@500;700;900&family=Great+Vibes&family=Dancing+Script:wght@500;700&family=Courier+Prime:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas-pro@2.3.2/dist/html2canvas-pro.min.js"></script>
+<script>
+if(typeof window.html2canvasPro !== 'function' && typeof window.html2canvas !== 'function'){
+  document.write('<script src="https://unpkg.com/html2canvas-pro@2.3.2/dist/html2canvas-pro.min.js"><\/script>');
+}
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.2/confetti.browser.min.js"></script>
 <style>
@@ -311,11 +316,16 @@ select option{ background:#1a1020; color:#fff; }
 #toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
 @media print{
-  .panel, .stage-bg-particles, .footnote, .fs-exit{ display:none !important; }
-  body{ background:#fff; }
-  .app{ display:block; }
-  .stage{ min-height:auto; padding:0; }
-  .book{ margin:0 auto; }
+  @page{ margin:0; size:auto; }
+  html, body{ width:100%; height:auto; min-height:0; margin:0 !important; padding:0 !important; background:#fff !important; overflow:visible !important; }
+  body::before{ display:none !important; }
+  .panel, .stage-bg-particles, .footnote, .fs-exit, #resultExportBar, #toast, .book-cover, .cover-face{ display:none !important; }
+  .app{ display:block !important; min-height:0 !important; }
+  .stage{ min-height:0 !important; height:auto !important; padding:0 !important; margin:0 !important; display:block !important; overflow:visible !important; }
+  .book-tilt, .book-float{ width:auto !important; height:auto !important; transform:none !important; animation:none !important; perspective:none !important; }
+  .book{ margin:0 auto !important; transform:none !important; width:var(--card-w) !important; height:var(--card-h) !important; max-width:100vw !important; max-height:100vh !important; overflow:hidden !important; box-shadow:none !important; }
+  .book-inside{ position:relative !important; inset:auto !important; width:100% !important; height:100% !important; transform:none !important; }
+  .inside-texture{ display:block !important; }
 }
 @media (max-width:560px){
   .book{ --card-w: 92vw; --card-h: 78vh; }
@@ -325,8 +335,21 @@ select option{ background:#1a1020; color:#fff; }
 
 /* Compact result action buttons — fit phone + PC screens */
 #resultExportBar{
+  bottom:52px !important;
   padding-left:10px !important;
   padding-right:10px !important;
+  padding-bottom:10px !important;
+}
+#toast{
+  bottom:128px !important;
+}
+@media (max-width:520px){
+  #resultExportBar{
+    bottom:56px !important;
+  }
+  #toast{
+    bottom:132px !important;
+  }
 }
 #resultExportBtns{
   gap:7px !important;
@@ -1057,216 +1080,274 @@ $('#trackSelect').addEventListener('change', ()=>{
   if(musicPlaying){ clearTimeout(musicTimer); chordIndex=0; scheduleTrack(); }
 });
 
-/* ===================== EXPORT: PNG / JPEG / PDF / PRINT / SHARE ===================== */
+/* ===================== EXPORT: PHOTO / PDF / PRINT / SHARE ===================== */
 function waitFrames(n){
   return new Promise(resolve=>{
     function step(){ n--; if(n<=0) resolve(); else requestAnimationFrame(step); }
     requestAnimationFrame(step);
   });
 }
+
+function getCaptureEngine(){
+  const engine = window.html2canvasPro || window.html2canvas;
+  if(typeof engine !== 'function') throw new Error('Screenshot engine failed to load');
+  return engine;
+}
+
 async function captureCanvas(){
-  const target = $('#book');
+  const target = $('#insideContent');
+  if(!target) throw new Error('Card surface not found');
   const wasOpen = state.opened;
   const prevTransform = bookTilt.style.transform;
+  const floatEl = document.querySelector('.book-float');
 
-  // Freeze all motion and force the cover instantly open (no mid-transition frame),
-  // so every export always reflects the latest edits cleanly instead of a half-animated state.
+  // Freeze the live 3D card and expose the inside page for a clean 2D export.
   bookCover.style.transition = 'none';
   bookTilt.style.transition = 'none';
-  document.querySelector('.book-float').style.animation = 'none';
+  if(floatEl) floatEl.style.animation = 'none';
   bookTilt.style.transform = 'none';
   book.classList.add('open');
 
-  // html2canvas cannot render real 3D CSS (perspective / preserve-3d / translateZ / rotateY).
-  // Flatten every 3D-transformed element in the card to plain 2D just for the capture,
-  // then restore each inline style exactly afterward so the live card is unaffected.
   const els = [target, ...target.querySelectorAll('*')];
   const restore = [];
-  els.forEach(el=>{
-    const cs = getComputedStyle(el);
-    const needsFlatten = cs.transformStyle === 'preserve-3d' || cs.perspective !== 'none' ||
-      (cs.transform !== 'none' && /translateZ|rotateY|rotateX|matrix3d|perspective/.test(el.style.transform || cs.transform));
-    if(needsFlatten){
-      restore.push({ el, transform: el.style.transform, transformStyle: el.style.transformStyle, perspective: el.style.perspective, transition: el.style.transition });
-      el.style.transition = 'none';
-      el.style.perspective = 'none';
-      el.style.transformStyle = 'flat';
-      if(el.id !== 'bookCover'){
-        el.style.transform = 'none';
-      }
-    }
-  });
-  document.querySelectorAll('.cover-face').forEach(f=> f.style.display = 'none');
-  const insideEl = document.getElementById('insideContent');
-  if(insideEl) insideEl.style.visibility = 'visible';
-
-  // html2canvas 1.4.1 does not reliably parse modern CSS functions such as
-  // color-mix(). The old implementation only checked INLINE styles for the
-  // string "color-mix", but this file uses color-mix() in the stylesheet, so
-  // that workaround never actually ran. Bake the browser's already-resolved
-  // computed colors/backgrounds/shadows into inline styles for EVERY element
-  // in the export target, then restore the original style attributes afterward.
-  const captureProps = [
-    'background',
-    'backgroundColor',
-    'backgroundImage',
-    'borderColor',
-    'borderTopColor',
-    'borderRightColor',
-    'borderBottomColor',
-    'borderLeftColor',
-    'color',
-    'boxShadow',
-    'textShadow'
-  ];
   const colorRestore = [];
-  els.forEach(el=>{
-    const cs = getComputedStyle(el);
-    colorRestore.push({ el, style: el.getAttribute('style') || '' });
-    captureProps.forEach(prop=>{
-      try{
-        const value = cs[prop];
-        if(value && value !== 'none'){
-          el.style[prop] = value;
-        }
-      }catch(e){}
-    });
-    // Modern effects that html2canvas does not reproduce consistently.
-    el.style.backdropFilter = 'none';
-    el.style.webkitBackdropFilter = 'none';
-    el.style.mixBlendMode = 'normal';
-    el.style.animation = 'none';
-    el.style.transition = 'none';
-  });
+  const captureProps = [
+    'background','backgroundColor','backgroundImage',
+    'borderColor','borderTopColor','borderRightColor','borderBottomColor','borderLeftColor',
+    'color','boxShadow','textShadow'
+  ];
 
-  // Let the DOM settle, resync the texture canvas to the current card size, then capture.
-  await waitFrames(2);
-  resizeTexCanvas();
-  drawTexture(performance.now());
-  await waitFrames(1);
-
-  let canvas;
   try{
-    canvas = await html2canvas(target, { scale:2, backgroundColor:null, useCORS:true, allowTaint:false, imageTimeout:15000, logging:false });
-  } finally {
-    // Restore every flattened/rewritten inline style exactly as it was before capture.
-    restore.forEach(r=>{
-      r.el.style.transform = r.transform;
-      r.el.style.transformStyle = r.transformStyle;
-      r.el.style.perspective = r.perspective;
-      r.el.style.transition = r.transition;
+    // Flatten 3D transforms only during capture.
+    els.forEach(el=>{
+      const cs = getComputedStyle(el);
+      const transform = cs.transform || '';
+      const needsFlatten = cs.transformStyle === 'preserve-3d' || cs.perspective !== 'none' ||
+        (transform !== 'none' && /translateZ|rotateY|rotateX|matrix3d|perspective/.test(transform));
+      if(needsFlatten){
+        restore.push({
+          el,
+          transform:el.style.transform,
+          transformStyle:el.style.transformStyle,
+          perspective:el.style.perspective,
+          transition:el.style.transition
+        });
+        el.style.transition='none';
+        el.style.perspective='none';
+        el.style.transformStyle='flat';
+        if(el.id !== 'bookCover') el.style.transform='none';
+      }
     });
-    colorRestore.forEach(r=> r.el.setAttribute('style', r.style));
-    document.querySelectorAll('.cover-face').forEach(f=> f.style.display = '');
-    if(!wasOpen) book.classList.remove('open');
-    bookCover.style.transition = '';
-    bookTilt.style.transition = '';
-    document.querySelector('.book-float').style.animation = '';
-    bookTilt.style.transform = prevTransform;
-  }
 
+    document.querySelectorAll('.cover-face').forEach(f=>f.style.display='none');
+    const insideEl=document.getElementById('insideContent');
+    if(insideEl) insideEl.style.visibility='visible';
+
+    // Bake resolved browser colors into inline styles. html2canvas-pro supports
+    // modern CSS colors itself, but this also protects the existing complex theme CSS.
+    els.forEach(el=>{
+      const cs=getComputedStyle(el);
+      colorRestore.push({el,style:el.getAttribute('style') || ''});
+      captureProps.forEach(prop=>{
+        try{
+          const value=cs[prop];
+          if(value && value!=='none') el.style[prop]=value;
+        }catch(e){}
+      });
+      el.style.backdropFilter='none';
+      el.style.webkitBackdropFilter='none';
+      el.style.mixBlendMode='normal';
+      el.style.animation='none';
+      el.style.transition='none';
+    });
+
+    await waitFrames(2);
+    if(typeof resizeTexCanvas==='function') resizeTexCanvas();
+    if(typeof drawTexture==='function') drawTexture(performance.now());
+    await waitFrames(2);
+
+    const engine=getCaptureEngine();
+    const captured = await engine(target, {
+      scale: Math.min(2, Math.max(1, window.devicePixelRatio || 1)),
+      backgroundColor:null,
+      useCORS:true,
+      allowTaint:false,
+      imageTimeout:20000,
+      logging:false,
+      foreignObjectRendering:false,
+      scrollX:0,
+      scrollY:-window.scrollY
+    });
+    return cleanRoundedCardCanvas(captured);
+  }finally{
+    restore.forEach(r=>{
+      r.el.style.transform=r.transform;
+      r.el.style.transformStyle=r.transformStyle;
+      r.el.style.perspective=r.perspective;
+      r.el.style.transition=r.transition;
+    });
+    colorRestore.forEach(r=>r.el.setAttribute('style',r.style));
+    document.querySelectorAll('.cover-face').forEach(f=>f.style.display='');
+    if(!wasOpen) book.classList.remove('open');
+    bookCover.style.transition='';
+    bookTilt.style.transition='';
+    if(floatEl) floatEl.style.animation='';
+    bookTilt.style.transform=prevTransform;
+  }
+}
+
+
+function cleanRoundedCardCanvas(canvas){
+  const ctx = canvas.getContext('2d');
+  if(!ctx) return canvas;
+
+  const cssRadius = parseFloat(getComputedStyle($('#insideContent')).borderTopLeftRadius) || 26;
+  const rect = $('#insideContent').getBoundingClientRect();
+  const sx = canvas.width / Math.max(1, rect.width);
+  const sy = canvas.height / Math.max(1, rect.height);
+  const rx = Math.max(1, cssRadius * sx);
+  const ry = Math.max(1, cssRadius * sy);
+
+  ctx.save();
+  ctx.globalCompositeOperation = 'destination-in';
+  ctx.beginPath();
+  ctx.moveTo(rx, 0);
+  ctx.lineTo(canvas.width-rx, 0);
+  ctx.quadraticCurveTo(canvas.width, 0, canvas.width, ry);
+  ctx.lineTo(canvas.width, canvas.height-ry);
+  ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width-rx, canvas.height);
+  ctx.lineTo(rx, canvas.height);
+  ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height-ry);
+  ctx.lineTo(0, ry);
+  ctx.quadraticCurveTo(0, 0, rx, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
   return canvas;
 }
-function dataUrlToBlob(dataUrl){
-  const [meta, b64] = dataUrl.split(',');
-  const mime = meta.match(/:(.*?);/)[1];
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for(let i=0;i<bin.length;i++) arr[i] = bin.charCodeAt(i);
-  return new Blob([arr], { type: mime });
+
+function blobToDataURL(blob){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=()=>reject(reader.error || new Error('FileReader failed'));
+    reader.readAsDataURL(blob);
+  });
 }
-function downloadDataUrl(dataUrl, filename){
-  // Decode manually (no fetch()) — many Android in-app/webview browsers block or fail
-  // fetch() on data: URLs, which was silently breaking every export on mobile.
-  let blob;
-  try{ blob = dataUrlToBlob(dataUrl); }
-  catch(e){
-    const a = document.createElement('a'); a.href = dataUrl; a.download = filename;
-    document.body.appendChild(a); a.click(); a.remove();
-    return;
-  }
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=> URL.revokeObjectURL(url), 4000);
+
+function canvasToBlob(canvas,type='image/png',quality){
+  return new Promise((resolve,reject)=>{
+    try{
+      canvas.toBlob(blob=>blob ? resolve(blob) : reject(new Error('Canvas toBlob failed')),type,quality);
+    }catch(err){ reject(err); }
+  });
 }
-$('#exportPhoto').addEventListener('click', async ()=>{
-  toast('Rendering Photo...');
+
+function downloadBlob(blob,filename){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=filename;
+  a.rel='noopener';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),10000);
+}
+
+let preparedPhotoFile=null;
+let preparedPhotoPromise=null;
+
+async function preparePhotoFile(){
+  if(preparedPhotoFile) return preparedPhotoFile;
+  if(preparedPhotoPromise) return preparedPhotoPromise;
+  preparedPhotoPromise=(async()=>{
+    const canvas=await captureCanvas();
+    const blob=await canvasToBlob(canvas,'image/png');
+    preparedPhotoFile=new File([blob],'premium-card.png',{type:'image/png'});
+    return preparedPhotoFile;
+  })().finally(()=>{ preparedPhotoPromise=null; });
+  return preparedPhotoPromise;
+}
+
+$('#exportPhoto').addEventListener('click', async()=>{
+  toast('Preparing Photo...');
   try{
-    const canvas = await captureCanvas();
-    await new Promise((resolve, reject)=>{
-      canvas.toBlob(blob=>{
-        if(!blob){ reject(new Error('Canvas could not be converted to PNG')); return; }
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'premium-card.png';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(()=>URL.revokeObjectURL(url), 4000);
-        resolve();
-      }, 'image/png');
-    });
+    const file=await preparePhotoFile();
+    downloadBlob(file,'premium-card.png');
     toast('Photo downloaded');
   }catch(err){
-    console.error('Photo export error:', err);
+    console.error('Photo export error:',err);
+    preparedPhotoFile=null;
     toast('Photo download failed — try again');
   }
 });
-$('#exportPdf').addEventListener('click', async ()=>{
+
+$('#exportPdf').addEventListener('click', async()=>{
   toast('Rendering PDF...');
   try{
-    const canvas = await captureCanvas();
-    const { jsPDF } = window.jspdf;
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-    const w = canvas.width, h = canvas.height;
-    const orientation = w > h ? 'landscape' : 'portrait';
-    const pdf = new jsPDF({ orientation, unit:'px', format:[w,h] });
-    pdf.addImage(imgData, 'JPEG', 0, 0, w, h);
+    const file=await preparePhotoFile();
+    const imgData=await blobToDataURL(file);
+    const img=new Image();
+    await new Promise((resolve,reject)=>{ img.onload=resolve; img.onerror=reject; img.src=imgData; });
+    const w=img.naturalWidth || 1080;
+    const h=img.naturalHeight || 1350;
+    const {jsPDF}=window.jspdf || {};
+    if(typeof jsPDF!=='function') throw new Error('jsPDF failed to load');
+    const orientation=w>h?'landscape':'portrait';
+    const pdf=new jsPDF({orientation,unit:'px',format:[w,h],compress:true});
+    pdf.addImage(imgData,'PNG',0,0,w,h,undefined,'FAST');
     pdf.save('premium-card.pdf');
     toast('PDF saved');
   }catch(err){
-    console.error(err);
+    console.error('PDF export error:',err);
     toast('PDF export failed — try again');
   }
 });
-$('#printBtn').addEventListener('click', ()=>{
+
+$('#printBtn').addEventListener('click',()=>{
   book.classList.add('open');
-  bookTilt.style.transform = 'none';
-  setTimeout(()=> window.print(), 150);
+  bookTilt.style.transform='none';
+  document.body.classList.add('card-printing');
+  setTimeout(()=>window.print(),100);
 });
-$('#shareBtn').addEventListener('click', async ()=>{
-  toast('Preparing share...');
-  try{
-    const canvas = await captureCanvas();
-    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-    if(!blob) throw new Error('PNG blob creation failed');
 
-    const file = new File([blob], 'premium-card.png', { type:'image/png' });
-    const shareData = { files:[file], title:'Premium Card' };
+window.addEventListener('afterprint',()=>document.body.classList.remove('card-printing'));
 
-    if(typeof navigator.share === 'function' &&
-       typeof navigator.canShare === 'function' &&
-       navigator.canShare({ files:[file] })){
-      try{
-        await navigator.share(shareData);
-        toast('Shared');
+async function sharePreparedPhoto(){
+  // Web Share is intentionally called without awaiting capture. The image is
+  // pre-generated on result load so the user gesture remains valid.
+  if(preparedPhotoFile && typeof navigator.share==='function'){
+    const file=preparedPhotoFile;
+    const shareData={files:[file],title:'Premium Card'};
+    try{
+      if(typeof navigator.canShare!=='function' || navigator.canShare({files:[file]})){
+        const result=navigator.share(shareData);
+        if(result && typeof result.then==='function'){
+          result.then(()=>toast('Shared')).catch(err=>{
+            if(err && err.name==='AbortError') return;
+            console.warn('Web Share failed:',err);
+            downloadBlob(file,'premium-card.png');
+            toast('Share unavailable — image downloaded');
+          });
+        }
         return;
-      }catch(err){
-        if(err && err.name === 'AbortError') return; // user cancelled
-        console.warn('Web Share failed:', err);
       }
+    }catch(err){
+      console.warn('Web Share failed:',err);
     }
-
-    // Reliable fallback when file sharing is unavailable or blocked.
-    downloadDataUrl(canvas.toDataURL('image/png'), 'premium-card.png');
-    toast('Share unavailable — image downloaded');
-  }catch(err){
-    console.error('Share export error:', err);
-    toast('Share failed — try again');
   }
-});
+
+  if(preparedPhotoFile){
+    downloadBlob(preparedPhotoFile,'premium-card.png');
+    toast('Share unavailable — image downloaded');
+    return;
+  }
+
+  toast('Photo is still preparing — tap Share again in a moment');
+}
+
+$('#shareBtn').addEventListener('click',sharePreparedPhoto);
 
 /* ===================== INIT ===================== */
 applyTheme('pink');
@@ -1304,12 +1385,15 @@ $('#trackName').textContent = tracks.piano.name;
   $('#trackName').textContent = tracks[saved.track || 'piano'].name;
 
   toast('Card ready');
+  // Pre-render the share/download asset in the background while the user views the result.
+  // This avoids losing Web Share's transient user activation after an async capture.
+  setTimeout(()=>{ preparePhotoFile().catch(err=>console.warn('Background photo preparation failed:',err)); },120);
 })();
 
 /* ===================== RESULT PAGE EXPORT BUTTONS ===================== */
 $('#exportPhotoResult').addEventListener('click', ()=> $('#exportPhoto').click());
 $('#exportPdfResult').addEventListener('click', ()=> $('#exportPdf').click());
-$('#shareBtnResult').addEventListener('click', ()=> $('#shareBtn').click());
+$('#shareBtnResult').addEventListener('click', sharePreparedPhoto);
 $('#printBtnResult').addEventListener('click', ()=> $('#printBtn').click());
 
 })();
