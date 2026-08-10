@@ -758,5 +758,103 @@
     }
 
     </script>
+
+    <!-- Footer: ad banners + links row, in normal page flow (reached only by scrolling down) -->
+    <div style="width:100%; background:transparent;">
+
+        <!-- Ad 1: Adsterra (highperformanceformat.com) banner — default size -->
+        <div id="adRow" style="display:flex; align-items:center; justify-content:center; overflow-x:auto; padding:2px 4px; -webkit-overflow-scrolling:touch;">
+            <div id="adLeft" style="flex-shrink:0; width:300px; height:250px;">
+                <script>
+                atOptions = {
+                    'key': 'd525342ecffc192b91fadc32f1a90429',
+                    'format': 'iframe',
+                    'height': 250,
+                    'width': 300,
+                    'params': {}
+                };
+                </script>
+                <script src="https://www.highperformanceformat.com/d525342ecffc192b91fadc32f1a90429/invoke.js"></script>
+            </div>
+        </div>
+
+        <!-- Ad 2: Adstra (nap5k.com) banner — default size -->
+        <div style="display:flex; justify-content:center; align-items:center; background:rgba(255,255,255,0.001);">
+            <div id="adstra-banner" style="max-width:350px; max-height:60px; overflow:hidden;"></div>
+        </div>
+    </div>
+
+    <!-- Adstra banner ad script (zone 11534127) -->
+    <script>(function(s){s.dataset.zone='11534127',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+    <!-- Force the Adstra ad (whatever container it injects) to sit fixed at the very bottom,
+         next to the Adsterra banner, instead of wherever it inserts itself by default.
+         Runs repeatedly (MutationObserver) because this network can inject more than once
+         and at random times, including "popup"-styled banner units. -->
+    <script>
+    (function() {
+        var target = document.getElementById('adstra-banner');
+        if (!target) return;
+
+        function isOurs(el) {
+            return el === target || target.contains(el) || (target.parentElement && target.parentElement.contains(el) === false ? false : false);
+        }
+
+        function relocate(el) {
+            if (!el || el.nodeType !== 1) return;
+            if (el === target) return;
+            if (target.contains(el)) return; // already relocated
+            // Don't touch our own footer container, links row, or the spacer.
+            if (el.closest && el.closest('#adstra-banner')) return;
+            // Shrink + relocate whatever the script dropped onto <body>.
+            el.style.setProperty('max-width', '350px', 'important');
+            el.style.setProperty('max-height', '60px', 'important');
+            el.style.setProperty('overflow', 'hidden', 'important');
+            el.style.setProperty('position', 'static', 'important');
+            el.style.setProperty('top', 'auto', 'important');
+            el.style.setProperty('left', 'auto', 'important');
+            el.style.setProperty('right', 'auto', 'important');
+            el.style.setProperty('bottom', 'auto', 'important');
+            el.style.setProperty('transform', 'scale(0.85)', 'important');
+            el.style.setProperty('transform-origin', 'center', 'important');
+            target.appendChild(el);
+        }
+
+        // Catch anything already present as a direct child of <body> that isn't part of our page.
+        var knownIds = ['adstra-banner', 'adRow', 'aboutModal'];
+        Array.from(document.body.children).forEach(function(el) {
+            if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE') return;
+            if (knownIds.indexOf(el.id) !== -1) return;
+            if (el.id === 'mainCard' || el.tagName === 'MAIN') return;
+        });
+
+        // Watch for new elements being added anywhere in <body> (Monetag/Adstra injects late & repeatedly).
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(m) {
+                m.addedNodes.forEach(function(node) {
+                    if (node.nodeType !== 1) return;
+                    if (node.id === 'adstra-banner') return;
+                    if (target.contains(node)) return;
+                    // Heuristic: Monetag/Adstra ad containers are typically fixed/absolute positioned
+                    // divs or iframes appended directly to <body> or <html>, outside our known layout.
+                    var parent = node.parentElement;
+                    if (parent === document.body || parent === document.documentElement) {
+                        var tag = node.tagName;
+                        if (tag === 'DIV' || tag === 'IFRAME' || tag === 'INS' || tag === 'A') {
+                            relocate(node);
+                        }
+                    }
+                });
+            });
+        });
+        observer.observe(document.body, { childList: true });
+        if (document.documentElement) {
+            observer.observe(document.documentElement, { childList: true });
+        }
+
+        // Stop watching after 30s to avoid running forever.
+        setTimeout(function() { observer.disconnect(); }, 30000);
+    })();
+    </script>
 </body>
 </html>
