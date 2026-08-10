@@ -468,7 +468,7 @@ select option{ background:#1a1020; color:#fff; }
       <div class="book-float">
         <div class="book" id="book" data-theme="pink">
 
-          <div class="book-inside" id="exportTarget">
+          <div class="book-inside" id="insideContent">
             <canvas class="inside-texture" id="textureCanvas"></canvas>
 
             <div id="photoArea"></div>
@@ -723,7 +723,7 @@ const texCanvas = $('#textureCanvas');
 const texCtx = texCanvas.getContext('2d');
 let texParticles = [];
 function resizeTexCanvas(){
-  const rect = $('#exportTarget').getBoundingClientRect();
+  const rect = $('#insideContent').getBoundingClientRect();
   texCanvas.width = rect.width; texCanvas.height = rect.height;
 }
 function seedTexParticles(){
@@ -1006,7 +1006,7 @@ function waitFrames(n){
   });
 }
 async function captureCanvas(){
-  const target = $('#exportTarget');
+  const target = $('#book');
   const wasOpen = state.opened;
   const prevTransform = bookTilt.style.transform;
 
@@ -1018,6 +1018,32 @@ async function captureCanvas(){
   bookTilt.style.transform = 'none';
   book.classList.add('open');
 
+  // html2canvas cannot render real 3D CSS (perspective / preserve-3d / translateZ / rotateY).
+  // Flatten every 3D-transformed element in the card to plain 2D just for the capture,
+  // then restore each inline style exactly afterward so the live card is unaffected.
+  const flattenSelector = '#book, #book *';
+  const els = target.matches(flattenSelector) ? [target, ...target.querySelectorAll('*')] : Array.from(target.querySelectorAll('*'));
+  const restore = [];
+  els.forEach(el=>{
+    const cs = getComputedStyle(el);
+    const needsFlatten = cs.transformStyle === 'preserve-3d' || cs.perspective !== 'none' ||
+      (cs.transform !== 'none' && /translateZ|rotateY|rotateX|matrix3d|perspective/.test(el.style.transform || cs.transform));
+    if(needsFlatten){
+      restore.push({ el, transform: el.style.transform, transformStyle: el.style.transformStyle, perspective: el.style.perspective, transition: el.style.transition });
+      el.style.transition = 'none';
+      el.style.perspective = 'none';
+      el.style.transformStyle = 'flat';
+      // Keep the cover's open rotation logic intact (it's already forced open above via class),
+      // but strip translateZ/rotateY so html2canvas paints a flat, correctly-stacked frame.
+      if(el.id !== 'bookCover'){
+        el.style.transform = 'none';
+      }
+    }
+  });
+  document.querySelectorAll('.cover-face').forEach(f=> f.style.display = 'none');
+  const insideEl = document.getElementById('insideContent');
+  if(insideEl) insideEl.style.visibility = 'visible';
+
   // Let the DOM settle, resync the texture canvas to the current card size, then capture.
   await waitFrames(2);
   resizeTexCanvas();
@@ -1026,7 +1052,14 @@ async function captureCanvas(){
 
   const canvas = await html2canvas(target, { scale:2, backgroundColor:null, useCORS:true, logging:false });
 
-  // Restore live state exactly as it was before capture.
+  // Restore every flattened inline style exactly as it was before capture.
+  restore.forEach(r=>{
+    r.el.style.transform = r.transform;
+    r.el.style.transformStyle = r.transformStyle;
+    r.el.style.perspective = r.perspective;
+    r.el.style.transition = r.transition;
+  });
+  document.querySelectorAll('.cover-face').forEach(f=> f.style.display = '');
   if(!wasOpen) book.classList.remove('open');
   bookCover.style.transition = '';
   bookTilt.style.transition = '';
