@@ -3,7 +3,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://do-you-love-me-website.raxzen.in/</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -13,8 +13,18 @@
   </url>
   <url>
     <loc>https://do-you-love-me-website.raxzen.in/index3.html</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://do-you-love-me-website.raxzen.in/preview.png</image:loc>
+      <image:title>Advance Love Prank Games &amp; Interactive Tools – Do You Love Me?</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://do-you-love-me-website.raxzen.in/index14.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
