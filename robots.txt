@@ -1,16 +1,96 @@
+# Default rule — all crawlers allowed
 User-agent: *
 Allow: /
 
+# ===== OpenAI (ChatGPT / GPTBot) =====
 User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# ===== Google (Search + Gemini / AI features) =====
+User-agent: Googlebot
 Allow: /
 
 User-agent: Google-Extended
 Allow: /
 
+User-agent: Google-CloudVertexBot
+Allow: /
+
+# ===== Anthropic (Claude) =====
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# ===== Perplexity =====
 User-agent: PerplexityBot
 Allow: /
 
-User-agent: ClaudeBot
+User-agent: Perplexity-User
+Allow: /
+
+# ===== Meta AI =====
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+# ===== Microsoft Copilot / Bing =====
+User-agent: Bingbot
+Allow: /
+
+User-agent: BingPreview
+Allow: /
+
+# ===== Amazon (Alexa / Rufus / Amazonbot) =====
+User-agent: Amazonbot
+Allow: /
+
+# ===== ByteDance (TikTok / Doubao) =====
+User-agent: Bytespider
+Allow: /
+
+# ===== Apple (Siri / Applebot) =====
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# ===== Other AI agents / assistants (Manus, You.com, Diffbot, Cohere, etc.) =====
+User-agent: Manus
+Allow: /
+
+User-agent: ManusAgent
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: CCBot
 Allow: /
 
 Sitemap: https://do-you-love-me-website.raxzen.in/sitemap.xml
