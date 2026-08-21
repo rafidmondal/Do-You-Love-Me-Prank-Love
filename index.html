@@ -1312,6 +1312,29 @@ function copyPageLink() {
              Paste banner / popunder / native code here.
         -->
 
+        <!-- ---------- Adsterra: banner (highperformanceformat.com / key 738d2aa292332e9c0e591c0b7bd5200b) ----------
+             Isolated in its own iframe so its 'atOptions' global doesn't clash with
+             the other highperformanceformat.com ad above (both use the same global
+             variable name; without isolation, whichever loads second overwrites the
+             first and only one of the two ends up rendering). -->
+        <div style="display:flex; align-items:center; justify-content:center; overflow-x:auto; padding:2px 4px; -webkit-overflow-scrolling:touch;">
+            <iframe id="adBottom320x50" style="flex-shrink:0; width:320px; height:50px; border:0; overflow:hidden;" scrolling="no" frameborder="0"></iframe>
+            <script>
+            (function() {
+                var f = document.getElementById('adBottom320x50');
+                var idoc = f.contentDocument || f.contentWindow.document;
+                idoc.open();
+                idoc.write(
+                    '<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;padding:0;overflow:hidden;}</style></head><body>' +
+                    '<script>atOptions = {"key":"738d2aa292332e9c0e591c0b7bd5200b","format":"iframe","height":50,"width":320,"params":{}};<\/script>' +
+                    '<script src="https://www.highperformanceformat.com/738d2aa292332e9c0e591c0b7bd5200b/invoke.js"><\/script>' +
+                    '</body></html>'
+                );
+                idoc.close();
+            })();
+            </script>
+        </div>
+
         <!-- ---------- Any additional network ----------
              Add a new labeled slot the same way for each new provider.
         -->
