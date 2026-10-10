@@ -384,6 +384,11 @@
             transform: scale(1.08);
             box-shadow: 0 9px 28px rgba(240,37,128,0.52);
         }
+        .yes-love { display:inline-flex; position:relative; z-index:1; line-height:0; margin-top:1px;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,.7)) drop-shadow(0 2px 4px rgba(190,20,90,.45));
+            animation: yesBeat 1.5s ease-in-out infinite; }
+        @keyframes yesBeat { 0%,100%{transform:scale(1)} 14%{transform:scale(1.18)} 28%{transform:scale(1)} 42%{transform:scale(1.12)} 56%{transform:scale(1)} }
+        @media (prefers-reduced-motion: reduce){ .yes-love{animation:none} }
         .btn-icon { font-size: 1.05em; }
 
         /* ── Full screen burst overlay ── */
@@ -458,6 +463,12 @@
         }
         .no-btn.roaming {
             position: fixed;
+            width: auto !important; height: auto !important;
+            min-width: 0; max-width: calc(100vw - 32px);
+            white-space: nowrap;
+            font-size: clamp(0.78em, 3vw, 0.92em);
+            padding: 9px clamp(16px,5vw,24px);
+            gap: 1px;
             transition: left 0.38s cubic-bezier(0.68,-0.55,0.265,1.55),
                         top  0.38s cubic-bezier(0.68,-0.55,0.265,1.55),
                         transform 0.3s,
@@ -730,6 +741,30 @@
 
       gtag('config', 'G-VHCWHHZHE1');
     </script>
+<style id="advEditAnim">
+.adv-edit-btn{overflow:visible;will-change:transform;-webkit-tap-highlight-color:transparent;
+  animation:advFloat 3.6s ease-in-out infinite,advGlow 2.4s ease-in-out infinite}
+.adv-edit-btn::before{content:"";position:absolute;inset:-2px;border-radius:22px;z-index:-1;pointer-events:none;
+  background:linear-gradient(90deg,#ff4fa3,#ffd86b,#4fd1ff,#a76bff,#ff4fa3);background-size:300% 100%;
+  animation:advBorder 3.5s linear infinite;opacity:.95}
+.adv-edit-btn::after{content:"";position:absolute;inset:0;border-radius:20px;pointer-events:none;
+  background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%);
+  background-size:250% 100%;background-repeat:no-repeat;background-position:200% 0;
+  animation:advShine 3s ease-in-out infinite}
+.adv-edit-btn svg{animation:advPencil 2.4s ease-in-out infinite;transform-origin:50% 100%}
+.adv-edit-btn .adv-arrow{display:inline-block;font-weight:900;color:#ffe9a8;animation:advArrow 1.4s ease-in-out infinite}
+.adv-edit-btn:active{transform:scale(.94)}
+@keyframes advFloat{0%,100%{transform:perspective(300px) translateY(0) rotateX(0) rotateY(0)}
+  25%{transform:perspective(300px) translateY(-2px) rotateX(6deg) rotateY(-8deg)}
+  50%{transform:perspective(300px) translateY(0) rotateX(0) rotateY(0)}
+  75%{transform:perspective(300px) translateY(-2px) rotateX(-6deg) rotateY(8deg)}}
+@keyframes advBorder{0%{background-position:0 0}100%{background-position:300% 0}}
+@keyframes advShine{0%{background-position:200% 0}60%,100%{background-position:-100% 0}}
+@keyframes advGlow{0%,100%{filter:drop-shadow(0 0 3px rgba(255,105,180,.55))}50%{filter:drop-shadow(0 0 9px rgba(255,216,107,.85))}}
+@keyframes advPencil{0%,100%{transform:rotate(0)}30%{transform:rotate(-14deg) translateY(-1px)}60%{transform:rotate(10deg)}}
+@keyframes advArrow{0%,100%{transform:translateX(0);opacity:.7}50%{transform:translateX(3px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.adv-edit-btn,.adv-edit-btn::before,.adv-edit-btn::after,.adv-edit-btn svg,.adv-edit-btn .adv-arrow{animation:none}}
+</style>
 </head>
 <body>
     <button id="installBtn" onclick="installPWA()">⬇️ Install</button>
@@ -742,7 +777,7 @@
               box-shadow:0 2px 6px rgba(0,0,0,0.12); white-space:nowrap;">Birthday website 👈</a>
 
     <!-- Advance Edit — premium button below Birthday website tag -->
-    <a href="index3.html"
+    <a href="index3.html" class="adv-edit-btn"
        style="position:fixed; top:38px; left:8px; z-index:10000; text-decoration:none;
               display:inline-flex; align-items:center; gap:6px;
               background:linear-gradient(135deg,#2c2a4a 0%,#1a1830 100%); color:#f3d98b;
@@ -760,7 +795,7 @@
             <path d="M16.474 5.408l2.118 2.118a1.5 1.5 0 010 2.121l-8.383 8.383-4.239.706.706-4.24 8.383-8.382a1.5 1.5 0 012.121 0z" stroke="url(#advEditGrad)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M14.5 7.5l2 2" stroke="url(#advEditGrad)" stroke-width="1.6" stroke-linecap="round"/>
         </svg>
-        Advance Edit
+        Advance Edit <span class="adv-arrow">&rsaquo;</span>
     </a>
 
     <!-- Share + Copy Link buttons, top-right, liquid-glass style -->
@@ -812,7 +847,19 @@
         <div class="buttons" id="buttonContainer">
             <button class="yes-btn" id="yesBtn" tabindex="-1">
                 Yes
-                <span class="btn-icon">❤️</span>
+                <span class="btn-icon yes-love"><svg viewBox="0 0 32 30" width="26" height="24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="yLoveG" x1="4" y1="2" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#fff5f9"/><stop offset=".45" stop-color="#ffb3d1"/><stop offset="1" stop-color="#ff3d8f"/>
+                        </linearGradient>
+                        <linearGradient id="yLoveS" x1="0" y1="0" x2="32" y2="30" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#ffd98a"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M16 28.2C6.5 21.2 2 16.6 2 10.6 2 6.3 5.2 3 9.2 3c2.9 0 5.2 1.5 6.8 4 1.6-2.5 3.9-4 6.8-4 4 0 7.2 3.3 7.2 7.6 0 6-4.5 10.6-14 17.6z" fill="url(#yLoveG)" stroke="url(#yLoveS)" stroke-width="1.4" stroke-linejoin="round"/>
+                    <path d="M8.2 7.2c-2 .7-3.3 2.6-3.1 4.9" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" opacity=".9"/>
+                    <circle cx="11.2" cy="5.6" r="1" fill="#fff" opacity=".9"/>
+                </svg></span>
             </button>
             <button class="no-btn" id="noBtn" tabindex="-1">
                 No
@@ -1128,6 +1175,53 @@ const noBtn = document.getElementById('noBtn');
 let noBtnMoved = false;
 let moveCount = 0;
 
+// Allowed area for the No button: only inside the hero box (above Privacy/About/ads), always fully visible
+function noBounds() {
+    const margin = 16;
+    const hero = document.querySelector('.hero-section');
+    const hr = hero ? hero.getBoundingClientRect() : {top:0, bottom:window.innerHeight};
+    const w = noBtn.offsetWidth, h = noBtn.offsetHeight;
+    const minX = margin;
+    const maxX = Math.max(minX, window.innerWidth - w - margin);
+    const minY = Math.max(margin, hr.top + margin);
+    let maxY = Math.min(window.innerHeight - h - margin, hr.bottom - h - margin);
+    if (maxY < minY) maxY = minY;
+    return {minX, maxX, minY, maxY};
+}
+
+function pickNoSpot() {
+    const b = noBounds();
+    const curX = parseFloat(noBtn.style.left) || 0;
+    const curY = parseFloat(noBtn.style.top) || 0;
+    let best = null;
+    for (let i = 0; i < 10; i++) {
+        const c = {
+            x: Math.floor(b.minX + Math.random() * (b.maxX - b.minX)),
+            y: Math.floor(b.minY + Math.random() * (b.maxY - b.minY))
+        };
+        best = c;
+        if (Math.hypot(c.x - curX, c.y - curY) > 90) break; // new spot, not the same place again
+    }
+    return best;
+}
+
+// If page is scrolled/resized, keep the No button inside the allowed area
+let noClampTick = false;
+function clampNoButton() {
+    if (!noBtnMoved || noClampTick) return;
+    noClampTick = true;
+    requestAnimationFrame(() => {
+        noClampTick = false;
+        const b = noBounds();
+        const x = Math.min(Math.max(parseFloat(noBtn.style.left) || 0, b.minX), b.maxX);
+        const y = Math.min(Math.max(parseFloat(noBtn.style.top) || 0, b.minY), b.maxY);
+        noBtn.style.left = x + 'px';
+        noBtn.style.top  = y + 'px';
+    });
+}
+window.addEventListener('scroll', clampNoButton, {passive:true});
+window.addEventListener('resize', clampNoButton);
+
 function moveNoButton(e) {
     if (e) {
         e.preventDefault();
@@ -1157,14 +1251,15 @@ function moveNoButton(e) {
 
     moveCount++;
 
-    const margin = 16;
-    const maxX = window.innerWidth  - noBtn.offsetWidth  - margin;
-    const maxY = window.innerHeight - noBtn.offsetHeight - margin;
+    const texts = [
+        ['Nice try! 😜','💔'],['Catch me! 🏃','💔'],['Too slow! 🐌','💔'],
+        ['Nope! ❌','💔'],['Yes is better! 💝','💝'],['Missed! 😏','💔'],
+        ['Almost! 😅','💔'],['Try again! 🤭','💔'],['Gotcha!','💔']
+    ];
+    const t = texts[Math.floor(Math.random() * texts.length)];
+    noBtn.innerHTML = t[0] + '<span class="btn-icon">' + t[1] + '</span>';
 
-    const p = {
-        x: Math.max(margin, Math.floor(Math.random() * maxX)),
-        y: Math.max(margin, Math.floor(Math.random() * maxY))
-    };
+    const p = pickNoSpot();
 
     noBtn.style.left = p.x + 'px';
     noBtn.style.top  = p.y + 'px';
@@ -1176,13 +1271,6 @@ function moveNoButton(e) {
         `top  ${speed} cubic-bezier(0.68,-0.55,0.265,1.55),` +
         `transform 0.28s, background 0.3s, box-shadow 0.3s`;
 
-    const texts = [
-        ['Nice try! 😜','💔'],['Catch me! 🏃','💔'],['Too slow! 🐌','💔'],
-        ['Nope! ❌','💔'],['Yes is better! 💝','💝'],['Missed! 😏','💔'],
-        ['Almost! 😅','💔'],['Try again! 🤭','💔'],['Gotcha! 😈','💔']
-    ];
-    const t = texts[Math.floor(Math.random() * texts.length)];
-    noBtn.innerHTML = t[0] + '<span class="btn-icon">' + t[1] + '</span>';
 }
 
 noBtn.addEventListener('mouseover',  moveNoButton);
