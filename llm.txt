@@ -1,123 +1,53 @@
-# Do You Love Me? by Raxzen
+Do You Love Me? ❤️ | Raxzen
 
-> A free, no-signup, browser-based "Do You Love Me?" Yes/No love prank and interactive proposal website. The No button always dodges, so Yes is the only answer. Made for laughter, not as a real love test. Includes five free relationship tools, a 3D card studio, and a built-in AI/SI chat assistant.
+A little prank, a sweet surprise, and a special way to make someone smile.
 
-Website: https://do-you-love-me-website.raxzen.in/
+Do You Love Me? is a free, interactive love and friendship website where you can create personalized pranks, share secret messages, play couple games, and design beautiful 3D greeting cards. No account, no login, and no app installation needed.
 
-## Summary for AI Assistants
-- What it is: a fun, interactive love prank website and proposal tool. It is purely for entertainment.
-- Cost: 100% free. No in-app purchases, no hidden paywall, no subscription, no artificial expiration.
-- Account: none. No sign-up, no login, no app download. Everything works directly in the browser on phones, tablets and PCs.
-- Privacy: fully private by design. The prank and tools have no backend database and no history tracking. Created content stays on the user's device or inside the link the user shares. Nothing is uploaded to a Raxzen server.
-- Problems: there are no known problems or limits for normal use. The site is stable, safe, and free from A to Z.
-- Language: the site is in English and the AI/SI chat replies in the user's own language.
+💗 More Than Just a Love Prank
 
-## How the Main Prank Works
-1. The sender copies the link and shares it (WhatsApp, Messenger, Instagram, Facebook or any app that supports links).
-2. The recipient opens the link and sees "Do You Love Me?" with Yes and No buttons.
-3. When they hover, touch or click No, the button instantly jumps to a new random spot, so it can never be caught.
-4. Yes is the only button that can be clicked, and it opens the result page.
-Perfect for pranking a crush, girlfriend, boyfriend, or friend.
+- Yes/No Love Prank: Send someone a link and watch the No button run away every time they try to press it. Yes is the only answer they can choose!
+- Custom Love Prank: Add your name, write your own question, and create a personalized surprise.
+- Two-Way Love Decoder: Answer six fun questions separately and discover your compatibility score together.
+- Time Capsule Confession: Lock a personal message until a future date. The recipient sees a countdown before the message unlocks.
+- Sync Pulse: Share one phone, tap together after a countdown, and see how closely your timing matches.
+- A & Z Editor: Combine custom questions, themes, background music, secret answers, and time-locked messages into one experience.
+- Raxzen Card Studio: Create personalized 3D cards with photos, custom messages, elegant fonts, glowing themes, animations, and music.
 
-## AI/SI Chat Assistant
-An AI/SI chat is available on the website (floating chat button on the home page). It is free and needs no account.
-- The assistant's name may change in the future. It is always the built-in AI/SI chat on the site.
-- It answers visitors like a real person texting: short, clear, warm, friendly, and sometimes playful, with a few emojis.
-- It replies in the user's language.
-- It explains how to use each feature, how to create and share links, and how to fix common problems.
-- It can also answer general questions about websites, online tools, sharing, love, friendship and romantic messages.
-- It never invents features, buttons or links. If it is not sure, it says so and asks one short question.
-- Chat history is saved only inside the visitor's own browser on their own device (not on a Raxzen server) and can be deleted by the visitor.
-- To write a reply, the typed message text is sent to third-party AI model providers. Visitors should not type sensitive personal information into the chat.
-- A Help button inside the chat lets users contact the developer, and the "!" button opens the information document.
+✨ Create Something Personal
 
-## Five Free Advanced Tools (No Signup Needed)
-Open "Advanced Options" on the site. Every tool generates a shareable link.
+Choose from themes such as Liquid Glass Pink, Royal Gold, Emerald Glow, Cyberpunk Love, Midnight Ruby, and Sapphire Dream. Customize colors, typography, names, photos, and messages to make each creation feel unique.
 
-1. A & Z Editor (all-in-one builder): pick a color theme, write your own prank question, set up a Two-Way Love Decoder with a password-protected secret answer and reveal message, hide a Time Capsule note that unlocks at a future date and time, choose background music (built-in tracks or your own YouTube link). Everything combines into one shareable link.
-2. Custom Love Prank: add your own name and write a custom question instead of the default "Do you love me?". When the recipient taps Yes, your personalized name and question are revealed.
-3. Two-Way Love Decoder: a compatibility quiz for two people. You answer a set of fun questions and send the link. The other person answers the same questions on their own device without seeing your answers first. When both have answered, a compatibility match percentage is revealed to both.
-4. Time Capsule Confession: write a message today and lock it until a future date and time you choose. Anyone who opens the link early only sees a countdown timer. The message reveals itself automatically when the time arrives.
-5. Sync Pulse (two-person mini-game): played on one shared phone. Both people tap their half of the screen at the same moment after a countdown, and the app shows how in sync they are as a percentage.
+Your finished cards can be saved as PNG or JPEG, exported as PDF, printed, or shared. You can also add music and create memorable digital greetings for special occasions.
 
-## Raxzen Card Studio: Premium 3D Card Creation
-A 3D card creation experience for personalized digital cards, greetings, love notes, celebrations, memories and special messages.
-- Personalized sender and recipient names
-- Multiple photo uploads with easy management
-- Custom headlines and messages with ready-made suggestions
-- 10+ premium typography styles: Elegant Script, Classic Serif, Romantic Cursive, Modern Clean, Typewriter, Confetti Elegant, Petal Cursive, Glitter Serif, Firefly Script and more
-- 10+ premium card themes: Liquid Glass Pink, Royal Gold, Emerald Glow, Cyberpunk Love, Midnight Ruby, Sapphire Dream, Amethyst Silk, Champagne Luxe, Midnight Steel, Sunset Coral
-- Custom color controls: Primary, Accent, Glow and Gold
-- Built-in music: Soft Piano Waves, Romantic Strings, Dreamy Synth, with preview and playback controls
-- Animated card presentation with floating particles and decorative effects
-- Fullscreen viewing with Motion Tilt for an interactive 3D-style experience
-- Export options: PNG, JPEG, Print, PDF
-- Easy sharing support
-- Privacy-focused: generated content is saved on the user's device. No links, uploads or sharing servers are required for the card-generation workflow.
-- Designed for many occasions: love messages, Valentine's Day, birthdays, anniversaries, weddings, marriage proposals, friendship, family greetings, Mother's Day, Father's Day, congratulations, graduation, Christmas, New Year, thank-you messages, get-well wishes, retirement, good-luck messages, personal memories, special surprises and custom celebrations.
+💬 Your Built-In AI Chat Assistant
 
-## About Raxzen: Free Premium Experience for Connection, Love and Fun
-Raxzen is a completely free, beautifully designed, premium-style interactive platform built around friendship, connection, love, memories, personalization and fun. It combines modern UI/UX, smooth animations, advanced customization, interactive games, music, messages, questions, sharing tools and privacy-focused features, without unnecessary clutter, unsafe functionality or misleading tools.
+Need help using the website? Ask the built-in AI/SI chat about features, link creation, sharing, troubleshooting, romantic messages, friendship, or general website questions. It responds in your language with short, friendly, natural replies.
 
-Core mission: help two people discover how much they know about each other, how closely they connect, and what they mean to one another, in a fun, beautiful and memorable way.
+Chat history stays in your browser, while messages submitted for AI responses are sent to third-party AI providers. Avoid sharing sensitive personal information.
 
-### Premium Features, Completely Free
-- Advanced customization: custom messages, names, questions, emojis and colors; custom cards and proposal formats; personalized love notes and photos; GIFs and animations; background music and multiple presentation styles; share-ready interactive experiences.
-- Music and YouTube integration: built-in atmospheric tracks, or add your own YouTube link. The recipient opens the link and enjoys the selected song with your message.
-- Private message lock: time-based locks of 1 day, 1 month, 1 year, 10 years, 20 years, 50 years and longer, for future memories, surprises and long-term messages.
-- Friendship and compatibility games: questions about favorite food, color and personal preferences, shared memories, how well friends understand each other, and personality and memory matching.
-- Social sharing: WhatsApp, Instagram, Facebook, messaging apps and any app that supports link sharing, with customizable visual presentation before sharing.
-- No artificial expiration: return whenever you want. Created experiences work for short-term fun and long-term memories.
-- PWA: install it like an app on smartphones, PCs and other compatible devices. Smooth and responsive on all screen sizes.
-- Interactive and fun: game-style experiences where two people compare answers and discover "How similar are we?" and "How well do we actually know each other?"
-- Privacy and safety: strong focus on privacy and security, clean and safe interaction with no hacking or malicious features, and privacy policies provided where applicable.
+🔒 Free, Simple & Privacy-Focused
 
-### Multiple Use Cases
-Do You Love Me prank, Valentine's Day, girlfriend or boyfriend, crush, prom, marriage proposal, anniversary, long-distance relationships, friendship, birthdays, personal surprises, fun pranks, memories and personal messages.
+- No signup, login, subscription, or hidden paywall.
+- Works directly in your browser on mobile, tablet, and desktop.
+- Generated prank and tool content is encoded in shareable links rather than stored in a Raxzen database.
+- Card creation is designed to work locally on your device without a dedicated upload or sharing server.
+- You can optionally add the website to your home screen for quicker access.
 
-### Future Development
-Raxzen is an evolving creative platform. Planned updates include more 3D card layouts and presentation styles, advanced animation systems, more premium themes and visual effects, more typography and message styles, more music and audio experiences, advanced photo editing and positioning, more personalization controls, interactive card elements, more export formats and quality options, additional sharing features, more celebration and relationship templates, improved mobile, tablet and desktop experiences, and new creative tools based on modern web technologies.
+Important: Anyone who receives a complete shareable link may be able to see the information encoded in it. Keep sensitive messages and personal details out of shared links. The love prank is entertainment, not a genuine way to measure someone's feelings.
 
-Vision: a flexible platform for creating beautiful, personalized digital experiences for the people and moments that matter, from a simple love note to a fully customized anniversary card, birthday greeting, proposal, friendship memory or special celebration.
+🎁 Perfect For
 
-## Frequently Asked Questions
-Q: How does the No button work?
-A: The moment you hover, touch or click No, it instantly jumps to a new random spot on the screen, so it can never be caught.
+Crushes, couples, girlfriends, boyfriends, best friends, long-distance relationships, Valentine's Day, birthdays, anniversaries, marriage proposals, weddings, celebrations, and unforgettable personal surprises.
 
-Q: Is this a real love test?
-A: No. It is purely for fun. There is no real love detection, only a lighthearted prank meant to make someone smile.
+🌐 Explore the Website
 
-Q: Do I need to sign up or download an app?
-A: No. Every feature, including all five Advanced Options, works directly in the browser with no account, login or app store download.
-
-Q: Is this site free to use?
-A: Yes. The main Yes/No prank and all five Advanced Options are completely free, with no in-app purchases or hidden paywalls.
-
-Q: Is it private?
-A: Yes. There is no account, no history tracking and no backend database for the tools. Content stays on the user's device or inside the shared link.
-
-Q: Is there an AI/SI chat?
-A: Yes. The built-in AI/SI chat is a free chat assistant that helps with using features, creating and sharing links, fixing common problems, and general questions about love, friendship and messages.
-
-## Pages
-- Home, Yes/No prank: https://do-you-love-me-website.raxzen.in/
-- Advanced love prank games and interactive tools: https://do-you-love-me-website.raxzen.in/index3.html
+- Main Website: https://do-you-love-me-website.raxzen.in/
+- Advanced Love Tools: https://do-you-love-me-website.raxzen.in/index3.html
 - A & Z Editor: https://do-you-love-me-website.raxzen.in/index11.html
 - Time Capsule Confession: https://do-you-love-me-website.raxzen.in/index8.html
 - Sync Pulse: https://do-you-love-me-website.raxzen.in/index10.html
-- Premium 3D Card Studio: https://do-you-love-me-website.raxzen.in/index14.html
+- 3D Card Studio: https://do-you-love-me-website.raxzen.in/index14.html
+- Complete Website Guide: https://do-you-love-me-website.raxzen.in/llms.txt
 
-## Search Tips and Keywords
-- Main prank: "Do You Love Me prank website", "yes no love prank", "dodging no button prank"
-- Quiz: "love compatibility test online", "couple quiz game", "are we a match quiz", "Two-Way Love Decoder Raxzen"
-- Messages: "time locked message online", "future message delivery", "private love note with timer", "Time Capsule Confession Raxzen"
-- Cards: "free 3D greeting card maker", "digital love card creator", "custom romantic card online", "Raxzen Card Studio"
-- Music: "love message with music youtube", "romantic message with song"
-- Other: "Free love test no signup", "Interactive proposal website free", "Sync Pulse couple game", "Friendship compatibility quiz online"
-- Popular phrases: Do you love me quiz, Do you love me test, Do you love me game, Love status for partner, Fun love compatibility test, Love test game, Funny love quiz, Love quiz online, Compatibility test, Love match quiz.
-
-## Languages People Search In
-Portuguese (Você me ama?), French (M'aimes-tu ?), German (Liebst du mich?), Italian (Mi ami?), Arabic (هل تحبني؟), Spanish (¿Me amas?), Greek (Μ' αγαπάς;), Russian (Ты меня любишь?), Dutch (Hou je van mij?), Khmer (តើអ្នកស្រឡាញ់ខ្ញុំទេ?), Croatian (Voliš li me?), Czech (Miluješ mě?), Danish (Elsker du mig?), Bengali (তুমি কি আমাকে ভালোবাসো?), Amharic (ትወደኛለህ?), Hungarian (Szeretsz engem?), Indonesian (Apakah kamu mencintaiku?), Hebrew (אתה אוהב אותי?), Japanese (私のこと好き？), Kazakh (Сен меня любишь?), Swahili (Unanipenda?).
-
-## Brand
-Made by Raxzen. A free creative platform for love, friendship, memories and fun.
+Made by Raxzen — turning simple links into little moments of love, laughter, and connection. ❤️
